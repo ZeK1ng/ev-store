@@ -1,0 +1,40 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table products {
+  id integer [primary key]
+  name varchar2
+  decription varchar2
+  price double
+  stock_amount integer
+  category_id integer
+  image_id integer // this might be changed to either byte blob or file path on the file system
+}
+
+Table users {
+  id integer [primary key]
+  name varchar2
+  surname varchar2
+  email varchar2
+  salt varchar2 // string to securely hash pwd
+  passwordHash varchar2
+  phone_number varchar2
+  address varchar2
+  role varchar2
+}
+
+Table category {
+  id integer [primary key]
+  name varchar2
+  description varchar2
+}
+
+Table images {
+  id integer [primary key]
+  name varchar2 //optional
+  data binary
+  file_path varchar2 
+}
+
+Ref product_category: products.category_id > category.id // many-to-one
+Ref product_image: products.image_id > images.id
