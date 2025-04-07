@@ -36,5 +36,13 @@ Table images {
   file_path varchar2 
 }
 
+Table refreTokens{
+  id integer [primary key]
+  user users 
+  token varchar2
+  expiryDate timestamp
+}
+
 Ref product_category: products.category_id > category.id // many-to-one
 Ref product_image: products.image_id > images.id
+Ref refreshToken_user: refreTokens.user > users.id
