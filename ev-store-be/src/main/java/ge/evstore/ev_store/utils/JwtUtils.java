@@ -39,10 +39,6 @@ public class JwtUtils {
         return claimsJws.getBody().getSubject();
     }
 
-    public boolean validateToken(String token, UserDetails userDetails) {
-        return extractUsername(token).equals(userDetails.getUsername());
-    }
-
     private static Instant getTokenExpiryInstant(TokenType tokenType) {
         return switch (tokenType) {
             case REFRESH_TOKEN -> Instant.now().plus(Duration.ofHours(refreshTokenLifeSpanHours));
