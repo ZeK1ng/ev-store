@@ -1,16 +1,17 @@
-import { Box } from '@chakra-ui/react'
-import Header from '@/components/Header'
-import HomePage from '@/pages/HomePage'
+import { BrowserRouter as Router } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
+import Header from '@/components/Header';
+import AppRoutes from '@/routes/AppRoutes';
 
 function App() {
   return (
-    <>
+    <Router>
       <Header />
-      <Box as="main" p={4}>
-        <HomePage />
+      <Box as="main">
+        <AppRoutes />
       </Box>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
