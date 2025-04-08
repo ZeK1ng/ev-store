@@ -5,6 +5,7 @@ import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignUp';
 import ForgotPassword from './pages/auth/ForgotPassword';
+import PageNotFound from './pages/PageNotFound';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Box>
     </Router>
