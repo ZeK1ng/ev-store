@@ -39,6 +39,11 @@ public class JwtUtils {
         return claimsJws.getBody().getSubject();
     }
 
+    public Date extractExpiration(String token) {
+        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(SECRET).build().parseClaimsJws(token);
+        return claimsJws.getBody().getExpiration();
+    }
+
     private static Instant getTokenExpiryInstant(TokenType tokenType) {
         return switch (tokenType) {
             case REFRESH_TOKEN -> Instant.now().plus(Duration.ofHours(refreshTokenLifeSpanHours));

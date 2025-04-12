@@ -3,11 +3,9 @@ package ge.evstore.ev_store.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.Instant;
-
 @Entity
 @Data
-public class RefreshToken {
+public class AuthTokens {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +14,6 @@ public class RefreshToken {
     @OneToOne
     private User user;
 
-    private String token;
-
-    private Instant expiryDate;
+    private String accessToken;
+    private String refreshToken;
 }

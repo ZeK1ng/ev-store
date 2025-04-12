@@ -1,4 +1,4 @@
-package ge.evstore.ev_store.response;
+package ge.evstore.ev_store.request;
 
 import lombok.Getter;
 
