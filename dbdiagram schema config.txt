@@ -4,7 +4,7 @@
 Table products {
   id integer [primary key]
   name varchar2
-  decription varchar2
+  description varchar2
   price double
   stock_amount integer
   category_id integer
@@ -21,6 +21,7 @@ Table users {
   phone_number varchar2
   address varchar2
   role varchar2
+  favouriteItems integer[]
 }
 
 Table category {
@@ -33,16 +34,17 @@ Table images {
   id integer [primary key]
   name varchar2 //optional
   data binary
-  file_path varchar2 
+  file_path varchar2
 }
 
-Table refreTokens{
+Table refreshTokens{
   id integer [primary key]
-  user users 
+  user users
   token varchar2
   expiryDate timestamp
 }
 
 Ref product_category: products.category_id > category.id // many-to-one
 Ref product_image: products.image_id > images.id
-Ref refreshToken_user: refreTokens.user > users.id
+Ref refreshToken_user: refreshTokens.user > users.id
+Ref favourites: users.favouriteItems > products.id
