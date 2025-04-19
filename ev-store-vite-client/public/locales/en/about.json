@@ -1,0 +1,24 @@
+{
+    "breadcrumb": {
+      "home": "Home",
+      "current": "About Us"
+    },
+    "title": "Our Store",
+    "paragraph1": "Launched in 2015, EV Store is the region’s premier online shop for electric vehicle solutions. …",
+    "paragraph2": "Today, we stock over 1 million products across multiple categories, empowering drivers …",
+    "features": {
+      "charge_faster": {
+        "title": "Charge your car faster",
+        "description": "Speed up your EV charging with high‑performance tools"
+      },
+      "find_tools": {
+        "title": "Find the perfect tools",
+        "description": "Get professional‑grade EV tools tailored to your needs"
+      },
+      "simplify_service": {
+        "title": "Simplify your EV service",
+        "description": "Everything you need to keep your EV running smoothly"
+      }
+    }
+  }
+  

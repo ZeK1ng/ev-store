@@ -1,4 +1,5 @@
 import { Flex, HStack, IconButton, Button, Image, Link, Heading } from '@chakra-ui/react'
+import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
 import { FaMoon, FaSun, FaSignInAlt } from 'react-icons/fa'
 
@@ -21,9 +22,7 @@ const Header = () => {
                 <Link href="/">Home</Link>
                 <Link href="/about-us">About Us</Link>
                 <Link href="/contact">Contact</Link>
-                <Button variant="outline">
-                    LogIn <FaSignInAlt />
-                </Button>
+
                 <IconButton
                     aria-label="Toggle theme"
                     onClick={toggleColorMode}
@@ -31,9 +30,13 @@ const Header = () => {
                 >
                     {colorMode === 'light' ? <FaMoon /> : <FaSun />}
                 </IconButton>
+                <LangSwitcher />
+                <Button variant="outline">
+                    LogIn <FaSignInAlt />
+                </Button>
             </HStack>
         </Flex >
     )
 }
 
-export default Header
+export default Header;

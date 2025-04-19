@@ -8,20 +8,22 @@ import {
     SimpleGrid,
     Icon,
     Center
-} from '@chakra-ui/react'
-import { FaBolt } from 'react-icons/fa'
+} from '@chakra-ui/react';
+import { FaBolt } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next'
 
 const AboutUs = () => {
+    const { t } = useTranslation('about');
     return (
         <Box px={{ base: 4, md: 16 }} py={8}>
             <Breadcrumb.Root mb={4}>
                 <Breadcrumb.List>
                     <Breadcrumb.Item>
-                        <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+                        <Breadcrumb.Link href="/">{t('breadcrumb.home')}</Breadcrumb.Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Separator />
                     <Breadcrumb.Item >
-                        <Breadcrumb.CurrentLink>About Us</Breadcrumb.CurrentLink>
+                        <Breadcrumb.CurrentLink>{t('breadcrumb.current')}</Breadcrumb.CurrentLink>
                     </Breadcrumb.Item>
                 </Breadcrumb.List>
             </Breadcrumb.Root>
@@ -33,16 +35,13 @@ const AboutUs = () => {
             >
                 <Box flex={1} pr={{ md: 8 }} mb={{ base: 6, md: 0 }}>
                     <Heading as="h1" size="xl" mb={4}>
-                        Our Story
+                        {t('title')}
                     </Heading>
                     <Text mb={4} lineHeight="taller">
-                        Launched in 2015, EV Store is the region’s premier online shop for electric vehicle
-                        solutions. We’ve grown from a small startup into a community of over 2,000 satisfied customers,
-                        offering tailored EV charging gear, diagnostic tools, and expert support.
+                        {t('paragraph1')}
                     </Text>
                     <Text lineHeight="taller">
-                        Today, we stock over 1 million products across multiple categories, empowering drivers to
-                        embrace electric mobility affordably and reliably.
+                        {t('paragraph2')}
                     </Text>
                 </Box>
 
@@ -59,22 +58,9 @@ const AboutUs = () => {
             </Flex>
 
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={8}>
-                {[
-                    {
-                        title: 'Charge your car faster',
-                        description: 'Speed up your EV charging with high-performance tools',
-                    },
-                    {
-                        title: 'Find the perfect tools',
-                        description: 'Get professional-grade EV tools tailored to your needs',
-                    },
-                    {
-                        title: 'Simplify your EV service',
-                        description: 'Everything you need to keep your EV running smoothly',
-                    },
-                ].map((item, idx) => (
+                {(['charge_faster', 'find_tools', 'simplify_service'] as const).map((key, index) => (
                     <Box
-                        key={idx}
+                        key={index}
                         borderWidth="1px"
                         borderRadius="md"
                         p={6}
@@ -92,10 +78,10 @@ const AboutUs = () => {
                             </Flex>
                         </Center>
                         <Heading size="md" mb={2}>
-                            {item.title}
+                            {t(`features.${key}.title`)}
                         </Heading>
                         <Text color="gray.600">
-                            {item.description}
+                            {t(`features.${key}.description`)}
                         </Text>
                     </Box>
                 ))}
