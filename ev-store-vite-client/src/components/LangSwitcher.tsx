@@ -8,6 +8,7 @@ const LangSwitcher = () => {
     items: [
       { label: "ქართული", value: "ka" },
       { label: "English", value: "en" },
+      { label: "Русский", value: "ru" },
     ],
   })
 

@@ -1,18 +1,21 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
-import enAbout from '../public/locales/en/about.json'
 import kaAbout from '../public/locales/ka/about.json'
+import enAbout from '../public/locales/en/about.json'
+import ruAbout from '../public/locales/ru/about.json'
 
-import enCommon from '../public/locales/en/common.json'
 import kaCommon from '../public/locales/ka/common.json'
+import enCommon from '../public/locales/en/common.json'
+import ruCommon from '../public/locales/ru/common.json'
 
 i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: { common: enCommon, about: enAbout },
       ka: { common: kaCommon, about: kaAbout },
+      en: { common: enCommon, about: enAbout },
+      ru: { common: ruCommon, about: ruAbout },
     },
     fallbackLng: 'ka',
     lng: 'ka',
