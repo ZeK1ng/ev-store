@@ -13,7 +13,7 @@ import {
 import { FaArrowRight } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
 
-const HeroSection: React.FC = () => {
+const HeroSection = () => {
     const isMd = useBreakpointValue({ base: false, md: true })
     const { t } = useTranslation('home')
 

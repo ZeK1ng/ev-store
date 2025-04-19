@@ -1,10 +1,12 @@
 import { Box } from '@chakra-ui/react'
 import HeroSection from '@/components/homePage/HeroSection'
+import FeaturesSection from '@/components/homePage/FeaturesSection'
 
 const HomePage = () => {
   return (
-    <Box textAlign="center" mt={8}>
+    <Box textAlign="center">
       <HeroSection />
+      <FeaturesSection />
     </Box>
   )
 }

@@ -4,5 +4,19 @@
         "description": "Ready to make a change? Find your perfect EV now!",
         "customers": "Happy Customers",
         "buttonLabel": "Explore More"
+    },
+    "features": {
+        "FaBolt": {
+            "title": "Charge your car faster",
+            "description": "Speed up your EV charging with high-performance tools"
+        },
+        "FaCog": {
+            "title": "Find the perfect tools",
+            "description": "Get professional-grade EV tools tailored to your needs"
+        },
+        "FaLightbulb": {
+            "title": "Simplify your EV service",
+            "description": "Everything you need to keep your EV running smoothly"
+        }
     }
 }
