@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 const AboutUs = () => {
     const { t } = useTranslation('about');
     return (
-        <Box px={{ base: 4, md: 16 }} py={8}>
+        <Box px={{ base: 4, md: 16 }} py={12}>
             <Breadcrumb.Root mb={4}>
                 <Breadcrumb.List>
                     <Breadcrumb.Item>

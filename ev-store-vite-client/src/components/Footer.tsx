@@ -1,5 +1,6 @@
-import { Flex, HStack, VStack, Image, Separator, IconButton, Heading, Text, Box } from '@chakra-ui/react'
+import { Flex, HStack, VStack, Image, Separator, Stack, IconButton, Heading, Text, Box } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
+
 import { FaFacebook, FaInstagram, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaTwitter } from 'react-icons/fa';
 
 
@@ -10,7 +11,7 @@ const Footer = () => {
 
             <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" mb={8}>
                 <VStack align="flex-start" gap={4} mb={{ base: 8, md: 0 }}>
-                    <Image src="https://placehold.co/200x100" alt="EV Store logo"/>
+                    <Image src="https://placehold.co/200x100" alt="EV Store logo" />
                     <HStack gap={4}>
                         <IconButton aria-label="Facebook" variant="surface" size="xs">
                             <Link to="https://www.facebook.com/YourStoreGeo" target='_blank'>
@@ -58,13 +59,21 @@ const Footer = () => {
             <Separator borderColor="gray.600" mb={4} />
 
             <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" align="center">
-                <HStack gap={6} mb={{ base: 4, md: 0 }}>
+                <Stack
+                    direction={{ base: 'column', md: 'row' }}
+                    gap={6}
+                    mb={{ base: 4, md: 0 }}
+                    width={{ base: '100%', md: 'auto' }}
+                    align={{ base: 'flex-start', md: 'center' }}
+                >
                     <Link color="white" to="/about">About us</Link>
                     <Link color="white" to="/contact">Contact us</Link>
                     <Link color="white" to="/terms">Terms & Conditions</Link>
                     <Link color="white" to="/privacy">Privacy Policy</Link>
-                </HStack>
-                <Text fontSize="sm">© 2025 • EV Store</Text>
+                </Stack>
+                <Text fontSize="sm" textAlign={{ base: 'left', md: 'right' }}>
+                    © 2025 • EV Store
+                </Text>
             </Flex>
         </Box>
     )

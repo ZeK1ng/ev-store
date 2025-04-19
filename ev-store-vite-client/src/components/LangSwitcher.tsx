@@ -16,7 +16,7 @@ const LangSwitcher = () => {
     <Select.Root 
       collection={langs}
       value={[ i18n.language ]}
-      width="180px"
+      width="120px"
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
         i18n.changeLanguage(e.value[0])
