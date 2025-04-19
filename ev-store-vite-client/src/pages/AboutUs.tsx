@@ -75,7 +75,7 @@ const AboutUs = () => {
                                 align="center"
                                 justify="center"
                             >
-                                <Icon as={FaBolt} boxSize={6} color="white" />
+                                <Icon as={FaBolt} boxSize={6} color="white"/>
                             </Flex>
                         </Center>
                         <Heading size="md" mb={2}>
