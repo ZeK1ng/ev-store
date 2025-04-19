@@ -8,13 +8,13 @@ import {
     Heading,
     HStack,
     Input,
-    Link,
     SimpleGrid,
     Stack,
     Text,
     Icon,
     Field,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
 import { BsImage } from 'react-icons/bs';
@@ -85,13 +85,7 @@ const LoginPage: React.FC = () => {
                                 </Field.Root>
 
                                 <HStack justify="flex-end" mt={-2} mb={3}>
-                                    <Link
-                                        href="forgot-password"
-
-                                        fontWeight="medium"
-                                        fontSize="sm"
-                                        _hover={{ textDecoration: 'underline' }}
-                                    >
+                                    <Link to="/forgot-password">
                                         Forgot password?
                                     </Link>
                                 </HStack>
@@ -110,7 +104,7 @@ const LoginPage: React.FC = () => {
                         <Box textAlign="center" mt={0}>
                             <Text fontSize="sm" >
                                 Don't have an account yet?{' '}
-                                <Link href="/signup" fontWeight="medium">
+                                <Link to="/signup">
                                     Sign up
                                 </Link>
                             </Text>

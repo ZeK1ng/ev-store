@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 const LangSwitcher = () => {
   const { i18n } = useTranslation()
 
-  const frameworks = createListCollection({
+  const langs = createListCollection({
     items: [
       { label: "ქართული", value: "ka" },
       { label: "English", value: "en" },
@@ -13,13 +13,12 @@ const LangSwitcher = () => {
 
   return (
     <Select.Root 
-      collection={frameworks}
-      defaultValue={["ka"]}
+      collection={langs}
+      value={[ i18n.language ]}
       width="180px"
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
         i18n.changeLanguage(e.value[0])
-        console.log("Selected language:", e.value[0]);
         
       }}
       >
@@ -35,9 +34,9 @@ const LangSwitcher = () => {
       <Portal>
         <Select.Positioner>
           <Select.Content>
-            {frameworks.items.map((framework) => (
-              <Select.Item item={framework} key={framework.value}>
-                {framework.label}
+            {langs.items.map((lang) => (
+              <Select.Item item={lang} key={lang.value}>
+                {lang.label}
                 <Select.ItemIndicator />
               </Select.Item>
             ))}

@@ -9,6 +9,7 @@ import {
     Icon,
     Center
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { FaBolt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next'
 
@@ -19,7 +20,7 @@ const AboutUs = () => {
             <Breadcrumb.Root mb={4}>
                 <Breadcrumb.List>
                     <Breadcrumb.Item>
-                        <Breadcrumb.Link href="/">{t('breadcrumb.home')}</Breadcrumb.Link>
+                        <Link to="/">{t('breadcrumb.home')}</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Separator />
                     <Breadcrumb.Item >

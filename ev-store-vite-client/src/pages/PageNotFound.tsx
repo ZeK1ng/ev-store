@@ -8,6 +8,7 @@ import {
     Text,
     Icon,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { FiAlertTriangle } from 'react-icons/fi';
 
 const PageNotFound: React.FC = () => {
@@ -34,7 +35,7 @@ const PageNotFound: React.FC = () => {
                     </Stack>
 
                     <Button>
-                        <a href="/">Go Back Home</a>
+                        <Link to="/">Go Back Home</Link>
                     </Button>
                 </Stack>
             </Container>

@@ -1,4 +1,5 @@
-import { Flex, HStack, IconButton, Button, Image, Link, Heading } from '@chakra-ui/react'
+import { Flex, HStack, IconButton, Button, Image, Heading } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
 import { FaMoon, FaSun, FaSignInAlt } from 'react-icons/fa'
@@ -19,9 +20,9 @@ const Header = () => {
                 <Heading size="md">My App</Heading>
             </Flex>
             <HStack gap={4}>
-                <Link href="/">Home</Link>
-                <Link href="/about-us">About Us</Link>
-                <Link href="/contact">Contact</Link>
+                <Link to="/">Home</Link>
+                <Link to="/about-us">About Us</Link>
+                <Link to="/contact">Contact</Link>
 
                 <IconButton
                     aria-label="Toggle theme"
@@ -32,7 +33,9 @@ const Header = () => {
                 </IconButton>
                 <LangSwitcher />
                 <Button variant="outline">
-                    LogIn <FaSignInAlt />
+                    <Link to="/login">
+                        LogIn <FaSignInAlt />
+                    </Link>
                 </Button>
             </HStack>
         </Flex >
