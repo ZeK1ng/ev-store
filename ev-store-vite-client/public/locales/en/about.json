@@ -1,0 +1,23 @@
+{
+  "breadcrumb": {
+    "home": "Home",
+    "current": "About Us"
+  },
+  "title": "About EV Store",
+  "paragraph1": "Launched in 2022, EV Store is your dedicated online source for reliable electric vehicle charging solutions and accessories. We started with a passion for making EV ownership easier and more convenient.",
+  "paragraph2": "We are continuously expanding our selection of high-quality EV chargers, adapters, and essential accessories. Our commitment is to empower EV drivers with the dependable tools they need for a seamless charging experience.",
+  "features": {
+    "charge_faster": {
+      "title": "Charge Your EV Faster",
+      "description": "Speed up your EV charging time with our high-performance solutions."
+    },
+    "find_tools": {
+      "title": "Find the Perfect Adapters & Tools",
+      "description": "Get quality EV charging adapters and tools tailored to your vehicle and needs."
+    },
+    "simplify_charging": {
+      "title": "Simplify Your EV Charging",
+      "description": "Everything you need for convenient, reliable, and hassle-free EV charging."
+    }
+  }
+}

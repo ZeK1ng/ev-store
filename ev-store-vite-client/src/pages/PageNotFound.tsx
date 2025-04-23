@@ -8,9 +8,12 @@ import {
     Text,
     Icon,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { FiAlertTriangle } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const PageNotFound: React.FC = () => {
+    const { t } = useTranslation('common');
     return (
         <Box
             display="flex"
@@ -26,15 +29,17 @@ const PageNotFound: React.FC = () => {
                     <Icon as={FiAlertTriangle} boxSize={16} />
                     <Stack gap={2}>
                         <Heading as="h1" size="2xl" fontWeight="bold">
-                            404 - Page Not Found
+                            {t('404.title')}
                         </Heading>
                         <Text fontSize="lg">
-                            Oops! The page you are looking for does not exist or may have been moved.
+                            {t('404.description')}
                         </Text>
                     </Stack>
 
                     <Button>
-                        <a href="/">Go Back Home</a>
+                        <Link to="/">
+                            {t('404.backToHome')}
+                        </Link>
                     </Button>
                 </Stack>
             </Container>

@@ -6,13 +6,13 @@ import {
     Heading,
     HStack,
     Input,
-    Link,
     SimpleGrid,
     Stack,
     Text,
     Icon,
     Field,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { BsImage } from 'react-icons/bs'; // Placeholder logo icon
 
@@ -95,7 +95,7 @@ const ForgotPasswordPage: React.FC = () => {
                                 <Box textAlign="center" mt={2}>
                                      <Text fontSize="sm">
                                         Remembered your password?{' '}
-                                        <Link href="/login" fontWeight="medium">
+                                        <Link to="/login">
                                             Sign in
                                         </Link>
                                     </Text>
