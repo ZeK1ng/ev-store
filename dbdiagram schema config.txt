@@ -16,18 +16,25 @@ Table users {
   name varchar2
   surname varchar2
   email varchar2
-  salt varchar2 // string to securely hash pwd
   passwordHash varchar2
   phone_number varchar2
   address varchar2
   role varchar2
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+=======
+  favouriteItems products[]
+>>>>>>> Stashed changes
+=======
   favouriteItems integer[]
+>>>>>>> 75b90fd4b0a514c88d054bd36d5d38592318b71d
 }
 
 Table category {
   id integer [primary key]
   name varchar2
   description varchar2
+  parentCategoryId integer
 }
 
 Table images {
@@ -37,14 +44,42 @@ Table images {
   file_path varchar2
 }
 
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+Table refreTokens{
+=======
 Table refreshTokens{
+>>>>>>> 75b90fd4b0a514c88d054bd36d5d38592318b71d
   id integer [primary key]
   user users
   token varchar2
   expiryDate timestamp
+=======
+Table authTokens{
+  id integer [primary key]
+  user users 
+  accessToken varchar2
+  refreshToken varchar2
+}
+
+Table dictionary{
+  id integer
+  key varchar2
+  value varchar2
+>>>>>>> Stashed changes
 }
 
 Ref product_category: products.category_id > category.id // many-to-one
 Ref product_image: products.image_id > images.id
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+Ref refreshToken_user: refreTokens.user > users.id
+=======
+Ref refreshToken_user: authTokens.user > users.id
+Ref favourites: users.favouriteItems > products.id
+Ref category_subCatergory: category.parentCategoryId > category.id
+>>>>>>> Stashed changes
+=======
 Ref refreshToken_user: refreshTokens.user > users.id
 Ref favourites: users.favouriteItems > products.id
+>>>>>>> 75b90fd4b0a514c88d054bd36d5d38592318b71d
