@@ -1,7 +1,11 @@
 CREATE TABLE "products" (
   "id" integer PRIMARY KEY,
-  "name" varchar2,
-  "description" varchar2,
+  "nameGE" varchar2,
+  "nameENG" varchar2,
+  "nameRUS" varchar2,
+  "descriptionGE" varchar2,
+  "descriptionENG" varchar2,
+  "descriptionRUS" varchar2,
   "price" double,
   "stock_amount" integer,
   "category_id" integer,
