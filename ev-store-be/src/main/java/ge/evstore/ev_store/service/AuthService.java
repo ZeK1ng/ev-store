@@ -35,7 +35,7 @@ public class AuthService {
 
     @Transactional
     public void registerTokensForUser(User user, String accessToken, String refreshToken) {
-        AuthTokens authTokens = new AuthTokens();
+        final AuthTokens authTokens = new AuthTokens();
         authTokens.setUser(user);
         authTokens.setAccessToken(accessToken);
         authTokens.setRefreshToken(refreshToken);
@@ -44,29 +44,29 @@ public class AuthService {
 
     @Transactional
     public AuthResponse handleLogin(AuthRequest request) {
-        Authentication auth = authManager.authenticate(
+        final Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        final UserDetails userDetails = (UserDetails) auth.getPrincipal();
         Optional<User> userOptional = userService.findUser(userDetails.getUsername());
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("User not found for login: " + request.getUsername());
         }
-        User user = userOptional.get();
+        final User user = userOptional.get();
         return generateAndRegisterTokens(userDetails, user);
     }
 
     @Transactional
     public AuthResponse handleRegister(UserRegisterRequest request) throws UserAlreadyRegisteredException {
-        User user = userService.registerUser(request);
-        UserDetails userDetailsForUser = userDetailsService.getUserDetailsForUser(user);
+        final User user = userService.registerUser(request);
+        final UserDetails userDetailsForUser = userDetailsService.getUserDetailsForUser(user);
         return generateAndRegisterTokens(userDetailsForUser, user);
     }
 
     @Transactional
     protected AuthResponse generateAndRegisterTokens(UserDetails userDetails, User user) {
-        String accessToken = JwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
-        String refreshToken = JwtUtils.generateToken(userDetails, TokenType.REFRESH_TOKEN);
+        final String accessToken = JwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
+        final String refreshToken = JwtUtils.generateToken(userDetails, TokenType.REFRESH_TOKEN);
         registerTokensForUser(user, accessToken, refreshToken);
         return new AuthResponse(accessToken, refreshToken);
     }

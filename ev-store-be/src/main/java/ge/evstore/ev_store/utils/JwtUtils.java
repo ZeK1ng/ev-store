@@ -14,15 +14,16 @@ import java.time.Instant;
 import java.util.Date;
 
 public class JwtUtils {
-    private static final String SECRET = "very_secret_key"; //TODO replace
 
+    @Value("${security.jwt.secret}")
+    private static String jwtSecret;
     @Value("${access.token.life.span.hours}")
     private static int accessTokenLifeSpanHours;
     @Value("${refresh.token.life.span.hours}")
     private static int refreshTokenLifeSpanHours;
 
     public static String generateToken(UserDetails userDetails, TokenType tokenType) {
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities().toString())
@@ -35,13 +36,17 @@ public class JwtUtils {
     }
 
     public String extractUsername(String token) {
-        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(SECRET).build().parseClaimsJws(token);
+        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token);
         return claimsJws.getBody().getSubject();
     }
 
     public Date extractExpiration(String token) {
-        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(SECRET).build().parseClaimsJws(token);
+        Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(jwtSecret).build().parseClaimsJws(token);
         return claimsJws.getBody().getExpiration();
+    }
+
+    public boolean isTokenExpired(String token){
+        return extractExpiration(token).before(new Date());
     }
 
     private static Instant getTokenExpiryInstant(TokenType tokenType) {

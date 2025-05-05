@@ -30,7 +30,7 @@ public class UserService {
         if (findUser(request.getEmail()).isPresent()) {
             throw new UserAlreadyRegisteredException(request);
         }
-        User user = new User();
+        final User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());

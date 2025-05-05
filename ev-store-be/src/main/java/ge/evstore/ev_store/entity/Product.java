@@ -9,14 +9,24 @@ import lombok.Data;
 @Table(name = "products")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
-    private String description;
+    private String nameGE;
+    private String nameENG;
+    private String nameRUS;
+
+    private String descriptionGE;
+    private String descriptionENG;
+    private String descriptionRUS;
+
+    private Double price;
+
+    private Integer stockAmount;
+    private int quantity;
+    private Integer categoryId;
+
     @ManyToOne
     private ImageEntity imageEntity;
-    private double price;
-    private int quantity;
     @ManyToOne
     private Category category;
 }
