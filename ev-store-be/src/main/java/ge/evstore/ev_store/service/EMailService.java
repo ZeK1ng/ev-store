@@ -18,7 +18,7 @@ public class EMailService {
     private static final String VERIFICATION_CODE_STR = "{{VERIFICATION_CODE}}";
     private static final String CODE_EXPIRATION_DURATION_STR = "{{CODE_EXPIRATION_DURATION}}";
 
-    @Value("${verification.code.expiration.duration.minutes:10}")
+    @Value("${verification.code.expiration.duration.minutes}")
     private String verifyCodeExpirationDuration;
 
     private static final String BASE_HTML_TEMPLATE = """

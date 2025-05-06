@@ -35,4 +35,5 @@ public class User{
     private String verificationCode;
     @Column(name="otp_verification_expiration")
     private LocalDateTime otpVerificationExpiration;
+    private Boolean verified;
 }
