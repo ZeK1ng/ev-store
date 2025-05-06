@@ -2,7 +2,10 @@ package ge.evstore.ev_store.exceptionHandler;
 
 
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
+import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
+import ge.evstore.ev_store.exception.VerificationFailedException;
 import ge.evstore.ev_store.response.GeneralExceptionResponse;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,14 +26,29 @@ public class ControllerExceptionHandler {
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
     }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<GeneralExceptionResponse> handleAuthenticationException(AuthenticationException ex) {
+    @ExceptionHandler(VerificationCodeExpiredException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleVerificationCodeExpiredException(VerificationCodeExpiredException ex) {
         log.info(ex.getMessage());
-        GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+        GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
+    }
 
+    @ExceptionHandler(VerificationFailedException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleAuthenticationException(VerificationFailedException ex) {
+        log.info(ex.getMessage());
+        GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.FORBIDDEN.value());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleAuthenticationException(MessagingException ex) {
+        log.info(ex.getMessage());
+        GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse("Verification Mail send failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return ResponseEntity.status(HttpStatus.INSUFFICIENT_STORAGE).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
     }
 }
