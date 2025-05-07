@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public Optional<User> findUser(String username) {
-        return userRepository.findByEmail(username);
+        return userRepository.findByEmail(username.toLowerCase());
     }
 
     @Transactional
@@ -38,7 +38,7 @@ public class UserService {
         final User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
+        user.setEmail(request.getEmail().toLowerCase());
         user.setMobile(request.getMobile());
         user.setAddress(request.getAddress());
         user.setCity(request.getCity());
@@ -48,10 +48,10 @@ public class UserService {
         user.setVerificationCode(verificationCode);
         user.setOtpVerificationExpiration(LocalDateTime.now().plusMinutes(verifyCodeExpirationDuration));
         user.setVerified(false);
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
 
+    @Transactional
     public User verifyUser(User userFound) {
         userFound.setVerified(true);
         userFound.setVerificationCode(null);
@@ -59,10 +59,20 @@ public class UserService {
         return userRepository.save(userFound);
     }
 
+    @Transactional
     public void updateVerificationCodeFor(User user, String verificationCode) {
         user.setVerificationCode(verificationCode);
         user.setOtpVerificationExpiration(LocalDateTime.now().plusMinutes(verifyCodeExpirationDuration));
         userRepository.save(user);
     }
 
+    @Transactional
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setVerificationCode(null);
+        user.setOtpVerificationExpiration(null);
+        userRepository.save(user);
+    }
+
 }
+

@@ -1,14 +1,13 @@
 package ge.evstore.ev_store.controller;
 
-import ge.evstore.ev_store.request.AuthRequest;
-import ge.evstore.ev_store.request.UserRegisterRequest;
-import ge.evstore.ev_store.request.VerifyUserRequest;
+import ge.evstore.ev_store.request.*;
 import ge.evstore.ev_store.response.AuthResponse;
 import ge.evstore.ev_store.service.AuthService;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,15 +37,27 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@RequestBody VerifyUserRequest verifyUserRequest) {
+    public ResponseEntity<?> verifyUser(@Validated @RequestBody VerifyUserRequest verifyUserRequest) {
         log.info("Trying to verifyUserRequest:{}", verifyUserRequest);
         return ResponseEntity.ok(authService.verifyUser(verifyUserRequest));
     }
 
     @PostMapping("/resend-verification")
-    public ResponseEntity<?> verifyUser(@RequestBody String userEmail) throws MessagingException {
+    public ResponseEntity<?> resendVerification(@RequestBody String userEmail) throws MessagingException {
         log.info("Trying to resend verification for:{}", userEmail);
         authService.resendVerificationCode(userEmail);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) throws MessagingException {
+        authService.sendPasswordResetCode(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
         return ResponseEntity.ok().build();
     }
 }
