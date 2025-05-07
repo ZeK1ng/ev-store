@@ -7,6 +7,7 @@ import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
 import ge.evstore.ev_store.exception.VerificationFailedException;
 import ge.evstore.ev_store.repository.AuthTokenRepository;
 import ge.evstore.ev_store.request.AuthRequest;
+import ge.evstore.ev_store.request.ResetPasswordRequest;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.request.VerifyUserRequest;
 import ge.evstore.ev_store.response.AuthResponse;
@@ -15,7 +16,6 @@ import ge.evstore.ev_store.utils.TokenType;
 import ge.evstore.ev_store.utils.VerificationUtils;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,13 +35,15 @@ public class AuthService {
     private final UserService userService;
     private final UserDetailsServiceImpl userDetailsService;
     private final EMailService emailService;
+    private final JwtUtils jwtUtils;
 
-    public AuthService(AuthenticationManager authManager, AuthTokenRepository authTokenRepository, UserService userService, UserDetailsServiceImpl userDetailsService, EMailService emailService) {
+    public AuthService(AuthenticationManager authManager, AuthTokenRepository authTokenRepository, UserService userService, UserDetailsServiceImpl userDetailsService, EMailService emailService, JwtUtils jwtUtils) {
         this.authManager = authManager;
         this.authTokenRepository = authTokenRepository;
         this.userService = userService;
         this.userDetailsService = userDetailsService;
         this.emailService = emailService;
+        this.jwtUtils = jwtUtils;
     }
 
     @Transactional
@@ -50,6 +52,7 @@ public class AuthService {
         authTokens.setUser(user);
         authTokens.setAccessToken(accessToken);
         authTokens.setRefreshToken(refreshToken);
+        authTokenRepository.deleteByUser(user);
         authTokenRepository.save(authTokens);
     }
 
@@ -87,7 +90,7 @@ public class AuthService {
             throw new VerificationCodeExpiredException("Verification code expired for user:" + userFound.getEmail());
         }
         if(!userFound.getVerificationCode().equals(verifyUserRequest.getVerificationCode())){
-            log.info("Verification code mismatch for user:{}. RequestCode:{}, UserCode:{}", verifyUserRequest.getEmail(), verifyUserRequest.getVerificationCode(), userFound.getVerificationCode());
+            log.info("Verification code mismatch for user:{}", verifyUserRequest.getEmail());
             throw new VerificationFailedException("Verification failed for user:" + userFound.getEmail());
         }
         User verifiedUser = userService.verifyUser(userFound);
@@ -109,9 +112,37 @@ public class AuthService {
 
     @Transactional
     protected AuthResponse generateAndRegisterTokens(UserDetails userDetails, User user) {
-        final String accessToken = JwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
-        final String refreshToken = JwtUtils.generateToken(userDetails, TokenType.REFRESH_TOKEN);
+        final String accessToken = jwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
+        final String refreshToken = jwtUtils.generateToken(userDetails, TokenType.REFRESH_TOKEN);
         registerTokensForUser(user, accessToken, refreshToken);
         return new AuthResponse(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public void sendPasswordResetCode(String email) throws MessagingException {
+        Optional<User> user = userService.findUser(email);
+        if (user.isEmpty()) throw new UsernameNotFoundException("User not found: " + email);
+
+        String code = VerificationUtils.generateVerificationCode();
+        userService.updateVerificationCodeFor(user.get(), code);
+        emailService.sendPasswordResetCode(email, code);
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        Optional<User> userOpt = userService.findUser(request.getEmail());
+        if (userOpt.isEmpty()) throw new UsernameNotFoundException("User not found");
+
+        User user = userOpt.get();
+
+        if (user.getOtpVerificationExpiration() == null || user.getOtpVerificationExpiration().isBefore(LocalDateTime.now())) {
+            throw new VerificationCodeExpiredException("Verification code expired");
+        }
+
+        if (!request.getVerificationCode().equals(user.getVerificationCode())) {
+            throw new VerificationFailedException("Incorrect verification code");
+        }
+
+        userService.updatePassword(user, request.getNewPassword());
     }
 }
