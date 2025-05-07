@@ -26,8 +26,8 @@ public class JwtUtils {
     @Value("${refresh.token.life.span.hours}")
     private int refreshTokenLifeSpanHours;
 
-    public String generateToken(UserDetails userDetails, TokenType tokenType) {
-        Map<String, Object> claims = new HashMap<>();
+    public String generateToken(final UserDetails userDetails, final TokenType tokenType) {
+        final Map<String, Object> claims = new HashMap<>();
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(Object::toString)
                 .toList());
@@ -42,25 +42,25 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    public String extractUsername(final String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    public List<String> extractRoles(String token) {
-        Claims claims = extractAllClaims(token);
+    public List<String> extractRoles(final String token) {
+        final Claims claims = extractAllClaims(token);
         return claims.get("roles", List.class);
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(final String token, final UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    public boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(final String token) {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(final String token) {
         final SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecretStr.getBytes());
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
@@ -69,7 +69,7 @@ public class JwtUtils {
                 .getBody();
     }
 
-    private Instant getTokenExpiryInstant(TokenType tokenType) {
+    private Instant getTokenExpiryInstant(final TokenType tokenType) {
         return switch (tokenType) {
             case REFRESH_TOKEN -> Instant.now().plus(Duration.ofHours(refreshTokenLifeSpanHours));
             case ACCESS_TOKEN -> Instant.now().plus(Duration.ofHours(accessTokenLifeSpanHours));

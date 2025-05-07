@@ -1,10 +1,11 @@
-package ge.evstore.ev_store.service;
+package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.entity.Role;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.repository.UserRepository;
 import ge.evstore.ev_store.request.UserRegisterRequest;
+import ge.evstore.ev_store.service.interf.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,24 +15,24 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${verification.code.expiration.duration.minutes}")
     private int verifyCodeExpirationDuration;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<User> findUser(String username) {
+    public Optional<User> findUser(final String username) {
         return userRepository.findByEmail(username.toLowerCase());
     }
 
     @Transactional
-    public User registerUserWithoutVerification(UserRegisterRequest request, String verificationCode) throws UserAlreadyRegisteredException {
+    public User registerUserWithoutVerification(final UserRegisterRequest request, final String verificationCode) throws UserAlreadyRegisteredException {
         if (findUser(request.getEmail()).isPresent()) {
             throw new UserAlreadyRegisteredException(request);
         }
@@ -52,7 +53,7 @@ public class UserService {
     }
 
     @Transactional
-    public User verifyUser(User userFound) {
+    public User verifyUser(final User userFound) {
         userFound.setVerified(true);
         userFound.setVerificationCode(null);
         userFound.setOtpVerificationExpiration(null);
@@ -60,14 +61,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateVerificationCodeFor(User user, String verificationCode) {
+    public void updateVerificationCodeFor(final User user, final String verificationCode) {
         user.setVerificationCode(verificationCode);
         user.setOtpVerificationExpiration(LocalDateTime.now().plusMinutes(verifyCodeExpirationDuration));
         userRepository.save(user);
     }
 
     @Transactional
-    public void updatePassword(User user, String newPassword) {
+    public void updatePassword(final User user, final String newPassword) {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setVerificationCode(null);
         user.setOtpVerificationExpiration(null);

@@ -1,26 +1,20 @@
-package ge.evstore.ev_store.service;
+package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.service.interf.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EMailService {
-
-    private static final Logger logger = LoggerFactory.getLogger(EMailService.class);
-    private final JavaMailSender mailSender;
+@Slf4j
+public class EmailServiceImpl implements EmailService {
 
     private static final String VERIFICATION_CODE_STR = "{{VERIFICATION_CODE}}";
     private static final String CODE_EXPIRATION_DURATION_STR = "{{CODE_EXPIRATION_DURATION}}";
-
-    @Value("${verification.code.expiration.duration.minutes}")
-    private String verifyCodeExpirationDuration;
-
     private static final String BASE_HTML_EMAIL_VERIFICATION_TEMPLATE = """
             <!DOCTYPE html>
             <html lang="en">
@@ -48,7 +42,6 @@ public class EMailService {
             </body>
             </html>
             """;
-
     private static final String BASE_HTML_PWD_RESET_TEMPLATE = """
             <!DOCTYPE html>
             <html lang="en">
@@ -76,36 +69,39 @@ public class EMailService {
             </body>
             </html>
             """;
+    private final JavaMailSender mailSender;
+    @Value("${verification.code.expiration.duration.minutes}")
+    private String verifyCodeExpirationDuration;
 
-    public EMailService(JavaMailSender mailSender) {
+    public EmailServiceImpl(final JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    public void sendVerificationCode(String email, String verificationCode) throws MessagingException {
-        sendHtmlEmail(email,getHtmlForVerificationCode(verificationCode));
+    public void sendVerificationCode(final String email, final String verificationCode) throws MessagingException {
+        sendHtmlEmail(email, getHtmlForVerificationCode(verificationCode));
     }
 
-    public void sendPasswordResetCode(String email, String code) throws MessagingException {
-        sendHtmlEmail(email,getHtmlForPasswordResetCode(code));
+    public void sendPasswordResetCode(final String email, final String code) throws MessagingException {
+        sendHtmlEmail(email, getHtmlForPasswordResetCode(code));
     }
 
     private void sendHtmlEmail(final String email, final String text) throws MessagingException {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+        final MimeMessage mimeMessage = mailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject("EV Store Verification Code");
         helper.setTo(email);
         helper.setText(text, true);
         mailSender.send(mimeMessage);
-        logger.info("Verification email sent to {}", email);
+        log.info("Verification email sent to {}", email);
     }
 
-    private String getHtmlForVerificationCode(String verificationCode) {
+    private String getHtmlForVerificationCode(final String verificationCode) {
         return BASE_HTML_EMAIL_VERIFICATION_TEMPLATE
                 .replace(VERIFICATION_CODE_STR, verificationCode)
                 .replace(CODE_EXPIRATION_DURATION_STR, verifyCodeExpirationDuration);
     }
 
-    private String getHtmlForPasswordResetCode(String verificationCode) {
+    private String getHtmlForPasswordResetCode(final String verificationCode) {
         return BASE_HTML_PWD_RESET_TEMPLATE
                 .replace(VERIFICATION_CODE_STR, verificationCode)
                 .replace(CODE_EXPIRATION_DURATION_STR, verifyCodeExpirationDuration);
