@@ -59,7 +59,7 @@ const AboutUs = () => {
             </Flex>
 
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={8}>
-                {(['charge_faster', 'find_tools', 'simplify_service'] as const).map((key, index) => (
+                {(['charge_faster', 'find_tools', 'simplify_charging'] as const).map((key, index) => (
                     <Box
                         key={index}
                         borderWidth="1px"
