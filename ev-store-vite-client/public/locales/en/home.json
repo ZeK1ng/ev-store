@@ -18,5 +18,15 @@
             "title": "Simplify your EV service",
             "description": "Everything you need to keep your EV running smoothly"
         }
+    },
+    "featuredEVItems": {
+        "title": "EV Chargers",
+        "seeAllLabel": "See All",
+        "learnMoreLabel": "Learn More"
+    },
+    "featuredOBDItems": {
+        "title": "OBD Tools",
+        "seeAllLabel": "See All",
+        "learnMoreLabel": "Learn More"
     }
 }

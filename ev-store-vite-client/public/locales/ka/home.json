@@ -18,5 +18,15 @@
             "title": "გაიმარტივე შენი EV-ის დამუხტვა",
             "description": "ყველაფერი, რაც გჭირდებათ თქვენი EV-ის მოსახერხებელი, საიმედო და უპრობლემო დამუხტვისთვის."
         }
+    },
+    "featuredEVItems": {
+        "title": "დამტენები",
+        "seeAllLabel": "ყველა პროდუქტი",
+        "learnMoreLabel": "მეტი ინფორმაცია"
+    },
+    "featuredOBDItems": {
+        "title": "OBD ხელსაწყოები",
+        "seeAllLabel": "ყველა პროდუქტი",
+        "learnMoreLabel": "მეტი ინფორმაცია"
     }
 }

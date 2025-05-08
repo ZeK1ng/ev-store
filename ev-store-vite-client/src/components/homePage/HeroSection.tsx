@@ -23,10 +23,11 @@ const HeroSection = () => {
             align="center"
             px={{ base: 4, md: 16 }}
             py={16}
+            bg="gray.100"
             gap={{ base: 8, md: 0 }}
         >
             <Box flex={1} textAlign={{ base: 'center', md: 'left' }}>
-                <Heading size="7xl" mb={4}>
+                <Heading size="6xl" mb={4}>
                     {t('hero.title')}
                 </Heading>
                 <Text fontSize="2xl" mb={6}>

@@ -14,6 +14,7 @@ const Header = () => {
             justify="space-between"
             p={4}
             borderBottomWidth="1px"
+            position={"sticky"}
         >
             <Flex align="center">
                 <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />

@@ -18,5 +18,15 @@
             "title": "Упростите зарядку вашего EV",
             "description": "Все, что вам нужно для удобной, надежной и беспроблемной зарядки вашего электромобиля."
         }
+    },
+    "featuredEVItems": {
+        "title": "Зарядные устройства EV",
+        "seeAllLabel": "Смотреть все",
+        "learnMoreLabel": "Узнать больше"
+    },
+    "featuredOBDItems": {
+        "title": "Инструменты OBD",
+        "seeAllLabel": "Смотреть все",
+        "learnMoreLabel": "Узнать больше"
     }
 }
