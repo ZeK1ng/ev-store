@@ -82,7 +82,10 @@ const HomePage = () => {
         onSeeAll={() => console.log('See all clicked')}
         items={dummyDataCharger}
       />
-      <FeaturedOBDSection
+      <FeaturedOBDSection _open={{
+    animationName: "fade-in, scale-in",
+    animationDuration: "300ms",
+  }}
         title={t('featuredOBDItems.title')}
         seeAllLabel={t('featuredOBDItems.seeAllLabel')}
         learnMoreLabel={t('featuredOBDItems.learnMoreLabel')}

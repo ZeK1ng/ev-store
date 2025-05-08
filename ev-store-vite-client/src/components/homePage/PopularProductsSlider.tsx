@@ -42,7 +42,7 @@ const PopularProductsSlider = () => {
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
             <Flex justify="space-between" align="center" mb={4}>
-                <Heading size="4xl" textAlign={'left'}>{t('popularProducts.title')}</Heading>
+                <Heading size={{base: '2xl', md: '4xl'}} textAlign={'left'}>{t('popularProducts.title')}</Heading>
                 <Flex>
                     <IconButton
                         aria-label="Scroll left"

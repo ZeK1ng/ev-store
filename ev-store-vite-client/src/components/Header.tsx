@@ -1,46 +1,114 @@
-import { Flex, HStack, IconButton, Button, Image, Heading } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import {
+    Box,
+    Flex,
+    HStack,
+    IconButton,
+    Button,
+    Image,
+    Heading,
+    VStack,
+    useDisclosure
+} from '@chakra-ui/react'
+import { Link as RouterLink } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
-import { FaMoon, FaSun, FaSignInAlt } from 'react-icons/fa'
+import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose } from 'react-icons/fa'
 
-const Header = () => {
+const Header: React.FC = () => {
+    const { open, onOpen, onClose } = useDisclosure()
     const { colorMode, toggleColorMode } = useColorMode()
 
     return (
-        <Flex
-            as="header"
-            align="center"
-            justify="space-between"
-            p={4}
-            borderBottomWidth="1px"
-            position={"sticky"}
-        >
-            <Flex align="center">
-                <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />
-                <Heading size="md">My App</Heading>
-            </Flex>
-            <HStack gap={4}>
-                <Link to="/">Home</Link>
-                <Link to="/about-us">About Us</Link>
-                <Link to="/contact">Contact</Link>
+        <Box position="sticky" top={0} zIndex="banner" bg="white">
+            <Flex
+                as="header"
+                align="center"
+                justify="space-between"
+                px={{ base: 4, md: 8 }}
+                py={4}
+                borderBottomWidth="1px"
+            >
+                <Flex align="center">
+                    <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />
+                    <Heading size="md">My App</Heading>
+                </Flex>
+
+                <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
+                    <RouterLink to="/">Home</RouterLink>
+                    <RouterLink to="/about-us">About Us</RouterLink>
+                    <RouterLink to="/contact">Contact</RouterLink>
+
+                    <IconButton
+                        aria-label="Toggle theme"
+                        onClick={toggleColorMode}
+                        variant="ghost"
+                    >
+                        {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                    </IconButton>
+
+                    <LangSwitcher />
+
+                    <Button variant="outline" asChild>
+                        <RouterLink to="/login">
+                            LogIn <FaSignInAlt />
+                        </RouterLink>
+                    </Button>
+                </HStack>
 
                 <IconButton
-                    aria-label="Toggle theme"
-                    onClick={toggleColorMode}
+                    display={{ base: 'flex', md: 'none' }}
+                    aria-label="Toggle menu"
+                    onClick={open ? onClose : onOpen}
                     variant="ghost"
                 >
-                    {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                    {open ? <FaWindowClose /> : <FaBars />}
                 </IconButton>
-                <LangSwitcher />
-                <Button variant="outline">
-                    <Link to="/login">
-                        LogIn <FaSignInAlt />
-                    </Link>
-                </Button>
-            </HStack>
-        </Flex >
+            </Flex>
+
+            {open && (
+
+                <Box
+                    position="absolute"
+                    top="100%"
+                    left={0}
+                    width="100%"
+                    bg="white"
+                    shadow="md"
+                    zIndex="dropdown"
+                >
+                    <VStack as="nav" gap={4} align="stretch" p={4}>
+                        <RouterLink to="/" onClick={onClose}>Home</RouterLink>
+                        <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
+                        <RouterLink to="/contact" onClick={onClose}>Contact</RouterLink>
+
+                        <IconButton
+                            aria-label="Toggle theme"
+                            onClick={() => {
+                                toggleColorMode()
+                            }}
+                            variant="outline"
+                        >
+                            {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                        </IconButton>
+
+                        <LangSwitcher />
+
+                        <Button
+                            variant="solid"
+                            colorScheme="green"
+                            asChild
+                            onClick={onClose}
+                        >
+                            <RouterLink to="/login" >
+                                LogIn <FaSignInAlt />
+                            </RouterLink>
+                        </Button>
+                    </VStack>
+                </Box>
+            )}
+        </Box>
     )
 }
 
-export default Header;
+export default Header

@@ -27,7 +27,7 @@ const HeroSection = () => {
             gap={{ base: 8, md: 0 }}
         >
             <Box flex={1} textAlign={{ base: 'center', md: 'left' }}>
-                <Heading size="6xl" mb={4}>
+                <Heading size={{ base: '3xl', md: '5xl' }} mb={4}>
                     {t('hero.title')}
                 </Heading>
                 <Text fontSize="2xl" mb={6}>

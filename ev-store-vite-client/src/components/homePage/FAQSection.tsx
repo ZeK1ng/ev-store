@@ -18,7 +18,7 @@ const FAQSection = () => {
 
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
-            <Heading as="h2" size="4xl" mb={6} textAlign="center">
+            <Heading as="h2" size={{base: '2xl', md: '4xl'}} mb={6} textAlign={{base: 'left', md: 'center'}}>
                 {t('faq.title')}
             </Heading>
             <Accordion.Root size="lg" multiple variant={"enclosed"}>
