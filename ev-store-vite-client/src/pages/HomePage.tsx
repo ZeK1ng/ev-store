@@ -3,6 +3,7 @@ import HeroSection from '@/components/homePage/HeroSection'
 import FeaturesSection from '@/components/homePage/FeaturesSection'
 import FeaturedIChargersSection, { FeaturedItem } from '@/components/homePage/FeaturedChargersSection'
 import FeaturedOBDSection, { FeaturedOBDItem } from '@/components/homePage/FeaturedOBDSection'
+import FAQSection from '@/components/homePage/FAQSection'
 import { useTranslation } from 'react-i18next'
 
 const dummyDataCharger: [FeaturedItem, FeaturedItem, FeaturedItem, FeaturedItem] = [
@@ -87,6 +88,7 @@ const HomePage = () => {
         onSeeAll={() => console.log('See all clicked')}
         items={dummyDataOBD}
       />
+      <FAQSection />
     </Box>
   )
 }

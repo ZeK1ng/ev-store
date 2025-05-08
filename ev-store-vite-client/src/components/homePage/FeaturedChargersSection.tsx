@@ -1,4 +1,3 @@
-import React from 'react'
 import {
     Box,
     Grid,
@@ -25,13 +24,13 @@ interface FeaturedItemsSectionProps {
     items: [FeaturedItem, FeaturedItem, FeaturedItem, FeaturedItem]
 }
 
-const FeaturedIChargersSection: React.FC<FeaturedItemsSectionProps> = ({
+const FeaturedIChargersSection = ({
     title,
     seeAllLabel,
     learnMoreLabel,
     onSeeAll,
     items,
-}) => {
+}: FeaturedItemsSectionProps) => {
     const [first, second, third, fourth] = items
 
     return (

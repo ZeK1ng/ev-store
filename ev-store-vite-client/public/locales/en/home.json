@@ -28,5 +28,35 @@
         "title": "OBD Tools",
         "seeAllLabel": "See All",
         "learnMoreLabel": "Learn More"
+    },
+    "faq": {
+        "title": "Frequently Asked Questions",
+        "items": [
+            {
+                "value": "q1",
+                "title": "How can I track my EV charger order?",
+                "text": "Once your order ships, you will receive a tracking number by email. Use that number on our carrier’s site or in your account dashboard for real-time updates."
+            },
+            {
+                "value": "q2",
+                "title": "What is your return policy?",
+                "text": "We offer a 30-day no-questions-asked return on all accessories. Contact support, ship the item back in original condition, and get a full refund."
+            },
+            {
+                "value": "q3",
+                "title": "Do you offer international shipping?",
+                "text": "Yes! We ship to most countries. Shipping costs and delivery times vary—please see our Shipping & Delivery page for details."
+            },
+            {
+                "value": "q4",
+                "title": "How do I find the right adapter for my EV?",
+                "text": "Each product page includes a compatibility chart. You can also use our Fitment Calculator by entering your vehicle make, model, and year."
+            },
+            {
+                "value": "q5",
+                "title": "What payment methods do you accept?",
+                "text": "We accept all major credit cards, PayPal, and Apple Pay. For bulk or corporate orders, please contact sales@evstore.com."
+            }
+        ]
     }
 }
