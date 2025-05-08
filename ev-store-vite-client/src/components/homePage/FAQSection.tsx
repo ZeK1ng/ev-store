@@ -5,8 +5,6 @@ import {
 } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 
-
-
 interface FAQItem {
     value: string
     title: string
@@ -17,7 +15,6 @@ const FAQSection = () => {
     const { t } = useTranslation('home')
 
     const faqItems = t('faq.items', { returnObjects: true }) as FAQItem[]
-
 
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
