@@ -8,9 +8,10 @@ import lombok.Data;
 @Table(name = "images")
 public class ImageEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private String path;
+    @Column(name = "file_path")
+    private String filePath;
     private byte[] image; // either this or the path
 }
