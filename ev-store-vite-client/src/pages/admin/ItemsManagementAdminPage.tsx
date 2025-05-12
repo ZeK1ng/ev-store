@@ -11,24 +11,28 @@ import {
     Image,
     SimpleGrid,
     Field,
-    HStack
+    HStack,
+    FileUpload,
+    Float,
+    useFileUploadContext,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { useParams, useNavigate } from 'react-router-dom'
-import { LuMinus, LuPlus } from "react-icons/lu"
+import { LuPlus, LuMinus, LuFileImage, LuX } from 'react-icons/lu'
+import { HiUpload } from 'react-icons/hi'
 
 // Form values interface
 interface ItemFormValues {
     nameEn: string
+    nameGe: string
+    nameRu: string
     descriptionEn: string
+    descriptionGe: string
+    descriptionRu: string
     quantity: number
     price: number
     mainImageFile: FileList
     imagesFiles: FileList
-    nameGe: string
-    nameRu: string
-    descriptionGe: string
-    descriptionRu: string
 }
 
 // Item type extends form values with URLs
@@ -36,6 +40,26 @@ interface Item extends Omit<ItemFormValues, 'mainImageFile' | 'imagesFiles'> {
     id: string
     mainImage: string
     images: string[]
+}
+
+const FileUploadList: React.FC = () => {
+    const upload = useFileUploadContext()
+    const files = upload.acceptedFiles
+    if (files.length === 0) return null
+    return (
+        <FileUpload.ItemGroup mt={2} flexDirection="row">
+            {files.map(file => (
+                <FileUpload.Item key={file.name} file={file} boxSize="20" p="2">
+                    <FileUpload.ItemPreviewImage />
+                    <Float placement="top-end">
+                        <FileUpload.ItemDeleteTrigger boxSize="4" layerStyle="fill.solid">
+                            <LuX />
+                        </FileUpload.ItemDeleteTrigger>
+                    </Float>
+                </FileUpload.Item>
+            ))}
+        </FileUpload.ItemGroup>
+    )
 }
 
 const ItemsManagementAdminPage: React.FC = () => {
@@ -130,45 +154,32 @@ const ItemsManagementAdminPage: React.FC = () => {
     }, [id, isCreate, items, reset])
 
     const onSubmit = (data: ItemFormValues) => {
-        // Create object URLs for preview/demo
-        const mainImageUrl = URL.createObjectURL(data.mainImageFile[0])
+        const mainImage = URL.createObjectURL(data.mainImageFile[0])
         const images = Array.from(data.imagesFiles || []).map(f => URL.createObjectURL(f))
 
-        console.log('isCreate:', isCreate);
-
         if (isCreate) {
-            const newItem: Item = {
-                id: Date.now().toString(),
-                ...data,
-                mainImage: mainImageUrl,
-                images
-            }
+            const newItem: Item = { id: Date.now().toString(), ...data, mainImage, images }
             console.log('New Item:', newItem);
-            setItems(prev => [...prev, newItem])
+            // submit newItem
         } else if (existingItem) {
-            console.log('Updated Item:', { ...existingItem, ...data, mainImage: mainImageUrl, images });
-            setItems(prev => prev.map(it =>
-                it.id === existingItem.id
-                    ? { ...it, ...data, mainImage: mainImageUrl, images }
-                    : it
-            ))
+            // update existing item
         }
-        // navigate('/cms-admin/items')
+        navigate('/cms-admin/items')
     }
 
     if (!isCreate && id && existingItem === null) {
         return (
-          <Box p={16} maxW="800px" mx="auto" textAlign="center">
-            <Heading mb={4}>Item Not Found</Heading>
-            <Heading size="md" mb={6}>No item exists with ID "{id}".</Heading>
-            <Button colorScheme="green" asChild>
-            <a href="/cms-admin/items/create">
-                Create New Item
-            </a>
-            </Button>
-          </Box>
+            <Box p={16} maxW="800px" mx="auto" textAlign="center">
+                <Heading mb={4}>Item Not Found</Heading>
+                <Heading size="md" mb={6}>No item exists with ID "{id}".</Heading>
+                <Button colorScheme="green" asChild>
+                    <a href="/cms-admin/items/create">
+                        Create New Item
+                    </a>
+                </Button>
+            </Box>
         )
-      }
+    }
 
     return (
         <Box p={8} maxW="800px" mx="auto">
@@ -268,18 +279,18 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </NumberInput.Root>
                     </Field.Root>
 
-                    <Field.Root
-                        id="mainImageFile"
-                        invalid={!!errors.mainImageFile}
-                        required={isCreate}
-                    >
+                    {/* Main Image Upload */}
+                    <Field.Root id="mainImageFile">
                         <Field.Label>Main Image</Field.Label>
-                        <Input
-                            type="file"
-                            accept="image/*"
-                            {...register('mainImageFile', { required: isCreate && 'Main image is required' })}
-                        />
-                        {errors.mainImageFile && <Field.ErrorText>{errors.mainImageFile.message}</Field.ErrorText>}
+                        <FileUpload.Root accept="image/*" maxFiles={1}>
+                            <FileUpload.HiddenInput {...register('mainImageFile')}/>
+                            <FileUpload.Trigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <HiUpload /> Upload Main Image
+                                </Button>
+                            </FileUpload.Trigger>
+                            <FileUploadList />
+                        </FileUpload.Root>
                         {existingItem && !isCreate && (
                             <Box mt={2}>
                                 <Image src={existingItem.mainImage} w="200px" borderRadius="md" />
@@ -287,16 +298,25 @@ const ItemsManagementAdminPage: React.FC = () => {
                         )}
                     </Field.Root>
 
-                    <Field.Root id="imagesFiles" invalid={false}>
+                    {/* Additional Images Upload */}
+                    <Field.Root id="imagesFiles">
                         <Field.Label>Additional Images</Field.Label>
-                        <Input type="file" accept="image/*" multiple {...register('imagesFiles')} />
+                        <FileUpload.Root accept="image/*" maxFiles={15}>
+                            <FileUpload.HiddenInput />
+                            <FileUpload.Trigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <LuFileImage /> Upload Images
+                                </Button>
+                            </FileUpload.Trigger>
+                            <FileUploadList />
+                        </FileUpload.Root>
                         {existingItem && existingItem.images.length > 0 && (
                             <SimpleGrid columns={4} gap={2} mt={2}>
-                                {existingItem.images.map((src, i) => (
+                                {existingItem.images.map((src, idx) => (
                                     <Image
-                                        key={i}
+                                        key={idx}
                                         src={src}
-                                        alt={`Additional ${i + 1}`}
+                                        alt={`Image ${idx + 1}`}
                                         objectFit="cover"
                                         aspectRatio={1}
                                         borderRadius="md"
