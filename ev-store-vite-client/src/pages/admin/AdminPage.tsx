@@ -6,7 +6,10 @@ import {
     Button,
     Text,
     Card,
+    HStack,
 } from '@chakra-ui/react'
+import { FaSitemap, FaLayerGroup, FaChartBar } from "react-icons/fa";
+
 
 const AdminPage: React.FC = () => {
     return (
@@ -16,7 +19,11 @@ const AdminPage: React.FC = () => {
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
                 <Card.Root overflow="hidden">
                     <Card.Body>
-                        <Heading size="4xl" mb={2}> Items</Heading>
+                        <Heading size="4xl" mb={2}>
+                            <HStack gap={4}>
+                                <FaLayerGroup /> Items
+                            </HStack>
+                        </Heading>
                         <Text>Create and edit catalog items.</Text>
                     </Card.Body>
                     <Card.Footer >
@@ -35,7 +42,12 @@ const AdminPage: React.FC = () => {
                 {/* Manage Categories Card */}
                 <Card.Root overflow="hidden">
                     <Card.Body>
-                        <Heading size="4xl" mb={2}> Categories</Heading>
+                        <Heading size="4xl" mb={2}>
+                            <HStack gap={4}>
+                                <FaSitemap /> Categories
+                            </HStack>
+
+                        </Heading>
                         <Text>Create and edit item categories.</Text>
                     </Card.Body>
                     <Card.Footer>
@@ -44,6 +56,29 @@ const AdminPage: React.FC = () => {
                             colorScheme="blue"
                         >
                             <a href="/cms-admin/categories">Go to Categories</a>
+                        </Button>
+                    </Card.Footer>
+                </Card.Root>
+            </SimpleGrid>
+
+            <SimpleGrid mt={8}>
+                <Card.Root overflow="hidden">
+                    <Card.Body>
+                        <Heading size="4xl" mb={2}>
+                            <HStack gap={4}>
+                                <FaChartBar /> Analytics
+                            </HStack>
+
+                        </Heading>
+                        <Text>
+                            View analytics and reports, including sales and user activity. 
+                        </Text>
+                    </Card.Body>
+                    <Card.Footer>
+                        <Button
+                            loading
+                            loadingText="Coming soon..."
+                        >
                         </Button>
                     </Card.Footer>
                 </Card.Root>
