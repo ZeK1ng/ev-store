@@ -11,6 +11,8 @@ import {
     Card,
     Text,
     Separator,
+    Dialog,
+    CloseButton,
     createListCollection
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
@@ -33,6 +35,10 @@ const CategoriesAdminPage: React.FC = () => {
 
     const onSubmit = (data: CategoryFormValues) => {
         console.log('New category:', data)
+    }
+
+    const handleDelete = (id: string) => {
+        console.log('Delete category with ID:', id)
     }
 
     const existingCategories = createListCollection({
@@ -116,7 +122,7 @@ const CategoriesAdminPage: React.FC = () => {
                 </Stack>
             </Box>
 
-            <Separator  m={12} />
+            <Separator m={12} />
 
             <Heading size="lg" mb={4} textAlign="center">
                 Existing Categories
@@ -136,12 +142,41 @@ const CategoriesAdminPage: React.FC = () => {
                             <Text >{cat.description}</Text>
                         </Card.Body>
                         <Card.Footer justifyContent="flex-end">
+                            
                             <Button size="sm" variant="outline" mr={2}>
                                 Edit
                             </Button>
-                            <Button size="sm" colorPalette="red">
-                                Delete
-                            </Button>
+
+                            <Dialog.Root>
+                                <Dialog.Trigger asChild>
+                                    <Button size="sm" colorPalette="red">Delete</Button>
+                                </Dialog.Trigger>
+
+                                <Portal>
+                                    <Dialog.Backdrop />
+                                    <Dialog.Positioner>
+                                        <Dialog.Content>
+                                            <Dialog.Header>
+                                                <Dialog.Title>Confirm Deletion</Dialog.Title>
+                                            </Dialog.Header>
+                                            <Dialog.Body>
+                                                Are you sure you want to delete the "{cat.name}" category?
+                                            </Dialog.Body>
+                                            <Dialog.Footer>
+                                                <Dialog.ActionTrigger asChild>
+                                                    <Button variant="outline">Cancel</Button>
+                                                </Dialog.ActionTrigger>
+                                                <Button colorPalette="red" onClick={() => handleDelete(cat.id)}>
+                                                    Delete
+                                                </Button>
+                                            </Dialog.Footer>
+                                            <Dialog.CloseTrigger asChild>
+                                                <CloseButton size="sm" />
+                                            </Dialog.CloseTrigger>
+                                        </Dialog.Content>
+                                    </Dialog.Positioner>
+                                </Portal>
+                            </Dialog.Root>
                         </Card.Footer>
                     </Card.Root>
                 ))}
