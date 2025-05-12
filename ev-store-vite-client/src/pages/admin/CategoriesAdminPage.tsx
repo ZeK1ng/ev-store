@@ -13,10 +13,10 @@ import {
     Separator,
     Dialog,
     CloseButton,
-    createListCollection
+    createListCollection,
+    Field
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
-import { Field } from '@chakra-ui/react'
 
 interface CategoryFormValues {
     id: string,

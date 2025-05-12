@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import AdminPage from '@/pages/admin/AdminPage';
 import ItemsAdminPage from '@/pages/admin/ItemsAdminPage';
 import CategoriesAdminPage from '@/pages/admin/CategoriesAdminPage';
+import ItemsManagementAdminPage from '@/pages/admin/ItemsManagementAdminPage';
 
 import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/auth/LoginPage';
@@ -18,6 +19,9 @@ const AppRoutes = () => {
       <Route path="/cms-admin" element={<AdminPage />} />
       <Route path="/cms-admin/items" element={<ItemsAdminPage />} />
       <Route path="/cms-admin/categories" element={<CategoriesAdminPage />} />
+      <Route path="/cms-admin/items/create" element={<ItemsManagementAdminPage />} />
+      <Route path="/cms-admin/items/:id" element={<ItemsManagementAdminPage />} />
+
       
       {/* Public routes */}
       <Route path="/" element={<HomePage />} />

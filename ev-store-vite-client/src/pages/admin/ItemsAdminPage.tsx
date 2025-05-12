@@ -222,7 +222,7 @@ const ItemsAdminPage = () => {
                                     variant="outline"
                                     mr={2}
                                 >
-                                    <a href={`/cms-admin/items/edit/${item.id}`}>
+                                    <a href={`/cms-admin/items/${item.id}`}>
                                         <FaEdit />
                                         Edit
                                     </a>
