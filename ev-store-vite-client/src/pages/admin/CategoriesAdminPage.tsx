@@ -171,6 +171,11 @@ const CategoriesAdminPage: React.FC = () => {
                                                         <Field.Label>Description</Field.Label>
                                                         <Textarea defaultValue={cat.description} onChange={e => setValue('description', e.target.value)} />
                                                     </Field.Root>
+                                                    {cat.parentId && (
+                                                        <Text fontSize="sm" color="gray.500">
+                                                            Parent: {cat.parentId}
+                                                        </Text>
+                                                    )}
                                                 </Stack>
                                             </Dialog.Body>
                                             <Dialog.Footer>
