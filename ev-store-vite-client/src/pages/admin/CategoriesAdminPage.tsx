@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
     Box,
     Button,
@@ -41,13 +41,19 @@ const CategoriesAdminPage: React.FC = () => {
         console.log('Delete category with ID:', id)
     }
 
+    const handleEdit = (id: string, data: CategoryFormValues) => {
+        console.log('Edit category with ID:', id, 'New data:', data)
+    }
+
     const existingCategories = createListCollection({
         items: [
-            { id: '1', name: 'Electronics', description: 'Devices and gadgets', parentId: '' },
-            { id: '2', name: 'Accessories', description: 'Supporting items', parentId: '1' },
-            { id: '3', name: 'Apparel', description: 'Clothing and wearables', parentId: '' }
+            { id: '1', value: 'Electronics', description: 'Devices and gadgets', parentId: '' },
+            { id: '2', value: 'Accessories', description: 'Supporting items', parentId: '1' },
+            { id: '3', value: 'Apparel', description: 'Clothing and wearables', parentId: '' }
         ]
     })
+
+    const contentRef = useRef<HTMLDivElement>(null)
 
     return (
         <Box p={8} maxW="800px" mx="auto">
@@ -84,8 +90,7 @@ const CategoriesAdminPage: React.FC = () => {
                         <Select.Root
                             collection={existingCategories}
                             width="100%"
-                            positioning={{ sameWidth: true }}
-                            onValueChange={(e) => setValue('parentId', e.value[0])}
+                            onValueChange={e => setValue('parentId', e.items[0]?.id)}
                         >
                             <Select.HiddenSelect />
                             <Select.Control>
@@ -101,7 +106,7 @@ const CategoriesAdminPage: React.FC = () => {
                                     <Select.Content>
                                         {existingCategories.items.map((opt) => (
                                             <Select.Item item={opt} key={opt.id}>
-                                                {opt.name}
+                                                {opt.value}
                                                 <Select.ItemIndicator />
                                             </Select.Item>
                                         ))}
@@ -131,7 +136,7 @@ const CategoriesAdminPage: React.FC = () => {
                 {existingCategories.items.map((cat) => (
                     <Card.Root key={cat.id} overflow="hidden" size="sm">
                         <Card.Header>
-                            <Heading size="md">{cat.name}</Heading>
+                            <Heading size="md">{cat.value}</Heading>
                             {cat.parentId && (
                                 <Text fontSize="sm" color="gray.500">
                                     Parent: {cat.parentId}
@@ -142,10 +147,46 @@ const CategoriesAdminPage: React.FC = () => {
                             <Text >{cat.description}</Text>
                         </Card.Body>
                         <Card.Footer justifyContent="flex-end">
-                            
-                            <Button size="sm" variant="outline" mr={2}>
-                                Edit
-                            </Button>
+                            <Dialog.Root>
+                                <Dialog.Trigger asChild>
+                                    <Button size="sm" variant="outline" mr={2}>Edit</Button>
+                                </Dialog.Trigger>
+                                <Portal>
+                                    <Dialog.Backdrop />
+                                    <Dialog.Positioner>
+                                        <Dialog.Content ref={contentRef}>
+                                            <Dialog.Header>
+                                                <Dialog.Title>Edit Category</Dialog.Title>
+                                                <Dialog.CloseTrigger asChild>
+                                                    <CloseButton size="sm" />
+                                                </Dialog.CloseTrigger>
+                                            </Dialog.Header>
+                                            <Dialog.Body>
+                                                <Stack gap={4}>
+                                                    <Field.Root id="edit-name" invalid={false}>
+                                                        <Field.Label>Name</Field.Label>
+                                                        <Input defaultValue={cat.value} onChange={e => setValue('name', e.target.value)} />
+                                                    </Field.Root>
+                                                    <Field.Root id="edit-description" invalid={false}>
+                                                        <Field.Label>Description</Field.Label>
+                                                        <Textarea defaultValue={cat.description} onChange={e => setValue('description', e.target.value)} />
+                                                    </Field.Root>
+                                                </Stack>
+                                            </Dialog.Body>
+                                            <Dialog.Footer>
+                                                <Dialog.ActionTrigger asChild>
+                                                    <Button variant="outline">Cancel</Button>
+                                                </Dialog.ActionTrigger>
+                                                <Button onClick={() => handleEdit(cat.id, {
+                                                    id: cat.id,
+                                                    name: (document.getElementById('edit-name') as HTMLInputElement).value,
+                                                    description: (document.getElementById('edit-description') as HTMLTextAreaElement).value,
+                                                })}>Save</Button>
+                                            </Dialog.Footer>
+                                        </Dialog.Content>
+                                    </Dialog.Positioner>
+                                </Portal>
+                            </Dialog.Root>
 
                             <Dialog.Root>
                                 <Dialog.Trigger asChild>
@@ -160,7 +201,7 @@ const CategoriesAdminPage: React.FC = () => {
                                                 <Dialog.Title>Confirm Deletion</Dialog.Title>
                                             </Dialog.Header>
                                             <Dialog.Body>
-                                                Are you sure you want to delete the "{cat.name}" category?
+                                                Are you sure you want to delete the "{cat.value}" category?
                                             </Dialog.Body>
                                             <Dialog.Footer>
                                                 <Dialog.ActionTrigger asChild>
