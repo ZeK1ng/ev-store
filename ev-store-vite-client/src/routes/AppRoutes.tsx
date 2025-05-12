@@ -19,7 +19,6 @@ const AppRoutes = () => {
       <Route path="/cms-admin" element={<AdminPage />} />
       <Route path="/cms-admin/items" element={<ItemsAdminPage />} />
       <Route path="/cms-admin/categories" element={<CategoriesAdminPage />} />
-      <Route path="/cms-admin/items/create" element={<ItemsManagementAdminPage />} />
       <Route path="/cms-admin/items/:id" element={<ItemsManagementAdminPage />} />
 
       

@@ -43,7 +43,64 @@ const ItemsManagementAdminPage: React.FC = () => {
     const navigate = useNavigate()
     const isCreate = id === 'create'
 
-    const [items, setItems] = useState<Item[]>([])
+    const [items, setItems] = useState<Item[]>([
+        {
+            id: '1',
+            nameEn: 'Fast Charger',
+            descriptionEn: 'High-speed EV charger for home use.',
+            quantity: 10,
+            price: 299,
+            mainImage: 'https://placehold.co/300x200',
+            images: [
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+            ],
+            nameGe: 'სწრაფი დამტენი',
+            nameRu: 'Быстрое зарядное устройство',
+            descriptionGe: 'საუკეთესო სწრაფი დამტენი სახლში გამოსაყენებლად.',
+            descriptionRu: 'Высокоскоростное зарядное устройство для дома.'
+        },
+        {
+            id: '2',
+            nameEn: 'OBD-II Scanner',
+            descriptionEn: 'Diagnostic tool for EV maintenance.',
+            quantity: 5,
+            price: 149,
+            mainImage: 'https://placehold.co/300x200',
+            images: [
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+            ],
+            nameGe: 'OBD-II სკანერი',
+            nameRu: 'OBD-II сканер',
+            descriptionGe: 'დიაგნოსტიკური ხელსაწყო EV-ის მომსახურებისთვის.',
+            descriptionRu: 'Диагностический инструмент для обслуживания электромобилей.'
+        },
+        {
+            id: '3',
+            nameEn: 'Portable Charger',
+            descriptionEn: 'Compact charger for on-the-go charging.',
+            quantity: 20,
+            price: 99,
+            mainImage: 'https://placehold.co/300x200',
+            images: [
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200',
+                'https://placehold.co/300x200'
+            ],
+            nameGe: 'პორტატული დამტენი',
+            nameRu: 'Портативное зарядное устройство',
+            descriptionGe: 'კომპაქტური დამტენი გზაზე დატენვისთვის.',
+            descriptionRu: 'Компактное зарядное устройство для зарядки в пути.'
+        }
+    ])
+
     const [existingItem, setExistingItem] = useState<Item | null>(null)
 
     const {
@@ -73,27 +130,29 @@ const ItemsManagementAdminPage: React.FC = () => {
     }, [id, isCreate, items, reset])
 
     const onSubmit = (data: ItemFormValues) => {
-        console.log('Form Data:', data);
+        // Create object URLs for preview/demo
+        const mainImageUrl = URL.createObjectURL(data.mainImageFile[0])
+        const images = Array.from(data.imagesFiles || []).map(f => URL.createObjectURL(f))
 
-        // // Create object URLs for preview/demo
-        // const mainImageUrl = URL.createObjectURL(data.mainImageFile[0])
-        // const images = Array.from(data.imagesFiles || []).map(f => URL.createObjectURL(f))
+        console.log('isCreate:', isCreate);
 
-        // if (isCreate) {
-        //     const newItem: Item = {
-        //         id: Date.now().toString(),
-        //         ...data,
-        //         mainImage: mainImageUrl,
-        //         images
-        //     }
-        //     setItems(prev => [...prev, newItem])
-        // } else if (existingItem) {
-        //     setItems(prev => prev.map(it =>
-        //         it.id === existingItem.id
-        //             ? { ...it, ...data, mainImage: mainImageUrl, images }
-        //             : it
-        //     ))
-        // }
+        if (isCreate) {
+            const newItem: Item = {
+                id: Date.now().toString(),
+                ...data,
+                mainImage: mainImageUrl,
+                images
+            }
+            console.log('New Item:', newItem);
+            setItems(prev => [...prev, newItem])
+        } else if (existingItem) {
+            console.log('Updated Item:', { ...existingItem, ...data, mainImage: mainImageUrl, images });
+            setItems(prev => prev.map(it =>
+                it.id === existingItem.id
+                    ? { ...it, ...data, mainImage: mainImageUrl, images }
+                    : it
+            ))
+        }
         // navigate('/cms-admin/items')
     }
 
@@ -195,7 +254,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </NumberInput.Root>
                     </Field.Root>
 
-                    {/* <Field.Root
+                    <Field.Root
                         id="mainImageFile"
                         invalid={!!errors.mainImageFile}
                         required={isCreate}
@@ -218,7 +277,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Label>Additional Images</Field.Label>
                         <Input type="file" accept="image/*" multiple {...register('imagesFiles')} />
                         {existingItem && existingItem.images.length > 0 && (
-                            <SimpleGrid columns={3} gap={2} mt={2}>
+                            <SimpleGrid columns={4} gap={2} mt={2}>
                                 {existingItem.images.map((src, i) => (
                                     <Image
                                         key={i}
@@ -231,7 +290,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                                 ))}
                             </SimpleGrid>
                         )}
-                    </Field.Root> */}
+                    </Field.Root>
 
                     <Button type="submit" colorScheme="blue" size="lg" loading={isSubmitting}>
                         {isCreate ? 'Create Item' : 'Save Changes'}
