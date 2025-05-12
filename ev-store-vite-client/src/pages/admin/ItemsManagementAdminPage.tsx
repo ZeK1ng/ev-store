@@ -172,7 +172,7 @@ const ItemsManagementAdminPage: React.FC = () => {
             <Box p={16} maxW="800px" mx="auto" textAlign="center">
                 <Heading mb={4}>Item Not Found</Heading>
                 <Heading size="md" mb={6}>No item exists with ID "{id}".</Heading>
-                <Button colorScheme="green" asChild>
+                <Button colorScheme="green">
                     <a href="/cms-admin/items/create">
                         Create New Item
                     </a>

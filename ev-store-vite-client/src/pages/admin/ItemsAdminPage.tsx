@@ -16,7 +16,7 @@ import {
     Text,
     SimpleGrid
 } from '@chakra-ui/react'
-import { FaPlus, FaEye, FaEdit } from "react-icons/fa";
+import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt } from "react-icons/fa";
 
 
 // Define your item type
@@ -101,10 +101,13 @@ const ItemsAdminPage = () => {
         <Box p={8} maxW="800px" mx="auto">
             {/* Header with Create Button */}
             <Flex justify="space-between" align="center" mb={6}>
-                <Heading size="xl">Items</Heading>
+                <Heading >
+                    <HStack>
+                        <FaLayerGroup />Items
+                    </HStack>
+                </Heading>
                 <Button
                     asChild
-                    colorScheme="green"
                 >
 
                     <a href="/cms-admin/items/create">
@@ -217,10 +220,10 @@ const ItemsAdminPage = () => {
 
                                 {/* Edit button */}
                                 <Button
-                                    asChild
                                     size="sm"
                                     variant="outline"
                                     mr={2}
+                                    asChild
                                 >
                                     <a href={`/cms-admin/items/${item.id}`}>
                                         <FaEdit />
@@ -232,7 +235,7 @@ const ItemsAdminPage = () => {
                                 <Dialog.Root>
                                     <Dialog.Trigger asChild>
                                         <Button size="sm" colorPalette="red">
-                                            Delete
+                                            <FaTrashAlt /> Delete
                                         </Button>
                                     </Dialog.Trigger>
                                     <Portal>
@@ -249,7 +252,7 @@ const ItemsAdminPage = () => {
                                                     Are you sure you want to delete “{item.nameEn}”?
                                                 </Dialog.Body>
                                                 <Dialog.Footer>
-                                                    <Dialog.ActionTrigger asChild>
+                                                    <Dialog.ActionTrigger>
                                                         <Button variant="outline">Cancel</Button>
                                                     </Dialog.ActionTrigger>
                                                     <Button

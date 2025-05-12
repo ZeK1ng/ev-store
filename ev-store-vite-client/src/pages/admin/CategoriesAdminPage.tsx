@@ -14,9 +14,12 @@ import {
     Dialog,
     CloseButton,
     createListCollection,
-    Field
+    Field,
+    HStack
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
+import { FaSitemap, FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
+
 
 interface CategoryFormValues {
     id: string,
@@ -58,7 +61,9 @@ const CategoriesAdminPage: React.FC = () => {
     return (
         <Box p={8} maxW="800px" mx="auto">
             <Heading mb={6} textAlign="center">
-                Create New Category
+                <HStack>
+                    <FaSitemap />Create New Category
+                </HStack>
             </Heading>
 
             <Box as="form" onSubmit={handleSubmit(onSubmit)}>
@@ -122,7 +127,7 @@ const CategoriesAdminPage: React.FC = () => {
                         size="lg"
                         loading={isSubmitting}
                     >
-                        Create Category
+                        Create Category <FaPlus />
                     </Button>
                 </Stack>
             </Box>
@@ -149,7 +154,7 @@ const CategoriesAdminPage: React.FC = () => {
                         <Card.Footer justifyContent="flex-end">
                             <Dialog.Root>
                                 <Dialog.Trigger asChild>
-                                    <Button size="sm" variant="outline" mr={2}>Edit</Button>
+                                    <Button size="sm" variant="outline" mr={2}> <FaEdit /> Edit</Button>
                                 </Dialog.Trigger>
                                 <Portal>
                                     <Dialog.Backdrop />
@@ -195,7 +200,7 @@ const CategoriesAdminPage: React.FC = () => {
 
                             <Dialog.Root>
                                 <Dialog.Trigger asChild>
-                                    <Button size="sm" colorPalette="red">Delete</Button>
+                                    <Button size="sm" colorPalette="red"> <FaTrashAlt /> Delete</Button>
                                 </Dialog.Trigger>
 
                                 <Portal>
