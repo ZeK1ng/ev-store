@@ -18,7 +18,7 @@ import {
     HStack
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
-import { FaSitemap, FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaSitemap, FaPlus, FaEdit, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 
 
 interface CategoryFormValues {
@@ -60,7 +60,13 @@ const CategoriesAdminPage: React.FC = () => {
 
     return (
         <Box p={8} maxW="800px" mx="auto">
-            <Heading mb={6} textAlign="center">
+            <Button size="xs" asChild variant='outline'>
+                <a href="/cms-admin">
+                    <FaArrowLeft />
+                    Back to Admin Dashboard
+                </a>
+            </Button>
+            <Heading mt={6} mb={6} textAlign="center">
                 <HStack>
                     <FaSitemap />Create New Category
                 </HStack>
@@ -154,7 +160,12 @@ const CategoriesAdminPage: React.FC = () => {
                         <Card.Footer justifyContent="flex-end">
                             <Dialog.Root>
                                 <Dialog.Trigger asChild>
-                                    <Button size="sm" variant="outline" mr={2}> <FaEdit /> Edit</Button>
+                                    <Button size="sm" variant="outline" mr={2}>
+                                        <FaEdit />
+                                        <Box display={{ base: 'none', md: 'inline' }}>
+                                            Edit
+                                        </Box>
+                                    </Button>
                                 </Dialog.Trigger>
                                 <Portal>
                                     <Dialog.Backdrop />
@@ -200,7 +211,12 @@ const CategoriesAdminPage: React.FC = () => {
 
                             <Dialog.Root>
                                 <Dialog.Trigger asChild>
-                                    <Button size="sm" colorPalette="red"> <FaTrashAlt /> Delete</Button>
+                                    <Button size="sm" colorPalette="red">
+                                        <FaTrashAlt />
+                                        <Box display={{ base: 'none', md: 'inline' }}>
+                                            Delete
+                                        </Box>
+                                    </Button>
                                 </Dialog.Trigger>
 
                                 <Portal>

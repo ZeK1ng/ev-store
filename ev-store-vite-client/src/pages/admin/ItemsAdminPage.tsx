@@ -16,7 +16,7 @@ import {
     Text,
     SimpleGrid
 } from '@chakra-ui/react'
-import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt } from "react-icons/fa";
+import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 
 
 // Define your item type
@@ -99,8 +99,14 @@ const ItemsAdminPage = () => {
 
     return (
         <Box p={8} maxW="800px" mx="auto">
+            <Button size="xs" asChild variant='outline'>
+                <a href="/cms-admin">
+                    <FaArrowLeft />
+                    Back to Admin Dashboard
+                </a>
+            </Button>
             {/* Header with Create Button */}
-            <Flex justify="space-between" align="center" mb={6}>
+            <Flex justify="space-between" align="center" mt={6} mb={6}>
                 <Heading >
                     <HStack>
                         <FaLayerGroup />Items

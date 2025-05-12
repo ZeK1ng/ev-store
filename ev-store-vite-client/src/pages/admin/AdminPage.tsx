@@ -19,7 +19,7 @@ const AdminPage: React.FC = () => {
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
                 <Card.Root overflow="hidden">
                     <Card.Body>
-                        <Heading size="4xl" mb={2}>
+                        <Heading size="3xl" mb={2}>
                             <HStack gap={4}>
                                 <FaLayerGroup /> Items
                             </HStack>
@@ -42,7 +42,7 @@ const AdminPage: React.FC = () => {
                 {/* Manage Categories Card */}
                 <Card.Root overflow="hidden">
                     <Card.Body>
-                        <Heading size="4xl" mb={2}>
+                        <Heading size="3xl" mb={2}>
                             <HStack gap={4}>
                                 <FaSitemap /> Categories
                             </HStack>
@@ -64,7 +64,7 @@ const AdminPage: React.FC = () => {
             <SimpleGrid mt={8}>
                 <Card.Root overflow="hidden">
                     <Card.Body>
-                        <Heading size="4xl" mb={2}>
+                        <Heading size="3xl" mb={2}>
                             <HStack gap={4}>
                                 <FaChartBar /> Analytics
                             </HStack>
