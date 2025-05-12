@@ -156,6 +156,20 @@ const ItemsManagementAdminPage: React.FC = () => {
         // navigate('/cms-admin/items')
     }
 
+    if (!isCreate && id && existingItem === null) {
+        return (
+          <Box p={16} maxW="800px" mx="auto" textAlign="center">
+            <Heading mb={4}>Item Not Found</Heading>
+            <Heading size="md" mb={6}>No item exists with ID "{id}".</Heading>
+            <Button colorScheme="green" asChild>
+            <a href="/cms-admin/items/create">
+                Create New Item
+            </a>
+            </Button>
+          </Box>
+        )
+      }
+
     return (
         <Box p={8} maxW="800px" mx="auto">
             <Heading mb={6} textAlign="center">
