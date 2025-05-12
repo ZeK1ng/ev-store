@@ -118,10 +118,11 @@ const ItemsAdminPage = () => {
 
             <Stack gap={5}>
                 {items.map(item => (
-                    <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection="row">
+                    <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
                         <Image
                             objectFit="cover"
-                            maxW="200px"
+                            maxW={{ base: '100%', md: '200px' }}
+                            maxH={{ base: '150px', md: '100%' }}
                             src={item.mainImage}
                             alt={item.nameEn}
                         />
@@ -142,7 +143,10 @@ const ItemsAdminPage = () => {
                                 <Dialog.Root scrollBehavior="inside" size="lg">
                                     <Dialog.Trigger asChild>
                                         <Button size="sm" variant="outline" mr={2}>
-                                            <FaEye /> View
+                                            <FaEye />
+                                            <Box display={{ base: 'none', md: 'inline' }}>
+                                                View
+                                            </Box>
                                         </Button>
                                     </Dialog.Trigger>
                                     <Portal>
@@ -227,7 +231,9 @@ const ItemsAdminPage = () => {
                                 >
                                     <a href={`/cms-admin/items/${item.id}`}>
                                         <FaEdit />
-                                        Edit
+                                        <Box display={{ base: 'none', md: 'inline' }}>
+                                            Edit
+                                        </Box>
                                     </a>
                                 </Button>
 
@@ -235,7 +241,10 @@ const ItemsAdminPage = () => {
                                 <Dialog.Root>
                                     <Dialog.Trigger asChild>
                                         <Button size="sm" colorPalette="red">
-                                            <FaTrashAlt /> Delete
+                                            <FaTrashAlt />
+                                            <Box display={{ base: 'none', md: 'inline' }}>
+                                                Delete
+                                            </Box>
                                         </Button>
                                     </Dialog.Trigger>
                                     <Portal>
