@@ -71,14 +71,14 @@ const PopularProductsSlider = () => {
                 }}
                 scrollBehavior="smooth"
             >
-                {dummyProducts.map((product) => (
+                {dummyProducts.map((product, index) => (
 
                     <Box
                         key={product.id}
                         flex={{ base: '0 0 300px', md: '0 0 27%' }}
                         scrollSnapAlign="start"
                     >
-                        <Card.Root overflow="hidden">
+                        <Card.Root overflow="hidden" key={index}>
                             <Image
                                 src={product.imageUrl}
                                 alt={product.title}
