@@ -44,9 +44,9 @@ const HeroSection = () => {
                 >
                     <AvatarGroup size="lg" stacking="last-on-top">
                         {[{ name: 'User1', src: "https://placehold.co/60x60" },
-                        { name: 'User1', src: "https://placehold.co/60x60" },
-                        { name: 'User1', src: "https://placehold.co/60x60" },
-                        { name: 'User1', src: "https://placehold.co/60x60" },
+                        { name: 'User2', src: "https://placehold.co/60x60" },
+                        { name: 'User3', src: "https://placehold.co/60x60" },
+                        { name: 'User4', src: "https://placehold.co/60x60" },
                         ].map((item) => (
                             <Avatar.Root key={item.name}>
                                 <Avatar.Fallback name={item.name} />
