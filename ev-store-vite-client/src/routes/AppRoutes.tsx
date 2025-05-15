@@ -10,6 +10,7 @@ import LoginPage from '@/pages/auth/LoginPage';
 import SignupPage from '@/pages/auth/SignUp';
 import ForgotPassword from '@/pages/auth/ForgotPassword';
 import AboutUs from '@/pages/AboutUs';
+import CatalogPage from '@/pages/CatalogPage';
 import PageNotFound from '@/pages/PageNotFound';
 
 const AppRoutes = () => {
@@ -24,6 +25,7 @@ const AppRoutes = () => {
       
       {/* Public routes */}
       <Route path="/" element={<HomePage />} />
+      <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/about-us" element={<AboutUs /> }/>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />

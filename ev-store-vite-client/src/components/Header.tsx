@@ -37,6 +37,7 @@ const Header: React.FC = () => {
                 <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
                     <RouterLink to="/cms-admin">Admin</RouterLink>
                     <RouterLink to="/">Home</RouterLink>
+                    <RouterLink to="/catalog">Catalog</RouterLink>
                     <RouterLink to="/about-us">About Us</RouterLink>
                     <RouterLink to="/contact">Contact</RouterLink>
 
