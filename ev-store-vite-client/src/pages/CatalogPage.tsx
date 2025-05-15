@@ -5,12 +5,26 @@ import {
     Accordion,
     Checkbox
 } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+
+interface Item {
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+    subcategory: string;
+    price: number;
+    image: string;
+}
 
 const CatalogPage = () => {
-    const products = [
+    const { t } = useTranslation('home')
+
+    const products: Item[] = [
         {
             id: 1,
             name: "Fast Charging Adapter",
+            description: "A high-speed adapter for fast charging.",
             category: "EV Accessories",
             subcategory: "Adapters",
             price: 49.99,
@@ -19,6 +33,7 @@ const CatalogPage = () => {
         {
             id: 2,
             name: "Heavy-Duty Charging Cable",
+            description: "A durable cable for heavy-duty charging.",
             category: "EV Accessories",
             subcategory: "Cables",
             price: 79.99,
@@ -27,6 +42,7 @@ const CatalogPage = () => {
         {
             id: 3,
             name: "Home Charging Station",
+            description: "A convenient home charging station for your EV.",
             category: "EV Chargers",
             subcategory: "Home Chargers",
             price: 299.99,
@@ -35,15 +51,36 @@ const CatalogPage = () => {
         {
             id: 4,
             name: "Portable EV Charger",
+            description: "A portable charger for on-the-go charging.",
             category: "EV Chargers",
             subcategory: "Portable Chargers",
             price: 199.99,
             image: "https://placehold.co/300?text=Portable+Charger"
+        },
+        {
+            id: 5,
+            name: "Smart EV Charger",
+            description: "A smart charger with app connectivity.",
+            category: "EV Chargers",
+            subcategory: "Home Chargers",
+            price: 349.99,
+            image: "https://placehold.co/300?text=Smart+Charger"
+        },
+        {
+            id: 6,
+            name: "Universal EV Adapter",
+            description: "An adapter compatible with all EV models.",
+            category: "EV Accessories",
+            subcategory: "Adapters",
+            price: 29.99,
+            image: "https://placehold.co/300?text=Universal+Adapter"
         }
     ];
 
-    const categories = ["EV Accessories", "EV Chargers"];
-    const subcategories = ["Adapters", "Cables", "Home Chargers", "Portable Chargers"];
+    const categories = {
+        "EV Accessories": ["Adapters", "Cables"],
+        "EV Chargers": ["Home Chargers", "Portable Chargers"]
+    };
 
     return (
         <Box p={{ base: 4, md: 8 }}>
@@ -84,7 +121,7 @@ const CatalogPage = () => {
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
                             <Accordion.ItemBody as={Stack} px="4" py="3">
-                                {categories.map(cat => (
+                                {Object.keys(categories).map(cat => (
                                     <Checkbox.Root key={cat} value={cat}>
                                         <Checkbox.HiddenInput />
                                         <Checkbox.Control />
@@ -102,12 +139,14 @@ const CatalogPage = () => {
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
                             <Accordion.ItemBody as={Stack} px="4" py="3">
-                                {subcategories.map(sub => (
-                                    <Checkbox.Root key={sub} value={sub}>
-                                        <Checkbox.HiddenInput />
-                                        <Checkbox.Control />
-                                        <Checkbox.Label>{sub}</Checkbox.Label>
-                                    </Checkbox.Root>
+                                {Object.values(categories).map((cat) => (
+                                    cat.map((sub, index) => (
+                                        <Checkbox.Root key={index} value={sub}>
+                                            <Checkbox.HiddenInput />
+                                            <Checkbox.Control />
+                                            <Checkbox.Label>{sub}</Checkbox.Label>
+                                        </Checkbox.Root>
+                                    ))
                                 ))}
                             </Accordion.ItemBody>
                         </Accordion.ItemContent>
@@ -133,29 +172,29 @@ const CatalogPage = () => {
                     </Accordion.Item>
                 </Accordion.Root>
 
-                {/* Products Grid */}
                 <Box flex="1">
-                    <SimpleGrid columns={{ base: 1, sm: 2, xl: 4 }} gap="6">
-                        {products.map(product => (
-                            <Card.Root key={product.id} variant="elevated" overflow="hidden">
+                    <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
+                        {products.map((product) => (
+                            <Card.Root overflow="hidden" key={product.id}>
                                 <Image
                                     src={product.image}
                                     alt={product.name}
+                                    w="full"
+                                    h="200px"
                                     objectFit="cover"
-                                    w="100%"
-                                    h="180px"
                                 />
-                                <Card.Body p="4">
-                                    <Card.Title fontSize="lg">{product.name}</Card.Title>
-                                    <Card.Description mb="1">
-                                        {product.category} — {product.subcategory}
-                                    </Card.Description>
-                                    <Text fontWeight="bold" color="fg.emphasized">
-                                        ${product.price}
+
+                                <Card.Body gap="2">
+                                    <Card.Title>{product.name}</Card.Title>
+                                    <Card.Description>{product.description}</Card.Description>
+                                    <Text textStyle="2xl" fontWeight="medium">
+                                        {product.price}
                                     </Text>
                                 </Card.Body>
-                                <Card.Footer p="4" pt="2" borderTopWidth="1px" justifyContent="flex-end">
-                                    <Button size="sm" variant="outline">Learn more</Button>
+
+                                <Card.Footer gap="2">
+                                    <Button variant="solid">{t('popularProducts.buyNowLabel')}</Button>
+                                    <Button variant="ghost">{t('popularProducts.learnMoreLabel')}</Button>
                                 </Card.Footer>
                             </Card.Root>
                         ))}
