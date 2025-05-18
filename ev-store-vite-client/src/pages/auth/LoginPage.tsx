@@ -1,6 +1,5 @@
 // src/pages/LoginPage.tsx
 
-import React from 'react';
 import {
     Box,
     Button,
@@ -18,13 +17,15 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
 import { BsImage } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next'
 
 interface LoginFormValues {
     email: string;
     password: string;
 }
 
-const LoginPage: React.FC = () => {
+const LoginPage = () => {
+    const { t } = useTranslation('auth');
     const {
         register,
         handleSubmit,
@@ -55,38 +56,44 @@ const LoginPage: React.FC = () => {
 
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
-                                Welcome back
+                                {t('login.title')}
                             </Heading>
                             <Text >
-                                Sign in to your account
+                                {t('login.description')}
                             </Text>
                         </Stack>
 
                         <Box as="form" onSubmit={onSubmit} width="full">
                             <Stack gap={5}>
                                 <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">Email</Field.Label>
+                                    <Field.Label fontWeight="medium" fontSize="sm">
+                                        {t('login.email')}
+                                    </Field.Label>
                                     <Input
                                         size="lg"
                                         type="email"
-                                        placeholder="you@example.com"
-                                        {...register("email", { required: "Email is required" })}
+                                        placeholder={t('login.emailPlaceholder')}
+                                        {...register("email", { required: t('login.emailRequired')})}
                                     />
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
                                 </Field.Root>
 
                                 <Field.Root id="password" invalid={!!errors.password}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">Password</Field.Label>
+                                    <Field.Label fontWeight="medium" fontSize="sm">
+                                        {t('login.password')}
+                                    </Field.Label>
                                     <PasswordInput
                                         size="lg"
-                                        {...register("password", { required: "Password is required" })}
+                                        {...register("password", { required: t('login.passwordRequired') })}
                                     />
                                     {errors.password && <Field.ErrorText>{errors.password.message}</Field.ErrorText>}
                                 </Field.Root>
 
                                 <HStack justify="flex-end" mt={-2} mb={3}>
                                     <Link to="/forgot-password">
-                                        Forgot password?
+                                        <Text fontSize="sm" color="blue.500">
+                                            {t('login.forgotPassword')}
+                                        </Text>
                                     </Link>
                                 </HStack>
 
@@ -96,16 +103,19 @@ const LoginPage: React.FC = () => {
                                     width="full"
                                     size="lg"
                                 >
-                                    Sign in
+                                    {t('login.submit')}
                                 </Button>
                             </Stack>
                         </Box>
 
                         <Box textAlign="center" mt={0}>
                             <Text fontSize="sm" >
-                                Don't have an account yet?{' '}
+                                {t('login.noAccount')}
+                                {' '}
                                 <Link to="/signup">
-                                    Sign up
+                                    <Text as="span">
+                                        {t('login.signUp')}
+                                    </Text>
                                 </Link>
                             </Text>
                         </Box>

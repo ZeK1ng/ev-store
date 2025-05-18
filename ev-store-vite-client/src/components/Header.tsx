@@ -20,7 +20,7 @@ const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode()
 
     return (
-        <Box position="sticky" top={0} zIndex="banner" bg="white">
+        <Box position="sticky" top={0} zIndex="banner">
             <Flex
                 as="header"
                 align="center"
@@ -37,6 +37,7 @@ const Header: React.FC = () => {
                 <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
                     <RouterLink to="/cms-admin">Admin</RouterLink>
                     <RouterLink to="/">Home</RouterLink>
+                    <RouterLink to="/catalog">Catalog</RouterLink>
                     <RouterLink to="/about-us">About Us</RouterLink>
                     <RouterLink to="/contact">Contact</RouterLink>
 
@@ -74,7 +75,6 @@ const Header: React.FC = () => {
                     top="100%"
                     left={0}
                     width="100%"
-                    bg="white"
                     shadow="md"
                     zIndex="dropdown"
                 >

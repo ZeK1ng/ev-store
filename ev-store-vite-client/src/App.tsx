@@ -11,7 +11,7 @@ const AppContent = () => {
   return (
     <>
       <Header />
-      <Box as="main">
+      <Box as="main" w="100%" maxW='1296px' justifySelf="center">
         <AppRoutes />
       </Box>
       {!hideFooter && <Footer />}

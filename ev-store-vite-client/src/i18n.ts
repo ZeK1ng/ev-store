@@ -1,5 +1,6 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
+// import LanguageDetector from 'i18next-browser-languagedetector';
 
 import kaAbout from '../public/locales/ka/about.json'
 import enAbout from '../public/locales/en/about.json'
@@ -13,16 +14,27 @@ import kaCommon from '../public/locales/ka/common.json'
 import enCommon from '../public/locales/en/common.json'
 import ruCommon from '../public/locales/ru/common.json'
 
+import kaAuth from '../public/locales/ka/auth.json'
+import enAuth from '../public/locales/en/auth.json'
+import ruAuth from '../public/locales/ru/auth.json'
+
+const stored = localStorage.getItem('ev-i18nextLng') || 'ka';
+
 i18n
+  // .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      ka: { common: kaCommon, about: kaAbout, home: kaHome },
-      en: { common: enCommon, about: enAbout, home: enHome },
-      ru: { common: ruCommon, about: ruAbout, home: ruHome },
+      ka: { common: kaCommon, about: kaAbout, home: kaHome, auth: kaAuth },
+      en: { common: enCommon, about: enAbout, home: enHome, auth: enAuth },
+      ru: { common: ruCommon, about: ruAbout, home: ruHome, auth: ruAuth },
     },
     fallbackLng: 'ka',
-    lng: 'ka',
+    lng: stored,
+    // detection: {
+    //   order: ['localStorage', 'navigator'], 
+    //   caches: ['localStorage'],
+    // },
     ns: ['common', 'about', 'home', 'contact'],
     defaultNS: 'common',
     interpolation: { escapeValue: false },

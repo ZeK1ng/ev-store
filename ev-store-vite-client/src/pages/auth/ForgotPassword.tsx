@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import {
     Box,
     Button,
@@ -11,30 +11,81 @@ import {
     Text,
     Icon,
     Field,
+    PinInput,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { BsImage } from 'react-icons/bs'; // Placeholder logo icon
+import { BsImage } from 'react-icons/bs';
+import { useTranslation } from 'react-i18next'
 
 interface ForgotPasswordFormValues {
     email: string;
 }
 
-const ForgotPasswordPage: React.FC = () => {
+const ForgotPasswordPage = () => {
+    const { t } = useTranslation('auth');
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<ForgotPasswordFormValues>({
-        defaultValues: {
-            email: "",
-        }
+        defaultValues: { email: "" }
     });
+
+    const [step, setStep] = useState<'form' | 'pin'>('form');
+    const [verificationPin, setVerificationPin] = useState('');
 
     const onSubmit: SubmitHandler<ForgotPasswordFormValues> = (data) => {
         console.log('Forgot password request:', data);
-        // Add logic to send password reset link here
+        // TODO: send reset link & trigger PIN step
+        setStep('pin');
     };
+
+    const onVerify = () => {
+        console.log('Entered PIN for reset:', verificationPin);
+        // TODO: verify PIN and redirect to reset-password form
+    };
+
+    if (step === 'pin') {
+        return (
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                minH="100vh"
+                px={{ base: 6, sm: 8, md: 12, lg: 16 }}
+            >
+                <Container maxW="md" textAlign="center">
+                    <Heading mb={4}>
+                        {t('forgotPassword.verifyPin.title')}
+                    </Heading>
+                    <Text mb={6}>
+                        {t('forgotPassword.verifyPin.description')}
+                    </Text>
+
+                    <PinInput.Root mb={4} size="lg"
+                        otp onValueComplete={(details) => setVerificationPin(details.valueAsString)}>
+                        <PinInput.HiddenInput />
+                        <PinInput.Control>
+                            <PinInput.Input index={0} />
+                            <PinInput.Input index={1} />
+                            <PinInput.Input index={2} />
+                            <PinInput.Input index={3} />
+                        </PinInput.Control>
+                    </PinInput.Root>
+
+                    <Button
+                        colorScheme="blue"
+                        disabled={verificationPin.length < 4}
+                        onClick={onVerify}
+                    >
+                        {t('forgotPassword.verifyPin.verifyButton')}
+                    </Button>
+                </Container>
+            </Box>
+        );
+    }
 
     return (
         <SimpleGrid columns={{ base: 1 }} minH="100vh">
@@ -47,7 +98,7 @@ const ForgotPasswordPage: React.FC = () => {
             >
                 <Container maxW="md" width="full">
                     <Stack gap={8}>
-                        <HStack gap={3} align="center" justify="flex-start">
+                        <HStack gap={3} align="center">
                             <Icon as={BsImage} boxSize={8} />
                             <Heading as="h2" size="md" fontWeight="semibold">
                                 Logo
@@ -56,10 +107,10 @@ const ForgotPasswordPage: React.FC = () => {
 
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
-                                Forgot your password?
+                                {t('forgotPassword.title')}
                             </Heading>
                             <Text>
-                                No worries, enter your email below to receive reset instructions.
+                                {t('forgotPassword.description')}
                             </Text>
                         </Stack>
 
@@ -70,13 +121,9 @@ const ForgotPasswordPage: React.FC = () => {
                                     <Input
                                         size="lg"
                                         type="email"
-                                        placeholder="you@example.com"
+                                        placeholder={t('forgotPassword.emailPlaceholder')}
                                         {...register("email", {
-                                            required: "Email is required",
-                                            pattern: {
-                                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                                message: "Invalid email address"
-                                            }
+                                            required: t('forgotPassword.emailRequired')
                                         })}
                                     />
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
@@ -84,19 +131,22 @@ const ForgotPasswordPage: React.FC = () => {
 
                                 <Button
                                     type="submit"
-                                    colorScheme="blue" // Using a default color scheme
+                                    colorScheme="blue"
                                     width="full"
                                     size="lg"
                                     mt={3}
                                 >
-                                    Send Reset Instructions
+                                    {t('forgotPassword.submitButton')}
                                 </Button>
 
-                                <Box textAlign="center" mt={2}>
-                                     <Text fontSize="sm">
-                                        Remembered your password?{' '}
+                                <Box textAlign="center">
+                                    <Text fontSize="sm">
+                                        {t('forgotPassword.rememberPassword')}
+                                        {' '}
                                         <Link to="/login">
-                                            Sign in
+                                            <Text as="span">
+                                                {t('forgotPassword.loginLink')}
+                                            </Text>
                                         </Link>
                                     </Text>
                                 </Box>
