@@ -13,16 +13,16 @@ const LangSwitcher = () => {
   })
 
   return (
-    <Select.Root 
+    <Select.Root
       collection={langs}
-      value={[ i18n.language ]}
+      value={[i18n.language]}
       width={{ base: "100%", md: "120px" }}
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
-        i18n.changeLanguage(e.value[0])
-        
+        i18n.changeLanguage(e.value[0]);
+        localStorage.setItem('ev-i18nextLng', e.value[0]);
       }}
-      >
+    >
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger>
