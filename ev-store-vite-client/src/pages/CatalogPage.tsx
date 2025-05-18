@@ -22,10 +22,11 @@ import {
     HStack,
     VStack,
     EmptyState,
-    List
+    List,
+    SegmentGroup
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { FaChevronRight, FaChevronLeft, FaSearch} from 'react-icons/fa'
+import { FaChevronRight, FaChevronLeft, FaSearch, FaTable, FaThList } from 'react-icons/fa'
 
 
 interface Item {
@@ -174,6 +175,7 @@ const CatalogPage = () => {
     const subcategories = Array.from(new Set(products.map(p => p.subcategory)))
 
     const [search, setSearch] = useState('')
+    const [viesAs, setViewAs] = useState('table')
     const [selCats, setSelCats] = useState<string[]>([])
     const [selSubs, setSelSubs] = useState<string[]>([])
     const [selRange, setSelRange] = useState<number[]>([0, 1000])
@@ -215,8 +217,8 @@ const CatalogPage = () => {
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
-                            <Accordion.ItemBody px="4" py="3">
-                                <Slider.Root width="200px"
+                            <Accordion.ItemBody px="4" py="3" w="100%">
+                                <Slider.Root
                                     max={sliderRange[1]} min={sliderRange[0]} step={1}
                                     defaultValue={selRange} onValueChangeEnd={(e) => setSelRange(e.value)}>
                                     <Slider.ValueText>
@@ -291,17 +293,46 @@ const CatalogPage = () => {
                             <Field.Label>Search Products</Field.Label>
                             <Input placeholder="Search products..." size="md" onChange={e => setSearch(e.target.value)} />
                         </Field.Root>
-                        <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
-                            <Field.Label>Sort By</Field.Label>
-                            <NativeSelect.Root>
-                                <NativeSelect.Field defaultValue="">
-                                    <option value="" disabled hidden>Sort By</option>
-                                    <option value="priceAsc">Price: Low to High</option>
-                                    <option value="priceDesc">Price: High to Low</option>
-                                </NativeSelect.Field>
-                                <NativeSelect.Indicator />
-                            </NativeSelect.Root>
-                        </Field.Root>
+
+                        <Flex direction={{ base: "column", md: "row" }} justify="end" w="100%">
+                            <Field.Root mt={{ base: 4, md: 0 }} w="max-content" mr={{ base: 0, md: 2 }} display={{ base: 'none', md: 'flex' }}>
+                                <Field.Label>View As</Field.Label>
+                                <SegmentGroup.Root defaultValue="table" onValueChange={(e) => setViewAs(e.value || 'table')}>
+                                    <SegmentGroup.Indicator />
+                                    <SegmentGroup.Items
+                                        items={[
+                                            {
+                                                value: "table",
+                                                label: (
+                                                    <HStack>
+                                                        <FaTable />
+                                                    </HStack>
+                                                ),
+                                            },
+                                            {
+                                                value: "list",
+                                                label: (
+                                                    <HStack>
+                                                        <FaThList />
+                                                    </HStack>
+                                                ),
+                                            },
+                                        ]}
+                                    />
+                                </SegmentGroup.Root>
+                            </Field.Root>
+                            <Field.Root w={{ base: "100%", md: "250px" }} mt={{ base: 4, md: 0 }}>
+                                <Field.Label>Sort By</Field.Label>
+                                <NativeSelect.Root>
+                                    <NativeSelect.Field defaultValue="">
+                                        <option value="" disabled hidden>Sort By</option>
+                                        <option value="priceAsc">Price: Low to High</option>
+                                        <option value="priceDesc">Price: High to Low</option>
+                                    </NativeSelect.Field>
+                                    <NativeSelect.Indicator />
+                                </NativeSelect.Root>
+                            </Field.Root>
+                        </Flex>
                     </Flex>
 
                     {filtered.length === 0 ?
@@ -395,8 +426,8 @@ const CatalogPage = () => {
                         </>
                     }
                 </Box>
-            </Flex>
-        </Box>
+            </Flex >
+        </Box >
     );
 };
 
