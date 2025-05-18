@@ -18,9 +18,15 @@ import {
     ButtonGroup,
     IconButton,
     Pagination,
+    Slider,
+    HStack,
+    VStack,
+    EmptyState,
+    List
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
+import { FaChevronRight, FaChevronLeft, FaSearch} from 'react-icons/fa'
+
 
 interface Item {
     id: number;
@@ -170,13 +176,14 @@ const CatalogPage = () => {
     const [search, setSearch] = useState('')
     const [selCats, setSelCats] = useState<string[]>([])
     const [selSubs, setSelSubs] = useState<string[]>([])
+    const [selRange, setSelRange] = useState<number[]>([0, 1000])
+    const [sliderRange, setSliderRange] = useState<number[]>([0, 1000])
     const [filtered, setFiltered] = useState(products)
 
 
-    const pageSize = 6
+    const pageSize = 12
     const [page, setPage] = useState(1)
     const paged = filtered.slice((page - 1) * pageSize, page * pageSize)
-
 
     useEffect(() => {
         let res = products.filter(p =>
@@ -185,15 +192,14 @@ const CatalogPage = () => {
         )
         if (selCats.length) res = res.filter(p => selCats.includes(p.category))
         if (selSubs.length) res = res.filter(p => selSubs.includes(p.subcategory))
+
         setFiltered(res)
         setPage(1)
-    }, [search, selCats, selSubs])
+    }, [search, selCats, selSubs, selRange])
 
     return (
         <Box p={{ base: 4, md: 8 }}>
             <Heading size="lg" mb="6">Product Catalog</Heading>
-
-
 
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
                 <Accordion.Root
@@ -201,8 +207,35 @@ const CatalogPage = () => {
                     variant="outline"
                     multiple
                     collapsible
-                    defaultValue={["category"]}
+                    defaultValue={["category", "subcategory", "price"]}
                 >
+                    <Accordion.Item value="price">
+                        <Accordion.ItemTrigger>
+                            <Text flex="1" fontWeight="medium">Price Range</Text>
+                            <Accordion.ItemIndicator />
+                        </Accordion.ItemTrigger>
+                        <Accordion.ItemContent>
+                            <Accordion.ItemBody px="4" py="3">
+                                <Slider.Root width="200px"
+                                    max={sliderRange[1]} min={sliderRange[0]} step={1}
+                                    defaultValue={selRange} onValueChangeEnd={(e) => setSelRange(e.value)}>
+                                    <Slider.ValueText>
+                                        <HStack justify="space-between">
+                                            <Text fontSize="sm">{selRange[0]}</Text>
+                                            <Text fontSize="sm">{selRange[1]}</Text>
+                                        </HStack>
+                                    </Slider.ValueText>
+                                    <Slider.Control>
+                                        <Slider.Track>
+                                            <Slider.Range />
+                                        </Slider.Track>
+                                        <Slider.Thumbs />
+                                    </Slider.Control>
+                                </Slider.Root>
+                            </Accordion.ItemBody>
+                        </Accordion.ItemContent>
+                    </Accordion.Item>
+
                     <Accordion.Item value="category">
                         <Accordion.ItemTrigger>
                             <Text flex="1" fontWeight="medium">Category</Text>
@@ -250,25 +283,6 @@ const CatalogPage = () => {
                             </Accordion.ItemBody>
                         </Accordion.ItemContent>
                     </Accordion.Item>
-
-                    <Accordion.Item value="price">
-                        <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Price Range</Text>
-                            <Accordion.ItemIndicator />
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                            <Accordion.ItemBody px="4" py="3">
-                                <Field.Root mb="3">
-                                    <Field.Label>Min Price</Field.Label>
-                                    <Input type="number" size="sm" placeholder="Min" />
-                                </Field.Root>
-                                <Field.Root>
-                                    <Field.Label>Max Price</Field.Label>
-                                    <Input type="number" size="sm" placeholder="Max" />
-                                </Field.Root>
-                            </Accordion.ItemBody>
-                        </Accordion.ItemContent>
-                    </Accordion.Item>
                 </Accordion.Root>
 
                 <Box flex="1" w="100%">
@@ -289,70 +303,97 @@ const CatalogPage = () => {
                             </NativeSelect.Root>
                         </Field.Root>
                     </Flex>
-                    <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
-                        {paged.map((product, idx) => (
-                            <Card.Root overflow="hidden" key={idx} w="100%">
-                                <Image
-                                    src={product.image}
-                                    alt={product.name}
-                                    w="full"
-                                    h="200px"
-                                    objectFit="cover"
-                                />
 
-                                <Card.Body gap="2">
-                                    <Card.Title>{product.name}</Card.Title>
-                                    <Card.Description>{product.description}</Card.Description>
-                                    <Text textStyle="2xl" fontWeight="medium">
-                                        ${product.price.toFixed(2)}
-                                    </Text>
-                                </Card.Body>
+                    {filtered.length === 0 ?
+                        <EmptyState.Root>
+                            <EmptyState.Content>
+                                <EmptyState.Indicator>
+                                    <FaSearch />
+                                </EmptyState.Indicator>
+                                <VStack textAlign="center">
+                                    <EmptyState.Title>No results found</EmptyState.Title>
+                                    <EmptyState.Description>
+                                        Try adjusting your search
+                                    </EmptyState.Description>
+                                </VStack>
+                                <List.Root variant="marker">
+                                    <List.Item>Try removing filters</List.Item>
+                                    <List.Item>Try different keywords</List.Item>
+                                </List.Root>
+                            </EmptyState.Content>
+                        </EmptyState.Root>
+                        :
+                        <>
+                            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
+                                {paged.map((product, idx) => (
+                                    <Card.Root overflow="hidden" key={idx} w="100%">
+                                        <Image
+                                            src={product.image}
+                                            alt={product.name}
+                                            w="full"
+                                            h="200px"
+                                            objectFit="cover"
+                                        />
 
-                                <Card.Footer gap="2">
-                                    <Button variant="solid">
-                                        {t('popularProducts.buyNowLabel')}
-                                    </Button>
-                                    <Button variant="ghost">
-                                        {t('popularProducts.learnMoreLabel')}
-                                    </Button>
-                                </Card.Footer>
-                            </Card.Root>
-                        ))}
-                    </SimpleGrid>
+                                        <Card.Body gap="2">
+                                            <Card.Title>{product.name}</Card.Title>
+                                            <Card.Description>{product.description}</Card.Description>
+                                            <Text textStyle="2xl" fontWeight="medium">
+                                                ${product.price.toFixed(2)}
+                                            </Text>
+                                        </Card.Body>
 
-                    <Pagination.Root
-                        count={filtered.length}
-                        pageSize={pageSize}
-                        page={page}
-                        onPageChange={(details) => setPage(details.page)}
-                        mt="6"
-                        justifySelf="center"
-                    >
-                        <ButtonGroup variant="ghost" size="sm">
-                            <Pagination.PrevTrigger asChild>
-                                <IconButton aria-label={t('pagination.prev')}>
-                                    <FaChevronLeft />
-                                </IconButton>
-                            </Pagination.PrevTrigger>
+                                        <Card.Footer gap="2">
+                                            <Button variant="solid">
+                                                {t('popularProducts.buyNowLabel')}
+                                            </Button>
+                                            <Button variant="ghost">
+                                                {t('popularProducts.learnMoreLabel')}
+                                            </Button>
+                                        </Card.Footer>
+                                    </Card.Root>
+                                ))}
+                            </SimpleGrid>
 
-                            <Pagination.Items
-                                render={pag => (
-                                    <IconButton
-                                        key={pag.value}
-                                        variant={{ base: 'ghost', _selected: 'outline' }}
-                                    >
-                                        {pag.value}
-                                    </IconButton>
-                                )}
-                            />
+                            <Pagination.Root
+                                count={filtered.length}
+                                pageSize={pageSize}
+                                page={page}
+                                onPageChange={(details) => {
+                                    // scroll to top on page change
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    setPage(details.page)
+                                }}
+                                mt="6"
+                                justifySelf="center"
+                            >
+                                <ButtonGroup variant="ghost" size="sm">
+                                    <Pagination.PrevTrigger asChild>
+                                        <IconButton aria-label={t('pagination.prev')}>
+                                            <FaChevronLeft />
+                                        </IconButton>
+                                    </Pagination.PrevTrigger>
 
-                            <Pagination.NextTrigger asChild>
-                                <IconButton aria-label={t('pagination.next')}>
-                                    <FaChevronRight />
-                                </IconButton>
-                            </Pagination.NextTrigger>
-                        </ButtonGroup>
-                    </Pagination.Root>
+                                    <Pagination.Items
+                                        render={pag => (
+                                            <IconButton
+                                                key={pag.value}
+                                                variant={{ base: 'ghost', _selected: 'outline' }}
+                                            >
+                                                {pag.value}
+                                            </IconButton>
+                                        )}
+                                    />
+
+                                    <Pagination.NextTrigger asChild>
+                                        <IconButton aria-label={t('pagination.next')}>
+                                            <FaChevronRight />
+                                        </IconButton>
+                                    </Pagination.NextTrigger>
+                                </ButtonGroup>
+                            </Pagination.Root>
+                        </>
+                    }
                 </Box>
             </Flex>
         </Box>
