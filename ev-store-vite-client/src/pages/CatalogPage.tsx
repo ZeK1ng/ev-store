@@ -89,7 +89,79 @@ const CatalogPage = () => {
             subcategory: "Adapters",
             price: 29.99,
             image: "https://placehold.co/300?text=Universal+Adapter"
-        }
+        },
+        {
+            id: 7,
+            name: "EV Battery Monitor",
+            description: "A device to monitor your EV battery health.",
+            category: "EV Accessories",
+            subcategory: "Monitors",
+            price: 99.99,
+            image: "https://placehold.co/300?text=Battery+Monitor"
+        },
+        {
+            id: 8,
+            name: "Wireless EV Charger",
+            description: "A wireless charger for hassle-free charging.",
+            category: "EV Chargers",
+            subcategory: "Home Chargers",
+            price: 399.99,
+            image: "https://placehold.co/300?text=Wireless+Charger"
+        },
+        {
+            id: 9,
+            name: "EV Charging Station",
+            description: "A public charging station for EVs.",
+            category: "EV Chargers",
+            subcategory: "Public Chargers",
+            price: 499.99,
+            image: "https://placehold.co/300?text=Charging+Station"
+        },
+        {
+            id: 10,
+            name: "EV Maintenance Kit",
+            description: "A kit for maintaining your EV.",
+            category: "EV Accessories",
+            subcategory: "Kits",
+            price: 59.99,
+            image: "https://placehold.co/300?text=Maintenance+Kit"
+        },
+        {
+            id: 11,
+            name: "EV Cleaning Supplies",
+            description: "Supplies for cleaning your EV.",
+            category: "EV Accessories",
+            subcategory: "Cleaning",
+            price: 39.99,
+            image: "https://placehold.co/300?text=Cleaning+Supplies"
+        },
+        {
+            id: 12,
+            name: "EV Tire Inflator",
+            description: "A tire inflator for your EV.",
+            category: "EV Accessories",
+            subcategory: "Inflators",
+            price: 29.99,
+            image: "https://placehold.co/300?text=Tire+Inflator"
+        },
+        {
+            id: 13,
+            name: "EV Windshield Cover",
+            description: "A cover to protect your EV windshield.",
+            category: "EV Accessories",
+            subcategory: "Covers",
+            price: 19.99,
+            image: "https://placehold.co/300?text=Windshield+Cover"
+        },
+        {
+            id: 14,
+            name: "EV Seat Covers",
+            description: "Seat covers for your EV.",
+            category: "EV Accessories",
+            subcategory: "Covers",
+            price: 49.99,
+            image: "https://placehold.co/300?text=Seat+Cover"
+        },
     ];
 
     const categories = Array.from(new Set(products.map(p => p.category)))
@@ -101,7 +173,7 @@ const CatalogPage = () => {
     const [filtered, setFiltered] = useState(products)
 
 
-    const pageSize = 3
+    const pageSize = 6
     const [page, setPage] = useState(1)
     const paged = filtered.slice((page - 1) * pageSize, page * pageSize)
 
@@ -121,25 +193,7 @@ const CatalogPage = () => {
         <Box p={{ base: 4, md: 8 }}>
             <Heading size="lg" mb="6">Product Catalog</Heading>
 
-            <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
-                <Field.Root flex="1" maxW={{ base: "100%", md: "400px" }}>
-                    <Field.Label>Search Products</Field.Label>
-                    <Input placeholder="Search products..." size="md" onChange={e => setSearch(e.target.value)} />
-                </Field.Root>
-                <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
-                    <Field.Label>Sort By</Field.Label>
-                    <NativeSelect.Root>
-                        <NativeSelect.Field defaultValue="">
-                            <option value="" disabled hidden>Sort By</option>
-                            <option value="priceAsc">Price: Low to High</option>
-                            <option value="priceDesc">Price: High to Low</option>
-                            <option value="nameAsc">Name: A to Z</option>
-                            <option value="nameDesc">Name: Z to A</option>
-                        </NativeSelect.Field>
-                        <NativeSelect.Indicator />
-                    </NativeSelect.Root>
-                </Field.Root>
-            </Flex>
+
 
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
                 <Accordion.Root
@@ -217,10 +271,29 @@ const CatalogPage = () => {
                     </Accordion.Item>
                 </Accordion.Root>
 
-                <Box flex="1">
+                <Box flex="1" w="100%">
+                    <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
+                        <Field.Root flex="1" maxW={{ base: "100%", md: "400px" }}>
+                            <Field.Label>Search Products</Field.Label>
+                            <Input placeholder="Search products..." size="md" onChange={e => setSearch(e.target.value)} />
+                        </Field.Root>
+                        <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
+                            <Field.Label>Sort By</Field.Label>
+                            <NativeSelect.Root>
+                                <NativeSelect.Field defaultValue="">
+                                    <option value="" disabled hidden>Sort By</option>
+                                    <option value="priceAsc">Price: Low to High</option>
+                                    <option value="priceDesc">Price: High to Low</option>
+                                    <option value="nameAsc">Name: A to Z</option>
+                                    <option value="nameDesc">Name: Z to A</option>
+                                </NativeSelect.Field>
+                                <NativeSelect.Indicator />
+                            </NativeSelect.Root>
+                        </Field.Root>
+                    </Flex>
                     <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
                         {paged.map((product, idx) => (
-                            <Card.Root overflow="hidden" key={idx}>
+                            <Card.Root overflow="hidden" key={idx} w="100%">
                                 <Image
                                     src={product.image}
                                     alt={product.name}
@@ -255,6 +328,7 @@ const CatalogPage = () => {
                         page={page}
                         onPageChange={(details) => setPage(details.page)}
                         mt="6"
+                        justifySelf="center"
                     >
                         <ButtonGroup variant="ghost" size="sm">
                             <Pagination.PrevTrigger asChild>
