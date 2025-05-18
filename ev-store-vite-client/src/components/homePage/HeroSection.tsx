@@ -23,7 +23,6 @@ const HeroSection = () => {
             align="center"
             px={{ base: 4, md: 16 }}
             py={16}
-            bg="gray.100"
             gap={{ base: 8, md: 0 }}
         >
             <Box flex={1} textAlign={{ base: 'center', md: 'left' }}>
@@ -33,7 +32,7 @@ const HeroSection = () => {
                 <Text fontSize="2xl" mb={6}>
                     {t('hero.description')}
                 </Text>
-                <Button colorScheme="green" size="lg">
+                <Button size="lg">
                     {t('hero.buttonLabel')} <FaArrowRight />
                 </Button>
 

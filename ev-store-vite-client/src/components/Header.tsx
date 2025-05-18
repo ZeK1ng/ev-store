@@ -20,7 +20,7 @@ const Header: React.FC = () => {
     const { colorMode, toggleColorMode } = useColorMode()
 
     return (
-        <Box position="sticky" top={0} zIndex="banner" bg="white">
+        <Box position="sticky" top={0} zIndex="banner">
             <Flex
                 as="header"
                 align="center"
@@ -75,7 +75,6 @@ const Header: React.FC = () => {
                     top="100%"
                     left={0}
                     width="100%"
-                    bg="white"
                     shadow="md"
                     zIndex="dropdown"
                 >

@@ -284,8 +284,6 @@ const CatalogPage = () => {
                                     <option value="" disabled hidden>Sort By</option>
                                     <option value="priceAsc">Price: Low to High</option>
                                     <option value="priceDesc">Price: High to Low</option>
-                                    <option value="nameAsc">Name: A to Z</option>
-                                    <option value="nameDesc">Name: Z to A</option>
                                 </NativeSelect.Field>
                                 <NativeSelect.Indicator />
                             </NativeSelect.Root>

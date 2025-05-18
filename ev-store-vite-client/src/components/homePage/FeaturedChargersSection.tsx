@@ -34,7 +34,7 @@ const FeaturedIChargersSection = ({
     const [first, second, third, fourth] = items
 
     return (
-        <Box bg="gray.100" px={{ base: 4, md: 16 }} py={12}>
+        <Box px={{ base: 4, md: 16 }} py={12}>
             <Flex justify="space-between" align="center" mb={6}>
                 <Heading size={{ base: '2xl', md: '4xl' }} textAlign='left'>{title}</Heading>
                 <Button variant="outline" size="sm" onClick={onSeeAll}>
