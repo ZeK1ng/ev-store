@@ -15,10 +15,5 @@ public class Category {
     private String name;
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "parentCategoryId")
-    private Category parentCategory;
-
-    @OneToMany(mappedBy = "parentCategory")
-    private List<Category> subCategories;
+    private Integer parentCategory;
 }

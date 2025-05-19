@@ -34,6 +34,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+
     private final AuthenticationManager authManager;
     private final AuthTokenRepository authTokenRepository;
     private final UserService userService;
@@ -56,9 +57,10 @@ public class AuthServiceImpl implements AuthService {
     public void registerTokensForUser(final User user, final String accessToken, final String refreshToken) {
         final AuthTokens authTokens = new AuthTokens();
         authTokens.setUser(user);
+        authTokenRepository.deleteByUser(user);
+        authTokenRepository.flush();
         authTokens.setAccessToken(accessToken);
         authTokens.setRefreshToken(refreshToken);
-        authTokenRepository.deleteByUser(user);
         authTokenRepository.save(authTokens);
     }
 

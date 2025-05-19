@@ -13,9 +13,4 @@ public class EvStoreApplication {
 		SpringApplication.run(EvStoreApplication.class, args);
 	}
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) {
-		return authenticationManagerBuilder.getOrBuild();
-	}
-
 }

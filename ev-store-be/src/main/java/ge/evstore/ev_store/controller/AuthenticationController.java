@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/auth")
+@RequestMapping("api/v1/auth")
 @RestController
 @Slf4j
 public class AuthenticationController {
@@ -28,7 +28,6 @@ public class AuthenticationController {
         log.info("Login request received for {}", request.getUsername());
         return ResponseEntity.ok(authService.handleLogin(request));
     }
-
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody final UserRegisterRequest userRegisterRequest) throws MessagingException {
         log.info("Register request for user {}", userRegisterRequest.toString());
