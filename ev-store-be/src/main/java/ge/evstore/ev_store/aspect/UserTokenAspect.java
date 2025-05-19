@@ -1,4 +1,4 @@
-package ge.evstore.ev_store.config;
+package ge.evstore.ev_store.aspect;
 
 import ge.evstore.ev_store.service.interf.AuthService;
 import ge.evstore.ev_store.utils.JwtUtils;

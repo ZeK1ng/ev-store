@@ -27,6 +27,4 @@ public class Product {
 
     @ManyToOne
     private ImageEntity imageEntity;
-    @ManyToOne
-    private Category category;
 }
