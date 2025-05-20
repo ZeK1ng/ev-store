@@ -33,4 +33,5 @@ public interface AuthService {
 
     void rotateAccessTokenForUser(final String userName, final String accessToken);
 
+    void handleLogout(String email);
 }

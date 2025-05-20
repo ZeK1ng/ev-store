@@ -8,6 +8,7 @@ import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.AuthService;
 import ge.evstore.ev_store.utils.JwtUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -29,19 +30,26 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @Transactional
     public Product addProduct(final Product product, final String accessToken, final String refreshToken) throws AccessDeniedException {
-        return null;
+        return productRepository.save(product);
     }
 
 
     @Override
     public Product getProductById(final Integer id, final String accessToken, final String refreshToken) {
-        return null;
+        return productRepository.findById(id).orElse(null);
     }
 
     @Override
+    @Transactional
     public Product updateProduct(final Integer id, final Product product, final String accessToken, final String refreshToken) {
-        return null;
+        return productRepository.findById(id)
+                .map(existingProduct -> {
+                    existingProduct.update(product);
+                    return productRepository.save(existingProduct);
+                })
+                .orElse(null);
     }
 
     @Override
