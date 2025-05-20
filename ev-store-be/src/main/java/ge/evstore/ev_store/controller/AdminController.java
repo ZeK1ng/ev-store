@@ -12,8 +12,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
-@PreAuthorize("hasRole('ADMIN')")
+@RequestMapping("/api/v1/admin")
 public class AdminController {
 
     private final AdminService adminService;

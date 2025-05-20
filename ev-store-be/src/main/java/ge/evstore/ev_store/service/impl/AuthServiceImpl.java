@@ -67,12 +67,22 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void rotateAccessTokenForUser(final String userName, final String accessToken) {
         final Optional<User> user = userService.findUser(userName);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User " + userName + " not found");
         }
         final AuthTokens authTokens = authTokenRepository.findByUser(user.get());
         authTokens.setAccessToken(accessToken);
         authTokenRepository.save(authTokens);
+    }
+
+    @Override
+    @Transactional
+    public void handleLogout(final String email) {
+        final Optional<User> user = userService.findUser(email);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User " + email + " not found");
+        }
+        authTokenRepository.deleteByUser(user.get());
     }
 
     @Transactional
@@ -145,11 +155,12 @@ public class AuthServiceImpl implements AuthService {
         final String code = VerificationUtils.generateVerificationCode();
         userService.updateVerificationCodeFor(user.get(), code);
         emailService.sendPasswordResetCode(email, code);
+        log.info("Password reset code sent to : {}", email);
     }
 
     @Transactional
     public void resetPassword(final ResetPasswordRequest request) {
-        final Optional<User> userOpt = userService.findUser(request.getEmail());
+        final Optional<User> userOpt = userService.findUser(request.getUsername());
         if (userOpt.isEmpty()) throw new UsernameNotFoundException("User not found");
 
         final User user = userOpt.get();
@@ -163,5 +174,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         userService.updatePassword(user, request.getNewPassword());
+        log.info("Password updated for : {}", user.getEmail());
     }
 }

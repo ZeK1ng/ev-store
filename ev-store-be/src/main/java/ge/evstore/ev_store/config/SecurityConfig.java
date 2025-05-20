@@ -45,11 +45,12 @@ public class SecurityConfig {
                                         "/configuration/ui",
                                         "/configuration/security",
                                         "/webjars/**").permitAll()
+//                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                                 //Filter things which not need auth.
-                                .anyRequest().authenticated())
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                                .anyRequest().permitAll())
+//                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider);
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
