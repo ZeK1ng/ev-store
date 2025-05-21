@@ -154,7 +154,16 @@ public class AdminController {
         final String accessToken = extractAccessToken(request);
         final String refreshToken = extractRefreshToken(request);
         adminService.deleteCategory(id, accessToken, refreshToken);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/categories/get-full-path/{id}")
+    public ResponseEntity<String> getFullCategoryPath(
+            @PathVariable final Integer id,
+            final HttpServletRequest request) {
+        final String accessToken = extractAccessToken(request);
+        final String refreshToken = extractRefreshToken(request);
+        return ResponseEntity.ok(adminService.getFullCategoryPath(id, accessToken, refreshToken));
     }
 
     /*-------------Dictionary endpoints-------*/
