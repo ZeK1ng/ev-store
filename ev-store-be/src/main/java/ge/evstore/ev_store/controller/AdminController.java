@@ -152,5 +152,7 @@ public class AdminController {
         adminService.deleteCategory(id, accessToken, refreshToken);
         return ResponseEntity.noContent().build();
     }
+
+    /*-------------Dictionary endpoints-------*/
 }
 
