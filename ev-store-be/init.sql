@@ -1,16 +1,18 @@
 CREATE TABLE products (
                           id SERIAL PRIMARY KEY,
-                          nameGE TEXT,
-                          nameENG TEXT,
-                          nameRUS TEXT,
-                          descriptionGE TEXT,
-                          descriptionENG TEXT,
-                          descriptionRUS TEXT,
+                          name_ge VARCHAR(255),
+                          name_eng VARCHAR(255),
+                          name_rus VARCHAR(255),
+                          description_ge TEXT,
+                          description_eng TEXT,
+                          description_rus TEXT,
                           price DOUBLE PRECISION,
                           stock_amount INTEGER,
                           category_id INTEGER,
-                          image_id INTEGER
+                          image_name VARCHAR(255),
+                          image_file_path VARCHAR(512)
 );
+
 
 CREATE TABLE users (
                        id SERIAL PRIMARY KEY,

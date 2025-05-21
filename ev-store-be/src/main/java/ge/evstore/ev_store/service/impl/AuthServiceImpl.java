@@ -85,6 +85,38 @@ public class AuthServiceImpl implements AuthService {
         authTokenRepository.deleteByUser(user.get());
     }
 
+    @Override
+    public boolean validTokens(final String accessToken, final String refreshToken) {
+        if (accessToken == null || refreshToken == null ||
+                accessToken.isBlank() || refreshToken.isBlank()) {
+            return false;
+        }
+
+        try {
+            // Extract usernames from both tokens
+            final String accessUsername = jwtUtils.extractUsername(accessToken);
+            final String refreshUsername = jwtUtils.extractUsername(refreshToken);
+
+            // Check that usernames match
+            if (accessUsername == null || !accessUsername.equals(refreshUsername)) {
+                return false;
+            }
+
+            // Load user to validate further if needed (optional)
+            final var userDetails = userDetailsService.loadUserByUsername(accessUsername);
+
+            // Check if both tokens are valid (not expired and signature is OK)
+            final boolean accessValid = jwtUtils.isTokenValid(accessToken, userDetails);
+            final boolean refreshValid = jwtUtils.isTokenValid(refreshToken, userDetails);
+
+            return accessValid && refreshValid;
+
+        } catch (Exception e) {
+            // Log exception if needed
+            return false;
+        }
+    }
+
     @Transactional
     public AuthResponse handleLogin(final AuthRequest request) {
         final Authentication auth = authManager.authenticate(
