@@ -1,11 +1,12 @@
 package ge.evstore.ev_store.controller;
 
 import ge.evstore.ev_store.entity.Category;
+import ge.evstore.ev_store.entity.Dictionary;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.service.interf.AdminService;
+import ge.evstore.ev_store.service.interf.DictionaryService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -16,9 +17,12 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final DictionaryService dictionaryService;
 
-    public AdminController(final AdminService adminService) {
+
+    public AdminController(final AdminService adminService, final DictionaryService dictionaryService) {
         this.adminService = adminService;
+        this.dictionaryService = dictionaryService;
     }
 
 
@@ -154,5 +158,29 @@ public class AdminController {
     }
 
     /*-------------Dictionary endpoints-------*/
+    @PostMapping("/dictionary/create")
+    public ResponseEntity<Dictionary> create(@RequestBody final Dictionary dictionary) {
+        return ResponseEntity.ok(dictionaryService.create(dictionary));
+    }
+
+    @PutMapping("/dictionary/update/{id}")
+    public ResponseEntity<Dictionary> update(@PathVariable final Integer id, @RequestBody final Dictionary dictionary) {
+        final Dictionary updated = dictionaryService.update(id, dictionary);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/dictionary/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable final Integer id) {
+        dictionaryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/dictionary/get-all")
+    public ResponseEntity<List<Dictionary>> getAll() {
+        return ResponseEntity.ok(dictionaryService.findAll());
+    }
 }
 

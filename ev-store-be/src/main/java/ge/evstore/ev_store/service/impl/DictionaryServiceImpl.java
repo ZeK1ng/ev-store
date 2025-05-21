@@ -4,11 +4,13 @@ import ge.evstore.ev_store.entity.Dictionary;
 import ge.evstore.ev_store.repository.DictionaryRepository;
 import ge.evstore.ev_store.service.interf.DictionaryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 @RequiredArgsConstructor
 public class DictionaryServiceImpl implements DictionaryService {
 
