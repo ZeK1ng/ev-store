@@ -72,8 +72,8 @@ CREATE TABLE dictionary
 ALTER TABLE products
     ADD CONSTRAINT fk_product_category FOREIGN KEY (category_id) REFERENCES category (id);
 
-ALTER TABLE products
-    ADD CONSTRAINT fk_product_image FOREIGN KEY (image_entity_id) REFERENCES images (id);
+-- ALTER TABLE products
+--     ADD CONSTRAINT fk_product_image FOREIGN KEY (image_entity_id) REFERENCES images (id);
 
 ALTER TABLE auth_tokens
     ADD CONSTRAINT fk_auth_token_user FOREIGN KEY (user_id) REFERENCES users (id);
