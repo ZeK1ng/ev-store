@@ -51,6 +51,10 @@ public class UserTokenAspect {
         }
         final boolean accessExpired = jwtUtils.isTokenExpired(accessToken);
         // Rotate both tokens if only the access token is expired
+        if(!authService.validTokens(accessToken,refreshToken)){
+            log.error("Access denied. Tokens not valid");
+            throw new AccessDeniedException("Tokens not valid");
+        }
         if (accessExpired) {
             final String username = jwtUtils.extractUsername(refreshToken);
             final UserDetails userDetails = userDetailsService.loadUserByUsername(username);

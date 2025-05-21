@@ -83,18 +83,18 @@ public class AdminController {
         final String accessToken = extractAccessToken(request);
         final String refreshToken = extractRefreshToken(request);
         adminService.deleteProduct(id, accessToken, refreshToken);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/products/{id}/stock")
     public ResponseEntity<Product> updateStock(
             @PathVariable final Integer id,
-            @RequestParam final int quantity,
+            @RequestParam final int stockAmount,
             final HttpServletRequest request) {
         final String accessToken = extractAccessToken(request);
         final String refreshToken = extractRefreshToken(request);
         return ResponseEntity.ok(
-                adminService.updateProductStock(id, quantity, accessToken, refreshToken)
+                adminService.updateProductStock(id, stockAmount, accessToken, refreshToken)
         );
     }
 
