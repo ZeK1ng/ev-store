@@ -31,4 +31,7 @@ public interface AdminService {
     void deleteCategory(Integer id, String accessToken, String refreshToken);
 
     List<Category> getAllCategories(String accessToken, String refreshToken);
+
+    String getFullCategoryPath(Integer categoryId, String accessToken, String refreshToken);
+
 }

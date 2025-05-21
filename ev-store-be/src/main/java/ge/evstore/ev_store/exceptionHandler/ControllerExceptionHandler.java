@@ -1,11 +1,13 @@
 package ge.evstore.ev_store.exceptionHandler;
 
 
+import ge.evstore.ev_store.exception.IsParentCategoryException;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
 import ge.evstore.ev_store.exception.VerificationFailedException;
 import ge.evstore.ev_store.response.GeneralExceptionResponse;
 import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -70,6 +72,24 @@ public class ControllerExceptionHandler {
         log.info(ex.getMessage());
         final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse("User authentication failed", HttpStatus.UNAUTHORIZED.value());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(IsParentCategoryException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleIsParentCategory(final IsParentCategoryException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleEntityNotFound(final EntityNotFoundException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
     }
