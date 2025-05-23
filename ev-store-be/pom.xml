@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>ge.evstore</groupId>
 	<artifactId>ev-store</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>ev-store</name>
 	<description>EV store project</description>
