@@ -19,6 +19,7 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
+        working-directory: ./ev-store-be
         run: mvn clean package -DskipTests
 
       - name: Set up Docker Buildx
@@ -31,16 +32,20 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build docker image
-        run: docker build -t ev-store-be .
+        run: docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest ./ev-store-be
+
       - name: Push image to docker hub
-        run: docker push ev-store-be:latest
+        run: docker push ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
+
   deploy:
     needs: build
     runs-on: [aws-ec2-evstore]
     steps:
       - name: Pull Image from docker hub
-        run: docker pull ev-store-be:latest
+        run: docker pull ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
+
       - name: Delete old container
-        run: docker rm -f ev-store-contaioner
+        run: docker rm -f ev-store-container || true
+        
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name ev-store-contaioner ev-store-be
+        run: docker run -d -p 8080:8080 --name ev-store-container ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
