@@ -34,6 +34,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+
     private final AuthenticationManager authManager;
     private final AuthTokenRepository authTokenRepository;
     private final UserService userService;
@@ -56,21 +57,64 @@ public class AuthServiceImpl implements AuthService {
     public void registerTokensForUser(final User user, final String accessToken, final String refreshToken) {
         final AuthTokens authTokens = new AuthTokens();
         authTokens.setUser(user);
+        authTokenRepository.deleteByUser(user);
+        authTokenRepository.flush();
         authTokens.setAccessToken(accessToken);
         authTokens.setRefreshToken(refreshToken);
-        authTokenRepository.deleteByUser(user);
         authTokenRepository.save(authTokens);
     }
 
     @Transactional
     public void rotateAccessTokenForUser(final String userName, final String accessToken) {
         final Optional<User> user = userService.findUser(userName);
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("User " + userName + " not found");
         }
         final AuthTokens authTokens = authTokenRepository.findByUser(user.get());
         authTokens.setAccessToken(accessToken);
         authTokenRepository.save(authTokens);
+    }
+
+    @Override
+    @Transactional
+    public void handleLogout(final String email) {
+        final Optional<User> user = userService.findUser(email);
+        if (user.isEmpty()) {
+            throw new UsernameNotFoundException("User " + email + " not found");
+        }
+        authTokenRepository.deleteByUser(user.get());
+    }
+
+    @Override
+    public boolean validTokens(final String accessToken, final String refreshToken) {
+        if (accessToken == null || refreshToken == null ||
+                accessToken.isBlank() || refreshToken.isBlank()) {
+            return false;
+        }
+
+        try {
+            // Extract usernames from both tokens
+            final String accessUsername = jwtUtils.extractUsername(accessToken);
+            final String refreshUsername = jwtUtils.extractUsername(refreshToken);
+
+            // Check that usernames match
+            if (accessUsername == null || !accessUsername.equals(refreshUsername)) {
+                return false;
+            }
+
+            // Load user to validate further if needed (optional)
+            final var userDetails = userDetailsService.loadUserByUsername(accessUsername);
+
+            // Check if both tokens are valid (not expired and signature is OK)
+            final boolean accessValid = jwtUtils.isTokenValid(accessToken, userDetails);
+            final boolean refreshValid = jwtUtils.isTokenValid(refreshToken, userDetails);
+
+            return accessValid && refreshValid;
+
+        } catch (Exception e) {
+            // Log exception if needed
+            return false;
+        }
     }
 
     @Transactional
@@ -143,11 +187,12 @@ public class AuthServiceImpl implements AuthService {
         final String code = VerificationUtils.generateVerificationCode();
         userService.updateVerificationCodeFor(user.get(), code);
         emailService.sendPasswordResetCode(email, code);
+        log.info("Password reset code sent to : {}", email);
     }
 
     @Transactional
     public void resetPassword(final ResetPasswordRequest request) {
-        final Optional<User> userOpt = userService.findUser(request.getEmail());
+        final Optional<User> userOpt = userService.findUser(request.getUsername());
         if (userOpt.isEmpty()) throw new UsernameNotFoundException("User not found");
 
         final User user = userOpt.get();
@@ -161,5 +206,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         userService.updatePassword(user, request.getNewPassword());
+        log.info("Password updated for : {}", user.getEmail());
     }
 }
