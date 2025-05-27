@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy your WAR file into the container
-COPY ./ev-store-be/target/ev-store-*.war app.war
+COPY ./home/runner/work/ev-store/ev-store/ev-store-be/target/ev-store-*.war app.war
 
 # Expose the port your Spring Boot app runs on
 EXPOSE 8080
