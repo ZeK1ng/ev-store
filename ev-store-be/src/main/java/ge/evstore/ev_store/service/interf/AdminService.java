@@ -19,7 +19,7 @@ public interface AdminService {
 
     List<Product> getAllProducts(String accessToken, String refreshToken);
 
-    Product updateProductStock(Integer id, int quantity, String accessToken, String refreshToken);
+    Product updateProductStock(Integer id, int stockAmount, String accessToken, String refreshToken);
 
     // Category operations
     Category addCategory(Category category, String accessToken, String refreshToken);
@@ -31,4 +31,7 @@ public interface AdminService {
     void deleteCategory(Integer id, String accessToken, String refreshToken);
 
     List<Category> getAllCategories(String accessToken, String refreshToken);
+
+    String getFullCategoryPath(Integer categoryId, String accessToken, String refreshToken);
+
 }

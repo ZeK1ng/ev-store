@@ -1,13 +1,17 @@
 package ge.evstore.ev_store.entity;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.modelmapper.Conditions;
+import org.modelmapper.ModelMapper;
 
 @Entity
 @Data
 @Table(name = "products")
 public class Product {
+    @Schema(hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,11 +26,15 @@ public class Product {
     private Double price;
 
     private Integer stockAmount;
-    private int quantity;
     private Integer categoryId;
 
-    @ManyToOne
-    private ImageEntity imageEntity;
-    @ManyToOne
-    private Category category;
+    private String imageName;
+    private String imageFilePath;
+//    private byte[] image; //
+
+    public void update(final Product product) {
+        final ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
+        modelMapper.map(product, this);
+    }
 }
