@@ -20,8 +20,13 @@ jobs:
 
       - name: Build with Maven
         working-directory: ./ev-store-be
-        run: ls -la
-        run: mvn clean package -DskipTests
+        run: |
+          echo "pwd" && \
+          pwd &&\
+          ls -la &&\
+          echo "Building project..." && \
+          mvn clean package -DskipTests && \
+          ls -la target
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -34,8 +39,6 @@ jobs:
 
       - name: Build docker image
         working-directory: ./ev-store-be
-        run: pwd
-        run: ls -la
         run: docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest .
 
 
