@@ -20,6 +20,7 @@ jobs:
 
       - name: Build with Maven
         working-directory: ./ev-store-be
+        run: ls -la
         run: mvn clean package -DskipTests
 
       - name: Set up Docker Buildx
@@ -33,7 +34,9 @@ jobs:
 
       - name: Build docker image
         working-directory: ./ev-store-be
-        run: docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest ./ev-store-be
+        run: pwd
+        run: ls -la
+        run: docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest .
 
 
       - name: Push image to docker hub
