@@ -39,7 +39,10 @@ jobs:
 
       - name: Build docker image
         working-directory: ./ev-store-be
-        run: docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest .
+        run: |
+          pwd && \
+          ls -la && \
+          docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest .
 
 
       - name: Push image to docker hub
