@@ -64,12 +64,12 @@ jobs:
         run: |
           docker run -d \
             --name ev-store-be-container \
-            -e env.EV_STORE_JWT_SECRET=${{ secrets.EV_STORE_JWT_SECRET }} \
-            -e env.EMAIL_SENDER_USERNAME=${{ secrets.EMAIL_SENDER_USERNAME }} \
-            -e env.EV_STORE_DATASOURCE_URL=${{ secrets.EV_STORE_DATASOURCE_URL }} \          
-            -e env.EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }} \
-            -e env.EV_STORE_DATASOURCE_USERNAME=${{ secrets.EV_STORE_DATASOURCE_USERNAME }} \
-            -e env.EV_STORE_DATASOURCE_PASSWORD=${{ secrets.EV_STORE_DATASOURCE_PASSWORD }} \
+            -e EV_STORE_JWT_SECRET=${{ secrets.EV_STORE_JWT_SECRET }} \
+            -e EMAIL_SENDER_USERNAME=${{ secrets.EMAIL_SENDER_USERNAME }} \
+            -e EV_STORE_DATASOURCE_URL=${{ secrets.EV_STORE_DATASOURCE_URL }} \          
+            -e EMAIL_SENDER_PASSWORD=${{ secrets.EMAIL_SENDER_PASSWORD }} \
+            -e EV_STORE_DATASOURCE_USERNAME=${{ secrets.EV_STORE_DATASOURCE_USERNAME }} \
+            -e EV_STORE_DATASOURCE_PASSWORD=${{ secrets.EV_STORE_DATASOURCE_PASSWORD }} \
             -p 8080:8080 \
             ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
 #        run: docker run -d -p 8080:8080 --name ev-store-container ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
