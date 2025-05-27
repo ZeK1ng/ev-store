@@ -32,7 +32,9 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build docker image
+        working-directory: ./ev-store-be
         run: docker build -t  ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest ./ev-store-be
+
 
       - name: Push image to docker hub
         run: docker push ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
