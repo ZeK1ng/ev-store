@@ -28,8 +28,8 @@ const Header: React.FC = () => {
                 justify="space-between"
                 px={{ base: 4, md: 8 }}
                 py={4}
-                backdropFilter="saturate(180%) blur(10px)"
-                style={{ WebkitBackdropFilter: 'saturate(180%) blur(10px)' }}
+                backdropFilter="saturate(300%) blur(15px)"
+                style={{ WebkitBackdropFilter: 'saturate(300%) blur(15px)' }}
                 shadow="lg"
                 borderBottomWidth="1px">
                 <Flex align="center">
@@ -87,8 +87,8 @@ const Header: React.FC = () => {
                         width="100%"
                         shadow="md"
                         zIndex="dropdown"
-                        backdropFilter="saturate(180%) blur(10px)"
-                        style={{ WebkitBackdropFilter: 'saturate(180%) blur(10px)' }}
+                        backdropFilter="saturate(300%) blur(15px)"
+                        style={{ WebkitBackdropFilter: 'saturate(300%) blur(15px)' }}
                     >
                         <VStack as="nav" gap={4} align="stretch" p={4}>
                             <RouterLink to="/" onClick={onClose}>Home</RouterLink>
@@ -115,16 +115,16 @@ const Header: React.FC = () => {
                                 <RouterLink to="/login" >
                                     LogIn <FaSignInAlt />
                                 </RouterLink>
+                            </Button>
 
-                                <Button 
-                                    variant="outline"
-                                    asChild
-                                    onClick={onClose}
-                                >
-                                    <RouterLink to="/profile">
-                                        Profile <FaUserAlt />
-                                    </RouterLink>
-                                </Button>
+                            <Button
+                                variant="outline"
+                                asChild
+                                onClick={onClose}
+                            >
+                                <RouterLink to="/profile">
+                                    Profile <FaUserAlt />
+                                </RouterLink>
                             </Button>
                         </VStack>
                     </Box>
