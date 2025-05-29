@@ -192,10 +192,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     public void resetPassword(final ResetPasswordRequest request) {
-        final Optional<User> userOpt = userService.findUser(request.getUsername());
-        if (userOpt.isEmpty()) throw new UsernameNotFoundException("User not found");
+        final Optional<User> userOtp = userService.findUser(request.getUsername());
+        if (userOtp.isEmpty()) throw new UsernameNotFoundException("User not found");
 
-        final User user = userOpt.get();
+        final User user = userOtp.get();
 
         if (user.getOtpVerificationExpiration() == null || user.getOtpVerificationExpiration().isBefore(LocalDateTime.now())) {
             throw new VerificationCodeExpiredException("Verification code expired");

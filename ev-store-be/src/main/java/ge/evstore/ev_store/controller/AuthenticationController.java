@@ -37,7 +37,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@Validated @RequestBody final VerifyUserRequest verifyUserRequest) {
+    public ResponseEntity<AuthResponse> verifyUser(@Validated @RequestBody final VerifyUserRequest verifyUserRequest) {
         log.info("Trying to verifyUserRequest:{}", verifyUserRequest);
         return ResponseEntity.ok(authService.verifyUser(verifyUserRequest));
     }
