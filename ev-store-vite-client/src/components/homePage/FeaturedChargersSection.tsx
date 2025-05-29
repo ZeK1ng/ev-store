@@ -49,14 +49,13 @@ const FeaturedIChargersSection = ({
             >
                 <GridItem
                     rowSpan={{ base: 1, md: 2 }}
-                    bg="gray.200"
-                    borderRadius="md"
                     p={6}
                     textAlign="start"
+                    bg="whiteAlpha.200" borderRadius="lg" shadow="md"
                 >
                     <Heading size="md" mb={3}>{first.title}</Heading>
                     <Text mb={4} lineClamp={8}>{first.description}</Text>
-                    <Button size="sm" variant="subtle">{learnMoreLabel}</Button>
+                    <Button size="sm">{learnMoreLabel}</Button>
                     <Image
                         src={first.imageUrl}
                         alt={first.title}
@@ -69,10 +68,10 @@ const FeaturedIChargersSection = ({
                     />
                 </GridItem>
 
-                <GridItem bg="white" borderRadius="md" p={6} textAlign="start">
+                <GridItem bg="whiteAlpha.200" borderRadius="lg" shadow="md" p={6} textAlign="start">
                     <Heading size="md" mb={3}>{second.title}</Heading>
                     <Text mb={4} lineClamp={3}>{second.description}</Text>
-                    <Button size="sm" variant="subtle">{learnMoreLabel}</Button>
+                    <Button size="sm">{learnMoreLabel}</Button>
                     <Image
                         src={second.imageUrl}
                         alt={second.title}
@@ -86,10 +85,10 @@ const FeaturedIChargersSection = ({
                     />
                 </GridItem>
 
-                <GridItem bg="white" borderRadius="md" p={6} textAlign="start">
+                <GridItem bg="whiteAlpha.200" borderRadius="lg" shadow="md" p={6} textAlign="start">
                     <Heading size="md" mb={3}>{third.title}</Heading>
                     <Text mb={4} lineClamp={3}>{third.description}</Text>
-                    <Button size="sm" variant="subtle">{learnMoreLabel}</Button>
+                    <Button size="sm">{learnMoreLabel}</Button>
                     <Image
                         src={third.imageUrl}
                         alt={third.title}
@@ -104,14 +103,14 @@ const FeaturedIChargersSection = ({
 
                 <GridItem
                     colSpan={{ base: 1, md: 2 }}
-                    bg="green.300"
-                    borderRadius="md"
+                    bg="green.400"
+                    borderRadius="lg" shadow="md"
                     p={6}
                     textAlign="start"
                 >
                     <Heading size="md" mb={3}>{fourth.title}</Heading>
                     <Text mb={4} lineClamp={3}>{fourth.description}</Text>
-                    <Button size="sm" variant="subtle">{learnMoreLabel}</Button>
+                    <Button size="sm">{learnMoreLabel}</Button>
                     <Image
                         src={fourth.imageUrl}
                         alt={fourth.title}
