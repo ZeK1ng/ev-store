@@ -53,10 +53,10 @@ const FeaturedOBDSection = ({
                 templateRows={{ base: 'auto auto', md: 'repeat(2, auto)' }}
                 gap={6}
             >
-                <GridItem bg="white" borderRadius="md" p={6} textAlign="start">
+                <GridItem bg="whiteAlpha.200" borderRadius="lg" shadow="md" p={6} textAlign="start">
                     <Heading size="md" mb={2}>{first.title}</Heading>
                     <Text mb={4} lineClamp={3}>{first.description}</Text>
-                    <Button size="sm" variant="subtle" mb={4}>{learnMoreLabel}</Button>
+                    <Button size="sm" mb={4}>{learnMoreLabel}</Button>
                     <Image
                         src={first.imageUrl}
                         alt={first.title}
@@ -67,10 +67,10 @@ const FeaturedOBDSection = ({
                     />
                 </GridItem>
 
-                <GridItem bg="gray.200" borderRadius="md" p={6} textAlign="start">
+                <GridItem bg="green.400" borderRadius="lg" shadow="md" p={6} textAlign="start">
                     <Heading size="md" mb={2}>{second.title}</Heading>
                     <Text mb={4} lineClamp={3}>{second.description}</Text>
-                    <Button size="sm" variant="subtle" mb={4}>{learnMoreLabel}</Button>
+                    <Button size="sm" mb={4}>{learnMoreLabel}</Button>
                     <Image
                         src={second.imageUrl}
                         alt={second.title}
@@ -81,10 +81,10 @@ const FeaturedOBDSection = ({
                     />
                 </GridItem>
 
-                <GridItem bg="white" borderRadius="md" p={6} textAlign="start">
+                <GridItem bg="whiteAlpha.200" borderRadius="lg" p={6} shadow="md" textAlign="start">
                     <Heading size="md" mb={2}>{third.title}</Heading>
                     <Text mb={4} lineClamp={3}>{third.description}</Text>
-                    <Button size="sm" variant="subtle" mb={4}>{learnMoreLabel}</Button>
+                    <Button size="sm" mb={4}>{learnMoreLabel}</Button>
                     <Image
                         src={third.imageUrl}
                         alt={third.title}
@@ -97,14 +97,13 @@ const FeaturedOBDSection = ({
 
                 <GridItem
                     colSpan={{ base: 1, md: 2 }}
-                    bg="green.300"
-                    borderRadius="md"
+                    bg="green.400" borderRadius="lg" shadow="md"
                     p={6}
                     textAlign="start"
                 >
                     <Heading size="md" mb={2}>{fourth.title}</Heading>
                     <Text mb={4} lineClamp={3}>{fourth.description}</Text>
-                    <Button size="sm" variant="subtle" mb={4}>{learnMoreLabel}</Button>
+                    <Button size="sm" mb={4}>{learnMoreLabel}</Button>
                     <Image
                         src={fourth.imageUrl}
                         alt={fourth.title}
@@ -115,10 +114,10 @@ const FeaturedOBDSection = ({
                     />
                 </GridItem>
 
-                <GridItem bg="gray.200" borderRadius="md" p={6} textAlign="start">
+                <GridItem bg="whiteAlpha.200" borderRadius="lg" shadow="md" p={6} textAlign="start">
                     <Heading size="md" mb={2}>{fifth.title}</Heading>
                     <Text mb={4} lineClamp={3}>{fifth.description}</Text>
-                    <Button size="sm" variant="subtle" mb={4}>{learnMoreLabel}</Button>
+                    <Button size="sm" mb={4}>{learnMoreLabel}</Button>
                     <Image
                         src={fifth.imageUrl}
                         alt={fifth.title}

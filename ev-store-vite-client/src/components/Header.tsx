@@ -13,22 +13,25 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
-import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose } from 'react-icons/fa'
+import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose, FaUserAlt } from 'react-icons/fa'
 
 const Header: React.FC = () => {
     const { open, onOpen, onClose } = useDisclosure()
     const { colorMode, toggleColorMode } = useColorMode()
 
+
     return (
-        <Box position="sticky" top={0} zIndex="banner">
+        <Box position="sticky" top={0} zIndex="2">
             <Flex
                 as="header"
                 align="center"
                 justify="space-between"
                 px={{ base: 4, md: 8 }}
                 py={4}
-                borderBottomWidth="1px"
-            >
+                backdropFilter="saturate(200%) blur(15px)"
+                style={{ WebkitBackdropFilter: 'saturate(200%) blur(15px)' }}
+                shadow="lg"
+                borderBottomWidth="1px">
                 <Flex align="center">
                     <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />
                     <Heading size="md">My App</Heading>
@@ -56,6 +59,12 @@ const Header: React.FC = () => {
                             LogIn <FaSignInAlt />
                         </RouterLink>
                     </Button>
+
+                    <Button variant="outline" asChild>
+                        <RouterLink to="/profile">
+                            Profile <FaUserAlt />
+                        </RouterLink>
+                    </Button>
                 </HStack>
 
                 <IconButton
@@ -68,47 +77,60 @@ const Header: React.FC = () => {
                 </IconButton>
             </Flex>
 
-            {open && (
+            {
+                open && (
 
-                <Box
-                    position="absolute"
-                    top="100%"
-                    left={0}
-                    width="100%"
-                    shadow="md"
-                    zIndex="dropdown"
-                >
-                    <VStack as="nav" gap={4} align="stretch" p={4}>
-                        <RouterLink to="/" onClick={onClose}>Home</RouterLink>
-                        <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
-                        <RouterLink to="/contact" onClick={onClose}>Contact</RouterLink>
+                    <Box
+                        position="absolute"
+                        top="100%"
+                        left={0}
+                        width="100%"
+                        shadow="lg"
+                        zIndex="2"
+                        backdropFilter="saturate(200%) blur(15px)"
+                        style={{ WebkitBackdropFilter: 'saturate(200%) blur(15px)' }}
+                    >
+                        <VStack as="nav" gap={4} align="stretch" p={4}>
+                            <RouterLink to="/" onClick={onClose}>Home</RouterLink>
+                            <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
+                            <RouterLink to="/contact" onClick={onClose}>Contact</RouterLink>
 
-                        <IconButton
-                            aria-label="Toggle theme"
-                            onClick={() => {
-                                toggleColorMode()
-                            }}
-                            variant="outline"
-                        >
-                            {colorMode === 'light' ? <FaMoon /> : <FaSun />}
-                        </IconButton>
+                            <IconButton
+                                aria-label="Toggle theme"
+                                onClick={() => {
+                                    toggleColorMode()
+                                }}
+                                variant="outline"
+                            >
+                                {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                            </IconButton>
 
-                        <LangSwitcher />
+                            <LangSwitcher />
 
-                        <Button
-                            variant="solid"
-                            colorScheme="green"
-                            asChild
-                            onClick={onClose}
-                        >
-                            <RouterLink to="/login" >
-                                LogIn <FaSignInAlt />
-                            </RouterLink>
-                        </Button>
-                    </VStack>
-                </Box>
-            )}
-        </Box>
+                            <Button
+                                variant="solid"
+                                asChild
+                                onClick={onClose}
+                            >
+                                <RouterLink to="/login" >
+                                    LogIn <FaSignInAlt />
+                                </RouterLink>
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                asChild
+                                onClick={onClose}
+                            >
+                                <RouterLink to="/profile">
+                                    Profile <FaUserAlt />
+                                </RouterLink>
+                            </Button>
+                        </VStack>
+                    </Box>
+                )
+            }
+        </Box >
     )
 }
 
