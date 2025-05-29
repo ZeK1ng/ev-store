@@ -45,7 +45,7 @@ const LoginPage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="md" width="full">
+                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
                         <HStack gap={3} align="center" justify="flex-start">
                             <Icon as={BsImage} boxSize={8} />
@@ -73,7 +73,7 @@ const LoginPage = () => {
                                         size="lg"
                                         type="email"
                                         placeholder={t('login.emailPlaceholder')}
-                                        {...register("email", { required: t('login.emailRequired')})}
+                                        {...register("email", { required: t('login.emailRequired') })}
                                     />
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
                                 </Field.Root>
@@ -91,7 +91,7 @@ const LoginPage = () => {
 
                                 <HStack justify="flex-end" mt={-2} mb={3}>
                                     <Link to="/forgot-password">
-                                        <Text fontSize="sm" color="blue.500">
+                                        <Text fontSize="sm" color="blue.500" textDecoration="underline">
                                             {t('login.forgotPassword')}
                                         </Text>
                                     </Link>
@@ -112,8 +112,8 @@ const LoginPage = () => {
                             <Text fontSize="sm" >
                                 {t('login.noAccount')}
                                 {' '}
-                                <Link to="/signup">
-                                    <Text as="span">
+                                <Link to="/signup" >
+                                    <Text as="span" textDecoration="underline">
                                         {t('login.signUp')}
                                     </Text>
                                 </Link>

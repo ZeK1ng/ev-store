@@ -56,7 +56,7 @@ const ForgotPasswordPage = () => {
                 minH="100vh"
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="md" textAlign="center">
+                <Container textAlign="center" maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Heading mb={4}>
                         {t('forgotPassword.verifyPin.title')}
                     </Heading>
@@ -96,7 +96,7 @@ const ForgotPasswordPage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="md" width="full">
+                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
                         <HStack gap={3} align="center">
                             <Icon as={BsImage} boxSize={8} />
@@ -117,7 +117,9 @@ const ForgotPasswordPage = () => {
                         <Box as="form" onSubmit={handleSubmit(onSubmit)} width="full">
                             <Stack gap={5}>
                                 <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">Email</Field.Label>
+                                    <Field.Label fontWeight="medium" fontSize="sm">
+                                        {t('forgotPassword.email')}
+                                    </Field.Label>
                                     <Input
                                         size="lg"
                                         type="email"
@@ -144,7 +146,7 @@ const ForgotPasswordPage = () => {
                                         {t('forgotPassword.rememberPassword')}
                                         {' '}
                                         <Link to="/login">
-                                            <Text as="span">
+                                            <Text as="span" textDecoration="underline">
                                                 {t('forgotPassword.loginLink')}
                                             </Text>
                                         </Link>

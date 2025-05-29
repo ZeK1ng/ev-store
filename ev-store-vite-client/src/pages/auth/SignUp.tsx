@@ -12,7 +12,7 @@ import {
     Icon,
     Field,
     PinInput,
-
+    Flex
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -22,7 +22,8 @@ import { useTranslation } from 'react-i18next'
 
 
 interface SignupFormValues {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -38,7 +39,8 @@ const SignupPage = () => {
         watch,
     } = useForm<SignupFormValues>({
         defaultValues: {
-            fullName: "",
+            firstName: "",
+            lastName: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -108,7 +110,7 @@ const SignupPage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="md" width="full">
+                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
                         <HStack gap={3} align="center">
                             <Icon as={BsImage} boxSize={8} />
@@ -128,18 +130,38 @@ const SignupPage = () => {
 
                         <Box as="form" onSubmit={handleSubmit(onSubmit)} width="full">
                             <Stack gap={5}>
-                                <Field.Root id="fullName" invalid={!!errors.fullName}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('signup.fullName')}
-                                    </Field.Label>
-                                    <Input
-                                        size="lg"
-                                        type="text"
-                                        placeholder={t('signup.fullNamePlaceholder')}
-                                        {...register("fullName", { required: t('signup.fullNameRequired') })}
-                                    />
-                                    {errors.fullName && <Field.ErrorText>{errors.fullName.message}</Field.ErrorText>}
-                                </Field.Root>
+                                <Flex gap={4}>
+                                    <Box flex={1}>
+                                        <Field.Root id="firstName" invalid={!!errors.firstName}>
+                                            <Field.Label fontWeight="medium" fontSize="sm">
+                                                {t('signup.firstName')}
+                                            </Field.Label>
+                                            <Input
+                                                size="lg"
+                                                type="text"
+                                                placeholder={t('signup.firstNamePlaceholder')}
+                                                {...register("firstName", { required: t('signup.firstNameRequired') })}
+                                            />
+                                            {errors.firstName && <Field.ErrorText>{errors.firstName.message}</Field.ErrorText>}
+                                        </Field.Root>
+                                    </Box>
+                                    <Box flex={1}>
+                                    <Field.Root id="lastName" invalid={!!errors.lastName}>
+                                            <Field.Label fontWeight="medium" fontSize="sm">
+                                                {t('signup.lastName')}
+                                            </Field.Label>
+                                            <Input
+                                                size="lg"
+                                                type="text"
+                                                placeholder={t('signup.lastNamePlaceholder')}
+                                                {...register("lastName", { required: t('signup.lastNameRequired') })}
+                                            />
+                                            {errors.lastName && <Field.ErrorText>{errors.lastName.message}</Field.ErrorText>}
+                                        </Field.Root>
+                                    </Box>
+                                </Flex>
+
+
 
                                 <Field.Root id="email" invalid={!!errors.email}>
                                     <Field.Label fontWeight="medium" fontSize="sm">
@@ -196,7 +218,7 @@ const SignupPage = () => {
                                         {t('signup.alreadyHaveAccount')}
                                         {' '}
                                         <Link to="/login">
-                                            <Text as="span">
+                                            <Text as="span" textDecoration="underline">
                                                 {t('signup.loginLink')}
                                             </Text>
                                         </Link>

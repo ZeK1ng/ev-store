@@ -59,7 +59,7 @@ const ProfilePage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Box borderRadius="lg" shadow="md" p={8} maxW="600px" w="full" bg="whiteAlpha.200">
+                <Box bg="whiteAlpha.50" borderRadius="lg" shadow="md" p={8} maxW="600px" w="full">
                     <Heading textAlign="center" mb={6}>{t('profile.title')}</Heading>
                     <Separator mb={6} />
                     <Stack gap={4}>
