@@ -19,5 +19,19 @@
       "title": "Simplify Your EV Charging",
       "description": "Everything you need for convenient, reliable, and hassle-free EV charging."
     }
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "description": "Have questions or need assistance? Our support team is here to help you with all your EV charging needs.",
+    "phone": "Phone",
+    "phoneButton": "Call Us",
+    "phoneNumber": "+995 568 69 83 00",
+    "email": "Email",
+    "emailButton": "Email Us",
+    "emailAddress": "evstoresuppot@gmail.com",
+    "address": "Address",
+    "addressName": "9a, David Guramishvili Ave",
+    "addressCity": "Tbilisi, Georgia",
+    "mapTitle": "Find Us on the Map"
   }
 }
