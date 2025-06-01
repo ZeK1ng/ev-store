@@ -42,7 +42,7 @@ const Header: React.FC = () => {
                     <RouterLink to="/">Home</RouterLink>
                     <RouterLink to="/catalog">Catalog</RouterLink>
                     <RouterLink to="/about-us">About Us</RouterLink>
-                    <RouterLink to="/contact">Contact</RouterLink>
+                    <RouterLink to="/contact-us">Contact</RouterLink>
 
                     <IconButton
                         aria-label="Toggle theme"
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
                         <VStack as="nav" gap={4} align="stretch" p={4}>
                             <RouterLink to="/" onClick={onClose}>Home</RouterLink>
                             <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
-                            <RouterLink to="/contact" onClick={onClose}>Contact</RouterLink>
+                            <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
 
                             <IconButton
                                 aria-label="Toggle theme"
