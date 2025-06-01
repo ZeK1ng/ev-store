@@ -32,7 +32,7 @@ const ContactUsPage: React.FC = () => {
 
         <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
           {/* Phone Card */}
-          <Box borderRadius="lg" p={6} textAlign="center">
+          <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
               <Icon as={FaPhone} boxSize={8} color="blue.400" />
               <Heading size="md">Phone</Heading>
@@ -46,7 +46,7 @@ const ContactUsPage: React.FC = () => {
           </Box>
 
           {/* Email Card */}
-          <Box borderRadius="lg" p={6} textAlign="center">
+          <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
               <Icon as={FaEnvelope} boxSize={8} color="green.400" />
               <Heading size="md">Email</Heading>
@@ -60,7 +60,7 @@ const ContactUsPage: React.FC = () => {
           </Box>
 
           {/* Address Card */}
-          <Box borderRadius="lg" p={6} textAlign="center">
+          <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
               <Icon as={FaMapMarkerAlt} boxSize={8} color="red.400" />
               <Heading size="md">Address</Heading>
