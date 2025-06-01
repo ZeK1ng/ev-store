@@ -14,7 +14,9 @@ const LangSwitcher = () => {
 
   return (
     <Select.Root
+      variant={{ base: "subtle", md: "outline" }}
       collection={langs}
+      size={{ base: "lg", md: "xs" }}
       value={[i18n.language]}
       width={{ base: "100%", md: "120px" }}
       positioning={{ sameWidth: true }}
