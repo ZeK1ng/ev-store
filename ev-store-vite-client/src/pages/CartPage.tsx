@@ -14,10 +14,18 @@ import {
     Field,
     NumberInput,
     Badge,
+    EmptyState,
+    VStack,
+    ButtonGroup
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
 import { LuMinus, LuPlus } from 'react-icons/lu';
+import { useTranslation } from "react-i18next";
+import { LuShoppingCart } from "react-icons/lu"
+import { Link as RouterLink } from 'react-router-dom'
+
+
 
 interface CartItem {
     id: string;
@@ -37,7 +45,7 @@ interface ReservationFormValues {
 }
 
 const CartPage = () => {
-
+    const { t } = useTranslation('cart');
     const isAuthenticated = false;
     const [cartItems, setCartItems] = useState<CartItem[]>([
         {
@@ -117,16 +125,18 @@ const CartPage = () => {
     return (
         <Box minH="100vh" px={{ base: 4, md: 8 }} py={8}>
             <Flex mb={6} align="center">
-                <Heading size="xl">Reservation Cart</Heading>
+                <Heading size="xl">
+                    {t('title')}
+                </Heading>
                 <Badge px={2} ml={4} variant="solid">
-                    {cartItems.length} item{cartItems.length !== 1 && 's'}
+                    {cartItems.length} {t('quantity')}
                 </Badge>
             </Flex>
 
             <Flex direction={{ base: 'column', lg: 'row' }} gap={8}>
                 <Box flex={2} borderRadius="md" border="xs" borderColor="border" p={6} h="max-content">
                     <Heading size="lg" mb={4}>
-                        Items to Reserve
+                        {t('cart.title')}
                     </Heading>
 
                     <Stack gap={4}>
@@ -156,7 +166,7 @@ const CartPage = () => {
                                     </Box>
                                 </HStack>
 
-                                <HStack gap={4} alignSelf={{base: 'end', md: 'center'}}>
+                                <HStack gap={4} alignSelf={{ base: 'end', md: 'center' }}>
                                     <Field.Root id={`quantity-${item.id}`} invalid={false}>
                                         <NumberInput.Root defaultValue={String(item.quantity)} unstyled spinOnPress={false}
                                             min={1} max={50} step={1}
@@ -190,7 +200,6 @@ const CartPage = () => {
                                         size="sm"
                                         colorScheme="red"
                                         variant="outline"
-                                        color="red.500"
                                         onClick={() => removeItem(item.id)}
                                     >
                                         <FaTrash />
@@ -200,26 +209,47 @@ const CartPage = () => {
                         ))}
 
                         {cartItems.length === 0 && (
-                            <Text textAlign="center" color="gray.500">
-                                Your cart is empty.
-                            </Text>
+                            <EmptyState.Root>
+                                <EmptyState.Content>
+                                    <EmptyState.Indicator>
+                                        <LuShoppingCart />
+                                    </EmptyState.Indicator>
+                                    <VStack textAlign="center">
+                                        <EmptyState.Title>
+                                            {t('cart.emptyTitle')}
+                                        </EmptyState.Title>
+                                        <EmptyState.Description>
+                                            {t('cart.emptyDescription')}
+                                        </EmptyState.Description>
+                                    </VStack>
+                                    <ButtonGroup>
+                                        <Button>
+                                            <RouterLink to="/catalog">
+                                                {t('cart.continueShopping')}
+                                            </RouterLink>
+                                        </Button>
+                                    </ButtonGroup>
+                                </EmptyState.Content>
+                            </EmptyState.Root>
                         )}
                     </Stack>
                 </Box>
 
                 <Box flex={1} borderRadius="md" border="xs" borderColor="border" p={6} h="max-content">
                     <Heading size="lg" mb={4}>
-                        Reservation Details
+                        {t('reservation.title')}
                     </Heading>
 
                     {!isAuthenticated ? (
                         <Box as="form" onSubmit={handleSubmit(onSubmit)}>
                             <Stack gap={4}>
                                 <Field.Root id="fullName" invalid={!!errors.fullName}>
-                                    <Field.Label>Full Name *</Field.Label>
+                                    <Field.Label>
+                                        {t('reservation.fullName')} *
+                                    </Field.Label>
                                     <Input
-                                        placeholder="John Doe"
-                                        {...register('fullName', { required: 'Full name is required' })}
+                                        placeholder={t('reservation.fullNamePlaceholder')}
+                                        {...register('fullName', { required: t('reservation.fullNameError') })}
                                     />
                                     {errors.fullName && (
                                         <Field.ErrorText>{errors.fullName.message}</Field.ErrorText>
@@ -227,16 +257,14 @@ const CartPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label>Email Address *</Field.Label>
+                                    <Field.Label>
+                                        {t('reservation.email')} *
+                                    </Field.Label>
                                     <Input
-                                        placeholder="you@example.com"
+                                        placeholder={t('reservation.emailPlaceholder')}
                                         type="email"
                                         {...register('email', {
-                                            required: 'Email is required',
-                                            pattern: {
-                                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                                message: 'Invalid email address',
-                                            },
+                                            required: t('reservation.emailError'),
                                         })}
                                     />
                                     {errors.email && (
@@ -245,10 +273,12 @@ const CartPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="phone" invalid={!!errors.phone}>
-                                    <Field.Label>Phone Number *</Field.Label>
+                                    <Field.Label>
+                                        {t('reservation.phone')} *
+                                    </Field.Label>
                                     <Input
-                                        placeholder="+1 (555) 123-4567"
-                                        {...register('phone', { required: 'Phone number is required' })}
+                                        placeholder={t('reservation.phonePlaceholder')}
+                                        {...register('phone', { required: t('reservation.phoneError') })}
                                     />
                                     {errors.phone && (
                                         <Field.ErrorText>{errors.phone.message}</Field.ErrorText>
@@ -256,10 +286,12 @@ const CartPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="address" invalid={!!errors.address}>
-                                    <Field.Label>Address *</Field.Label>
+                                    <Field.Label>
+                                        {t('reservation.address')} *
+                                    </Field.Label>
                                     <Input
-                                        placeholder="123 Main Street, City, Country"
-                                        {...register('address', { required: 'Address is required' })}
+                                        placeholder={t('reservation.addressPlaceholder')}
+                                        {...register('address', { required: t('reservation.addressError') })}
                                     />
                                     {errors.address && (
                                         <Field.ErrorText>{errors.address.message}</Field.ErrorText>
@@ -267,28 +299,24 @@ const CartPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="notes" invalid={false}>
-                                    <Field.Label>Special Notes</Field.Label>
+                                    <Field.Label>
+                                        {t('reservation.notes')}
+                                    </Field.Label>
                                     <Textarea
-                                        placeholder="Any special requirements or preferred pickup/delivery time..."
+                                        placeholder={t('reservation.notesPlaceholder')}
                                         {...register('notes')}
                                     />
                                 </Field.Root>
 
-                                <Flex justify="space-between" fontSize="sm" mt={6}>
-                                    <Text>
-                                        Subtotal ({cartItems.length} item
-                                        {cartItems.length !== 1 && 's'})
-                                    </Text>
-                                    <Text fontWeight="bold">${subtotal.toFixed(2)}</Text>
-                                </Flex>
-
                                 <Flex justify="space-between" fontSize="lg" fontWeight="bold">
-                                    <Text>Total Value</Text>
+                                    <Text>
+                                        {t('reservation.totalAmount')}
+                                    </Text>
                                     <Text>${totalValue.toFixed(2)}</Text>
                                 </Flex>
 
                                 <Text fontSize="xs" color="gray.500">
-                                    * This is a reservation only. No payment required now.
+                                    {t('reservation.noPayment')}
                                 </Text>
 
                                 <Button
@@ -296,34 +324,29 @@ const CartPage = () => {
                                     size="lg"
                                     loading={isSubmitting}
                                 >
-                                    Reserve Items
+                                    {t('reservation.submit')}
                                 </Button>
 
-                                <Text fontSize="xs" color="gray.500" textAlign="center">
-                                    By reserving, you agree to our terms. We'll contact you within 24 hours.
+                                <Text fontSize="xs" color="gray.500" >
+                                    {t('reservation.concent')}
                                 </Text>
                             </Stack>
                         </Box>
                     ) : (
                         <Stack gap={4}>
-                            <Flex justify="space-between" fontSize="lg">
-                                <Text>
-                                    Subtotal ({cartItems.length} item{cartItems.length !== 1 && 's'})
-                                </Text>
-                                <Text fontWeight="bold">${subtotal.toFixed(2)}</Text>
-                            </Flex>
-
                             <Flex justify="space-between" fontSize="xl" fontWeight="bold" mb={4}>
-                                <Text>Total Value</Text>
+                                <Text>
+                                    {t('reservation.totalAmount')}
+                                </Text>
                                 <Text>${totalValue.toFixed(2)}</Text>
                             </Flex>
 
                             <Button size="lg" type="submit">
-                                Reserve Items
+                                {t('reservation.reserve')}
                             </Button>
 
-                            <Text fontSize="xs" color="gray.500" textAlign="center">
-                                * This is a reservation only. No payment required now.
+                            <Text fontSize="xs" color="gray.500">
+                                {t('reservation.concent')}
                             </Text>
                         </Stack>
                     )}

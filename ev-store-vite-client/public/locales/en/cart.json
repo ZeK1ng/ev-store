@@ -2,5 +2,34 @@
     "details": {
         "quantity": "quantity",
         "addToCart": "Add to Cart"
+    },
+    "title": "Reservation Cart",
+    "quantity": "items",
+    "cart": {
+        "title": "Items to Reserve",
+        "emptyTitle": "Your cart is empty.",
+        "emptyDescription": "Add items to your cart to reserve them.",
+        "continueShopping": "Continue Shopping"
+    },
+    "reservation": {
+        "title": "Reservation Details",
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "address": "Address",
+        "fullNamePlaceholder": "Enter your full name",
+        "emailPlaceholder": "Enter your email address",
+        "phonePlaceholder": "Enter your phone number",
+        "addressPlaceholder": "Enter your address",
+        "fullNameError": "Full name is required.",
+        "emailError": "Valid email is required.",
+        "phoneError": "Phone number is required.",
+        "addressError": "Address is required.",
+        "specialRequests": "Special Requests",
+        "specialRequestsPlaceholder": "Any special requests or notes",
+        "totalAmount": "Total Amount",
+        "noPayment": "No payment required for reservations.",
+        "concent": "By reserving, you agree to our terms. We'll contact you within 24 hours.",
+        "submit": "Reserve Items"
     }
 }
