@@ -1,13 +1,146 @@
-import PopularProductsSlider from '@/components/homePage/PopularProductsSlider'
+import { useState } from 'react';
+import {
+    Box,
+    Flex,
+    Image,
+    Heading,
+    Text,
+    Stack,
+    Button,
+    HStack,
+    IconButton,
+    NumberInput,
+    Field,
+} from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
+import { LuMinus, LuPlus } from 'react-icons/lu';
+import PopularProductsSlider from '@/components/homePage/PopularProductsSlider';
 
+interface FormValues {
+    quantity: number;
+}
 
 const ProductDetailsPage = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    const product = {
+        id: '1',
+        nameEn: 'Fast Charger',
+        descriptionEn: 'High-speed EV charger for home use.',
+        price: 299.99,
+        mainImage: 'https://placehold.co/600x400',
+        images: [
+            'https://placehold.co/100x100?text=Img1',
+            'https://placehold.co/100x100?text=Img2',
+            'https://placehold.co/100x100?text=Img3',
+            'https://placehold.co/100x100?text=Img4',
+            'https://placehold.co/100x100?text=Img5',
+            'https://placehold.co/100x100?text=Img6',
+            'https://placehold.co/100x100?text=Img7',
+            'https://placehold.co/100x100?text=Img8',
+            'https://placehold.co/100x100?text=Img9',
+        ],
+    };
+
+    const allThumbnails = [product.mainImage, ...product.images];
+    const [activeImage, setActiveImage] = useState<string>(product.mainImage);
+
+    const {
+        register,
+        formState: { errors },
+    } = useForm<FormValues>({
+        defaultValues: { quantity: 1 },
+    });
+
     return (
-        
+        <Box>
+            <Flex direction={{ base: 'column', md: 'row' }} px={{ base: 4, md: 16 }} pt={12}>
+                <Box flex={1}>
+                    <Image
+                        src={activeImage}
+                        alt={product.nameEn}
+                        objectFit="cover"
+                        w="100%"
+                        h={{ base: '300px', md: '500px' }}
+                        borderRadius="md"
+                    />
 
+                    <HStack
+                        mt={4}
+                        gap={2}
+                        overflowX="auto"
+                        flexWrap="nowrap"
+                        css={{
+                            '&::-webkit-scrollbar': { display: 'none' },
+                            '-ms-overflow-style': 'none',
+                            'scrollbar-width': 'none',
+                        }}
+                    >
+                        {allThumbnails.map((src, idx) => (
+                            <IconButton
+                                key={idx}
+                                onClick={() => setActiveImage(src)}
+                                aria-label={`Thumbnail ${idx + 1}`}
+                                border="md"
+                                borderColor={src === activeImage ? 'green.500' : 'blackAlpha.200'}
+                                borderRadius="md"
+                                _hover={{ borderColor: 'green.400' }}
+                                cursor="pointer"
+                                boxSize="50px"
+                                overflow={'hidden'}
+                            >
+                                <Image
+                                    src={src}
+                                    alt={`${product.nameEn} thumbnail ${idx + 1}`}
+                                />
+                            </IconButton>
+                        ))}
+                    </HStack>
+                </Box>
 
-        < PopularProductsSlider />
-    )
-}
+                <Box flex={1} pl={{ base: 0, md: 6 }} pt={{ base: 4, md: 0 }}>
+                    <Stack gap={4}>
+                        <Heading size="2xl">{product.nameEn}</Heading>
+                        <Text fontSize="lg" color="gray.500">
+                            {product.descriptionEn}
+                        </Text>
+                        <Text fontSize="2xl" fontWeight="bold">
+                            ${product.price.toFixed(2)}
+                        </Text>
+
+                        <Field.Root id="quantity" invalid={!!errors.quantity}>
+                            <Field.Label>Quantity</Field.Label>
+                            <NumberInput.Root unstyled defaultValue="1" spinOnPress={false} min={1} max={1000}>
+                                <HStack gap={2}>
+                                    <NumberInput.DecrementTrigger asChild>
+                                        <IconButton variant="outline" size="sm" aria-label="Decrease quantity">
+                                            <LuMinus />
+                                        </IconButton>
+                                    </NumberInput.DecrementTrigger>
+                                    <NumberInput.Input
+                                        textAlign="center"
+                                        fontSize="lg"
+                                        maxW="3ch"
+                                        {...register('quantity')}
+                                    />
+                                    <NumberInput.IncrementTrigger asChild>
+                                        <IconButton variant="outline" size="sm" aria-label="Increase quantity">
+                                            <LuPlus />
+                                        </IconButton>
+                                    </NumberInput.IncrementTrigger>
+                                </HStack>
+                            </NumberInput.Root>
+                        </Field.Root>
+
+                        <Button size="lg" colorScheme="blue">
+                            Add to Cart
+                        </Button>
+                    </Stack>
+                </Box>
+            </Flex>
+
+            <PopularProductsSlider />
+        </Box>
+    );
+};
 
 export default ProductDetailsPage;
