@@ -14,6 +14,7 @@ import AboutUs from '@/pages/AboutUs';
 import CatalogPage from '@/pages/CatalogPage';
 import ContactUsPage from '@/pages/ContactUsPage';
 import ProductDetailsPage from '@/pages/ProductDetailsPage';
+import CartPage from '@/pages/CartPage';
 import PageNotFound from '@/pages/PageNotFound';
 
 const AppRoutes = () => {
@@ -24,7 +25,6 @@ const AppRoutes = () => {
       <Route path="/cms-admin/items" element={<ItemsAdminPage />} />
       <Route path="/cms-admin/categories" element={<CategoriesAdminPage />} />
       <Route path="/cms-admin/items/:id" element={<ItemsManagementAdminPage />} />
-
       
       {/* Public routes */}
       <Route path="/" element={<HomePage />} />
@@ -32,6 +32,7 @@ const AppRoutes = () => {
       <Route path="/product/:id" element={<ProductDetailsPage />} />
       <Route path="/about-us" element={<AboutUs /> }/>
       <Route path="/contact-us" element={<ContactUsPage />} />
+      <Route path="/cart" element={<CartPage />} />
       
       {/* Auth routes */}
       <Route path="/login" element={<LoginPage />} />
