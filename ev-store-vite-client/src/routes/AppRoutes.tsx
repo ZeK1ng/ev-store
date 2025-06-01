@@ -13,6 +13,7 @@ import ForgotPassword from '@/pages/auth/ForgotPassword';
 import AboutUs from '@/pages/AboutUs';
 import CatalogPage from '@/pages/CatalogPage';
 import ContactUsPage from '@/pages/ContactUsPage';
+import ProductDetailsPage from '@/pages/ProductDetailsPage';
 import PageNotFound from '@/pages/PageNotFound';
 
 const AppRoutes = () => {
@@ -28,6 +29,7 @@ const AppRoutes = () => {
       {/* Public routes */}
       <Route path="/" element={<HomePage />} />
       <Route path="/catalog" element={<CatalogPage />} />
+      <Route path="/product/:id" element={<ProductDetailsPage />} />
       <Route path="/about-us" element={<AboutUs /> }/>
       <Route path="/contact-us" element={<ContactUsPage />} />
       

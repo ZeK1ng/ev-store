@@ -22,10 +22,11 @@ import {
     HStack,
     VStack,
     EmptyState,
-    List
+    List,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { FaChevronRight, FaChevronLeft, FaSearch} from 'react-icons/fa'
+import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
+import { Link } from 'react-router-dom';
 
 
 interface Item {
@@ -348,7 +349,9 @@ const CatalogPage = () => {
                                                 {t('popularProducts.buyNowLabel')}
                                             </Button>
                                             <Button variant="ghost">
-                                                {t('popularProducts.learnMoreLabel')}
+                                                <Link to={`/product/${product.id}`}>
+                                                    {t('popularProducts.learnMoreLabel')}
+                                                </Link>
                                             </Button>
                                         </Card.Footer>
                                     </Card.Root>

@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom';
 
 
 export interface Product {
@@ -22,7 +23,7 @@ export interface Product {
 }
 
 const dummyProducts: Product[] = Array.from({ length: 10 }, (_, i) => ({
-    id: `p${i + 1}`,
+    id: `${i + 1}`,
     title: `Product Title ${i + 1}`,
     description: `This is a description for product ${i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
     price: `$${(i + 1) * 50}`,
@@ -42,7 +43,7 @@ const PopularProductsSlider = () => {
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
             <Flex justify="space-between" align="center" mb={4}>
-                <Heading size={{base: '2xl', md: '4xl'}} textAlign={'left'}>{t('popularProducts.title')}</Heading>
+                <Heading size={{ base: '2xl', md: '4xl' }} textAlign={'left'}>{t('popularProducts.title')}</Heading>
                 <Flex>
                     <IconButton
                         aria-label="Scroll left"
@@ -97,7 +98,11 @@ const PopularProductsSlider = () => {
 
                             <Card.Footer gap="2">
                                 <Button variant="solid">{t('popularProducts.buyNowLabel')}</Button>
-                                <Button variant="ghost">{t('popularProducts.learnMoreLabel')}</Button>
+                                <Button variant="ghost">
+                                    <Link to={`/product/${product.id}`}>
+                                        {t('popularProducts.learnMoreLabel')}
+                                    </Link>
+                                </Button>
                             </Card.Footer>
                         </Card.Root>
                     </Box>

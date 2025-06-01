@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   Button,
@@ -13,7 +12,7 @@ import {
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 
-const ContactUsPage: React.FC = () => {
+const ContactUsPage = () => {
   const { t } = useTranslation('about')
 
   const phone = t('contact.phoneNumber');
