@@ -13,7 +13,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
-import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose, FaUserAlt } from 'react-icons/fa'
+import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose, FaUserAlt, FaShoppingCart } from 'react-icons/fa'
 
 const Header: React.FC = () => {
     const { open, onOpen, onClose } = useDisclosure()
@@ -42,17 +42,13 @@ const Header: React.FC = () => {
                     <RouterLink to="/">Home</RouterLink>
                     <RouterLink to="/catalog">Catalog</RouterLink>
                     <RouterLink to="/about-us">About Us</RouterLink>
-                    <RouterLink to="/contact">Contact</RouterLink>
+                    <RouterLink to="/contact-us">Contact</RouterLink>
 
-                    <IconButton
-                        aria-label="Toggle theme"
-                        onClick={toggleColorMode}
-                        variant="ghost"
-                    >
-                        {colorMode === 'light' ? <FaMoon /> : <FaSun />}
-                    </IconButton>
-
-                    <LangSwitcher />
+                    <Button variant="outline" asChild>
+                        <RouterLink to="/cart">
+                            <FaShoppingCart />
+                        </RouterLink>
+                    </Button>
 
                     <Button variant="outline" asChild>
                         <RouterLink to="/login">
@@ -65,6 +61,16 @@ const Header: React.FC = () => {
                             Profile <FaUserAlt />
                         </RouterLink>
                     </Button>
+
+                    <LangSwitcher />
+
+                    <IconButton
+                        aria-label="Toggle theme"
+                        onClick={toggleColorMode}
+                        variant="outline"
+                    >
+                        {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                    </IconButton>
                 </HStack>
 
                 <IconButton
@@ -93,22 +99,22 @@ const Header: React.FC = () => {
                         <VStack as="nav" gap={4} align="stretch" p={4}>
                             <RouterLink to="/" onClick={onClose}>Home</RouterLink>
                             <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
-                            <RouterLink to="/contact" onClick={onClose}>Contact</RouterLink>
-
-                            <IconButton
-                                aria-label="Toggle theme"
-                                onClick={() => {
-                                    toggleColorMode()
-                                }}
-                                variant="outline"
-                            >
-                                {colorMode === 'light' ? <FaMoon /> : <FaSun />}
-                            </IconButton>
-
-                            <LangSwitcher />
+                            <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
 
                             <Button
-                                variant="solid"
+                                size="xl"
+                                variant="surface"
+                                asChild
+                                onClick={onClose}
+                            >
+                                <RouterLink to="/cart">
+                                    <FaShoppingCart />
+                                </RouterLink>
+                            </Button>
+
+                            <Button
+                                size="xl"
+                                variant="surface"
                                 asChild
                                 onClick={onClose}
                             >
@@ -118,7 +124,8 @@ const Header: React.FC = () => {
                             </Button>
 
                             <Button
-                                variant="outline"
+                                size="xl"
+                                variant="surface"
                                 asChild
                                 onClick={onClose}
                             >
@@ -126,6 +133,19 @@ const Header: React.FC = () => {
                                     Profile <FaUserAlt />
                                 </RouterLink>
                             </Button>
+
+                            <LangSwitcher />
+
+                            <IconButton
+                                size="xl"
+                                aria-label="Toggle theme"
+                                onClick={() => {
+                                    toggleColorMode()
+                                }}
+                                variant="surface"
+                            >
+                                {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                            </IconButton>
                         </VStack>
                     </Box>
                 )
