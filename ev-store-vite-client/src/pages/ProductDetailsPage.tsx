@@ -15,12 +15,14 @@ import {
 import { useForm } from 'react-hook-form';
 import { LuMinus, LuPlus } from 'react-icons/lu';
 import PopularProductsSlider from '@/components/homePage/PopularProductsSlider';
+import { useTranslation } from "react-i18next";
 
 interface FormValues {
     quantity: number;
 }
 
 const ProductDetailsPage = () => {
+    const { t } = useTranslation('cart');
     window.scrollTo({ top: 0, behavior: 'smooth' })
     const product = {
         id: '1',
@@ -108,7 +110,9 @@ const ProductDetailsPage = () => {
                         </Text>
 
                         <Field.Root id="quantity" invalid={!!errors.quantity}>
-                            <Field.Label>Quantity</Field.Label>
+                            <Field.Label>
+                                {t('details.quantity')}
+                            </Field.Label>
                             <NumberInput.Root unstyled defaultValue="1" spinOnPress={false} min={1} max={1000}>
                                 <HStack gap={2}>
                                     <NumberInput.DecrementTrigger asChild>
@@ -132,7 +136,7 @@ const ProductDetailsPage = () => {
                         </Field.Root>
 
                         <Button size="lg" colorScheme="blue">
-                            Add to Cart
+                            {t('details.addToCart')}
                         </Button>
                     </Stack>
                 </Box>
