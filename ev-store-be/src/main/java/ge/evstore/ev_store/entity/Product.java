@@ -14,7 +14,7 @@ public class Product {
     @Schema(hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String nameGE;
     private String nameENG;
     private String nameRUS;

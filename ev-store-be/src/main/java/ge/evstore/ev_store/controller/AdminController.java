@@ -63,7 +63,7 @@ public class AdminController {
 
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             @RequestBody final Product product,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);

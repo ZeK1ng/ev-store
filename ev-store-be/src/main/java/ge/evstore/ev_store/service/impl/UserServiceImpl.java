@@ -1,6 +1,6 @@
 package ge.evstore.ev_store.service.impl;
 
-import ge.evstore.ev_store.annotation.UserServiceAspectTarget;
+import ge.evstore.ev_store.annotation.UserTokenAspectMarker;
 import ge.evstore.ev_store.entity.Cart;
 import ge.evstore.ev_store.entity.Role;
 import ge.evstore.ev_store.entity.User;
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @UserServiceAspectTarget
+    @UserTokenAspectMarker
     public UserResponse getUserDetails(final String accessToken) {
         final String username = jwtUtils.extractUsername(accessToken);
         final Optional<User> user = userRepository.findByEmail(username);
