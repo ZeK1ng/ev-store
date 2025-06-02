@@ -1,5 +1,6 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.entity.Cart;
 import ge.evstore.ev_store.entity.Role;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(verificationCode);
         user.setOtpVerificationExpiration(LocalDateTime.now().plusMinutes(verifyCodeExpirationDuration));
         user.setVerified(false);
+        user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
 
@@ -57,6 +59,9 @@ public class UserServiceImpl implements UserService {
         userFound.setVerified(true);
         userFound.setVerificationCode(null);
         userFound.setOtpVerificationExpiration(null);
+        final Cart cart = new Cart();
+        cart.setUser(userFound);
+        userFound.setCart(cart);
         return userRepository.save(userFound);
     }
 

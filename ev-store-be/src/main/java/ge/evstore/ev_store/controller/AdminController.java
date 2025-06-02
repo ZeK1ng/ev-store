@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
+import static ge.evstore.ev_store.utils.HeaderUtils.extractBearer;
+
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminController {
@@ -25,12 +27,6 @@ public class AdminController {
         this.dictionaryService = dictionaryService;
     }
 
-
-    private String extractAccessToken(final HttpServletRequest request) {
-        final String header = request.getHeader("Authorization");
-        return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
-    }
-
     private String extractRefreshToken(final HttpServletRequest request) {
         return request.getHeader("Refresh-Token");
     }
@@ -41,19 +37,17 @@ public class AdminController {
     public ResponseEntity<Product> createProduct(
             @RequestBody final Product product,
             final HttpServletRequest request) throws AccessDeniedException {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.addProduct(product, accessToken, refreshToken)
+                adminService.addProduct(product, accessToken)
         );
     }
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> listProducts(final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.getAllProducts(accessToken, refreshToken)
+                adminService.getAllProducts(accessToken)
         );
     }
 
@@ -61,10 +55,9 @@ public class AdminController {
     public ResponseEntity<Product> getProduct(
             @PathVariable final Integer id,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.getProductById(id, accessToken, refreshToken)
+                adminService.getProductById(id, accessToken)
         );
     }
 
@@ -73,10 +66,9 @@ public class AdminController {
             @PathVariable final Integer id,
             @RequestBody final Product product,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.updateProduct(id, product, accessToken, refreshToken)
+                adminService.updateProduct(id, product, accessToken)
         );
     }
 
@@ -84,9 +76,8 @@ public class AdminController {
     public ResponseEntity<Void> deleteProduct(
             @PathVariable final Integer id,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
-        adminService.deleteProduct(id, accessToken, refreshToken);
+        final String accessToken = extractBearer(request);
+        adminService.deleteProduct(id, accessToken);
         return ResponseEntity.ok().build();
     }
 
@@ -95,10 +86,9 @@ public class AdminController {
             @PathVariable final Integer id,
             @RequestParam final int stockAmount,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.updateProductStock(id, stockAmount, accessToken, refreshToken)
+                adminService.updateProductStock(id, stockAmount, accessToken)
         );
     }
 
@@ -108,19 +98,17 @@ public class AdminController {
     public ResponseEntity<Category> createCategory(
             @RequestBody final Category category,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.addCategory(category, accessToken, refreshToken)
+                adminService.addCategory(category, accessToken)
         );
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> listCategories(final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.getAllCategories(accessToken, refreshToken)
+                adminService.getAllCategories(accessToken)
         );
     }
 
@@ -128,10 +116,9 @@ public class AdminController {
     public ResponseEntity<Category> getCategory(
             @PathVariable final Integer id,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.getCategoryById(id, accessToken, refreshToken)
+                adminService.getCategoryById(id, accessToken)
         );
     }
 
@@ -140,10 +127,9 @@ public class AdminController {
             @PathVariable final Integer id,
             @RequestBody final Category category,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
+        final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.updateCategory(id, category, accessToken, refreshToken)
+                adminService.updateCategory(id, category, accessToken)
         );
     }
 
@@ -151,9 +137,8 @@ public class AdminController {
     public ResponseEntity<Void> deleteCategory(
             @PathVariable final Integer id,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
-        adminService.deleteCategory(id, accessToken, refreshToken);
+        final String accessToken = extractBearer(request);
+        adminService.deleteCategory(id, accessToken);
         return ResponseEntity.ok().build();
     }
 
@@ -161,9 +146,8 @@ public class AdminController {
     public ResponseEntity<String> getFullCategoryPath(
             @PathVariable final Integer id,
             final HttpServletRequest request) {
-        final String accessToken = extractAccessToken(request);
-        final String refreshToken = extractRefreshToken(request);
-        return ResponseEntity.ok(adminService.getFullCategoryPath(id, accessToken, refreshToken));
+        final String accessToken = extractBearer(request);
+        return ResponseEntity.ok(adminService.getFullCategoryPath(id, accessToken));
     }
 
     /*-------------Dictionary endpoints-------*/

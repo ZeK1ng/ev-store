@@ -1,9 +1,12 @@
 package ge.evstore.ev_store.controller;
 
 import ge.evstore.ev_store.request.*;
+import ge.evstore.ev_store.response.AccessTokenResponse;
 import ge.evstore.ev_store.response.AuthResponse;
 import ge.evstore.ev_store.service.interf.AuthService;
+import ge.evstore.ev_store.utils.HeaderUtils;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -23,10 +26,11 @@ public class AuthenticationController {
         this.authService = authService;
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login")
     public ResponseEntity<AuthResponse> login(@RequestBody final AuthRequest request) throws AuthenticationException {
         log.info("Login request received for {}", request.getUsername());
-        return ResponseEntity.ok(authService.handleLogin(request));
+        final AuthResponse authResponse = authService.handleLogin(request);
+        return ResponseEntity.ok(authResponse);
     }
 
     @PostMapping("/register")
@@ -58,14 +62,23 @@ public class AuthenticationController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody final ResetPasswordRequest request) {
-        log.info("Setting new password for email:{}",request.getUsername());
+        log.info("Setting new password for email:{}", request.getUsername());
         authService.resetPassword(request);
         return ResponseEntity.ok().build();
     }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody final LogoutRequest request) {
-        log.info("LogoutRequest for email:{}",request.getUsername());
+        log.info("LogoutRequest for email:{}", request.getUsername());
         authService.handleLogout(request.getUsername());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AccessTokenResponse> refreshAccessToken(final HttpServletRequest request) {
+        log.info("Refreshing access token");
+        final String refreshToken = HeaderUtils.extractBearer(request);
+        final AccessTokenResponse accessTokenResponse = authService.rotateAccessTokenForUser(refreshToken);
+        return ResponseEntity.ok(accessTokenResponse);
     }
 }

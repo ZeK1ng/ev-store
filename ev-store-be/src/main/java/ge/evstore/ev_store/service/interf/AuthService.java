@@ -6,7 +6,9 @@ import ge.evstore.ev_store.request.AuthRequest;
 import ge.evstore.ev_store.request.ResetPasswordRequest;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.request.VerifyUserRequest;
+import ge.evstore.ev_store.response.AccessTokenResponse;
 import ge.evstore.ev_store.response.AuthResponse;
+import ge.evstore.ev_store.utils.TokenType;
 import jakarta.mail.MessagingException;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,9 +33,9 @@ public interface AuthService {
      */
     AuthResponse generateAndRegisterTokens(UserDetails userDetails, User user);
 
-    void rotateAccessTokenForUser(final String userName, final String accessToken);
+    AccessTokenResponse rotateAccessTokenForUser(final String refreshToken);
 
     void handleLogout(String email);
 
-    boolean validTokens(final String accessToken, final String refreshToken);
+    boolean validateToken(final String token , final TokenType tokenType);
 }
