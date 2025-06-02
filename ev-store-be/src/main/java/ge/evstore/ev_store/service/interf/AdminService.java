@@ -9,29 +9,29 @@ import java.util.List;
 public interface AdminService {
 
     // Product operations
-    Product addProduct(Product product, String accessToken, String refreshToken) throws AccessDeniedException;
+    Product addProduct(Product product, String accessToken) throws AccessDeniedException;
 
-    Product getProductById(Integer id, String accessToken, String refreshToken);
+    Product getProductById(Integer id, String accessToken);
 
-    Product updateProduct(Integer id, Product product, String accessToken, String refreshToken);
+    Product updateProduct(Integer id, Product product, String accessToken);
 
-    void deleteProduct(Integer id, String accessToken, String refreshToken);
+    void deleteProduct(Integer id, String accessToken);
 
-    List<Product> getAllProducts(String accessToken, String refreshToken);
+    List<Product> getAllProducts(String accessToken);
 
-    Product updateProductStock(Integer id, int stockAmount, String accessToken, String refreshToken);
+    Product updateProductStock(Integer id, int stockAmount, String accessToken);
 
     // Category operations
-    Category addCategory(Category category, String accessToken, String refreshToken);
+    Category addCategory(Category category, String accessToken);
 
-    Category getCategoryById(Integer id, String accessToken, String refreshToken);
+    Category getCategoryById(Integer id, String accessToken);
 
-    Category updateCategory(Integer id, Category category, String accessToken, String refreshToken);
+    Category updateCategory(Integer id, Category category, String accessToken);
 
-    void deleteCategory(Integer id, String accessToken, String refreshToken);
+    void deleteCategory(Integer id, String accessToken);
 
-    List<Category> getAllCategories(String accessToken, String refreshToken);
+    List<Category> getAllCategories(String accessToken);
 
-    String getFullCategoryPath(Integer categoryId, String accessToken, String refreshToken);
+    String getFullCategoryPath(Integer categoryId, String accessToken);
 
 }

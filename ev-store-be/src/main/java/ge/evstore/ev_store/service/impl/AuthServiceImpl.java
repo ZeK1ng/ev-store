@@ -6,11 +6,11 @@ import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
 import ge.evstore.ev_store.exception.VerificationFailedException;
 import ge.evstore.ev_store.repository.AuthTokenRepository;
-import ge.evstore.ev_store.repository.UserRepository;
 import ge.evstore.ev_store.request.AuthRequest;
 import ge.evstore.ev_store.request.ResetPasswordRequest;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.request.VerifyUserRequest;
+import ge.evstore.ev_store.response.AccessTokenResponse;
 import ge.evstore.ev_store.response.AuthResponse;
 import ge.evstore.ev_store.service.interf.AuthService;
 import ge.evstore.ev_store.service.interf.EmailService;
@@ -18,6 +18,8 @@ import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
 import ge.evstore.ev_store.utils.TokenType;
 import ge.evstore.ev_store.utils.VerificationUtils;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,16 +43,14 @@ public class AuthServiceImpl implements AuthService {
     private final UserDetailsServiceImpl userDetailsService;
     private final EmailService emailService;
     private final JwtUtils jwtUtils;
-    private final UserRepository userRepository;
 
-    public AuthServiceImpl(final AuthenticationManager authManager, final AuthTokenRepository authTokenRepository, final UserService userService, final UserDetailsServiceImpl userDetailsService, final EmailService emailService, final JwtUtils jwtUtils, final UserRepository userRepository) {
+    public AuthServiceImpl(final AuthenticationManager authManager, final AuthTokenRepository authTokenRepository, final UserService userService, final UserDetailsServiceImpl userDetailsService, final EmailService emailService, final JwtUtils jwtUtils) {
         this.authManager = authManager;
         this.authTokenRepository = authTokenRepository;
         this.userService = userService;
         this.userDetailsService = userDetailsService;
         this.emailService = emailService;
         this.jwtUtils = jwtUtils;
-        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -65,14 +65,25 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Transactional
-    public void rotateAccessTokenForUser(final String userName, final String accessToken) {
+    public AccessTokenResponse rotateAccessTokenForUser(final String refreshToken) {
+        if (!validateToken(refreshToken, TokenType.REFRESH_TOKEN)) {
+            throw new MalformedJwtException("Invalid refresh token");
+        }
+        final String userName = jwtUtils.extractUsername(refreshToken);
         final Optional<User> user = userService.findUser(userName);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User " + userName + " not found");
         }
         final AuthTokens authTokens = authTokenRepository.findByUser(user.get());
+        if (!authTokens.getRefreshToken().equals(refreshToken)) {
+            throw new UnsupportedJwtException("Invalid refresh token for user " + userName);
+        }
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+
+        final String accessToken = jwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
         authTokens.setAccessToken(accessToken);
         authTokenRepository.save(authTokens);
+        return new AccessTokenResponse(accessToken);
     }
 
     @Override
@@ -86,36 +97,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean validTokens(final String accessToken, final String refreshToken) {
-        if (accessToken == null || refreshToken == null ||
-                accessToken.isBlank() || refreshToken.isBlank()) {
-            return false;
-        }
-
+    public boolean validateToken(final String token, final TokenType tokenType) {
         try {
-            // Extract usernames from both tokens
-            final String accessUsername = jwtUtils.extractUsername(accessToken);
-            final String refreshUsername = jwtUtils.extractUsername(refreshToken);
-
-            // Check that usernames match
-            if (accessUsername == null || !accessUsername.equals(refreshUsername)) {
+            final String s = jwtUtils.extractTokenTypeFromClaims(token);
+            if (s == null || s.isBlank() || !s.equals(tokenType.toString())) {
                 return false;
             }
-
-            // Load user to validate further if needed (optional)
-            final var userDetails = userDetailsService.loadUserByUsername(accessUsername);
-
-            // Check if both tokens are valid (not expired and signature is OK)
-            final boolean accessValid = jwtUtils.isTokenValid(accessToken, userDetails);
-            final boolean refreshValid = jwtUtils.isTokenValid(refreshToken, userDetails);
-
-            return accessValid && refreshValid;
-
-        } catch (Exception e) {
-            // Log exception if needed
+            return jwtUtils.isTokenValid(token, userDetailsService.loadUserByUsername(jwtUtils.extractUsername(token)));
+        } catch (final Exception e) {
+            log.error(e.getMessage());
             return false;
         }
     }
+
 
     @Transactional
     public AuthResponse handleLogin(final AuthRequest request) {
@@ -142,7 +136,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse verifyUser(final VerifyUserRequest verifyUserRequest) {
         final Optional<User> user = userService.findUser(verifyUserRequest.getEmail());
         if (user.isEmpty()) {
-            log.info("User not found for email: {}", verifyUserRequest.getEmail());
+            logUserNotFound(verifyUserRequest.getEmail());
             throw new UsernameNotFoundException("User not found for email: " + verifyUserRequest.getEmail());
         }
         final User userFound = user.get();
@@ -162,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
     public void resendVerificationCode(final String userEmail) throws MessagingException {
         final Optional<User> user = userService.findUser(userEmail);
         if (user.isEmpty()) {
-            log.info("User not found for email: {}", userEmail);
+            logUserNotFound(userEmail);
             throw new UsernameNotFoundException("User not found for email: " + userEmail);
         }
         final User userFound = user.get();
@@ -208,4 +202,9 @@ public class AuthServiceImpl implements AuthService {
         userService.updatePassword(user, request.getNewPassword());
         log.info("Password updated for : {}", user.getEmail());
     }
+
+    private static void logUserNotFound(final String userEmail) {
+        log.info("User not found for email: {}", userEmail);
+    }
+
 }

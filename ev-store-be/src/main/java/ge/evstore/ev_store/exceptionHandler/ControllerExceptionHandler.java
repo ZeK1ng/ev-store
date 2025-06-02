@@ -6,6 +6,8 @@ import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
 import ge.evstore.ev_store.exception.VerificationFailedException;
 import ge.evstore.ev_store.response.GeneralExceptionResponse;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +92,24 @@ public class ControllerExceptionHandler {
         log.info(ex.getMessage());
         final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleMalformedJwt(final MalformedJwtException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleJwtMismatch(final UnsupportedJwtException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
     }

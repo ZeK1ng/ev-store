@@ -29,7 +29,8 @@ CREATE TABLE users
     role                        VARCHAR(50),
     verification_code           VARCHAR(255),
     otp_verification_expiration TIMESTAMP,
-    verified                    BOOLEAN
+    verified                    BOOLEAN,
+    createdAt                   TIMESTAMP
 );
 CREATE TABLE user_favourites
 (
@@ -58,8 +59,8 @@ CREATE TABLE auth_tokens
 (
     id            SERIAL PRIMARY KEY,
     user_id       INTEGER UNIQUE REFERENCES users (id),
-    access_token  TEXT,
-    refresh_token TEXT
+    access_token  varchar(400),
+    refresh_token varchar(400)
 );
 
 CREATE TABLE dictionary
