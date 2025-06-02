@@ -41,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Product updateProduct(final Integer id, final Product product, final String accessToken) {
+    public Product updateProduct(final Long id, final Product product, final String accessToken) {
         return productRepository.findById(id)
                 .map(existingProduct -> {
                     existingProduct.update(product);

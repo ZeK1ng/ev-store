@@ -13,7 +13,7 @@ public interface AdminService {
 
     Product getProductById(Integer id, String accessToken);
 
-    Product updateProduct(Integer id, Product product, String accessToken);
+    Product updateProduct(Long id, Product product, String accessToken);
 
     void deleteProduct(Integer id, String accessToken);
 
