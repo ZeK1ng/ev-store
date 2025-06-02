@@ -24,17 +24,21 @@ public class User {
     private String mobile;
     private String address;
     private String city;
-    private String personalIdCode;
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Role role;
     @OneToMany
     private List<Product> favourites;
     @Column(name = "otp_verification_code")
+    @JsonIgnore
     private String verificationCode;
     @Column(name = "otp_verification_expiration")
+    @JsonIgnore
     private LocalDateTime otpVerificationExpiration;
+    @JsonIgnore
     private Boolean verified;
     @JsonIgnore
     private LocalDateTime createdAt;

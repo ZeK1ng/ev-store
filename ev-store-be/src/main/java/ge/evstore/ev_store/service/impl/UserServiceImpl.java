@@ -1,16 +1,20 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.annotation.UserServiceAspectTarget;
 import ge.evstore.ev_store.entity.Cart;
 import ge.evstore.ev_store.entity.Role;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.repository.UserRepository;
 import ge.evstore.ev_store.request.UserRegisterRequest;
+import ge.evstore.ev_store.response.UserResponse;
 import ge.evstore.ev_store.service.interf.UserService;
+import ge.evstore.ev_store.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,13 +23,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final JwtUtils jwtUtils;
     @Value("${verification.code.expiration.duration.minutes}")
     private int verifyCodeExpirationDuration;
 
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
     }
 
     public Optional<User> findUser(final String username) {
@@ -44,7 +49,6 @@ public class UserServiceImpl implements UserService {
         user.setMobile(request.getMobile());
         user.setAddress(request.getAddress());
         user.setCity(request.getCity());
-        user.setPersonalIdCode(request.getPersonalIdCode());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         user.setVerificationCode(verificationCode);
@@ -78,6 +82,46 @@ public class UserServiceImpl implements UserService {
         user.setVerificationCode(null);
         user.setOtpVerificationExpiration(null);
         userRepository.save(user);
+    }
+
+    @Override
+    @UserServiceAspectTarget
+    public UserResponse getUserDetails(final String accessToken) {
+        final String username = jwtUtils.extractUsername(accessToken);
+        final Optional<User> user = userRepository.findByEmail(username);
+        if (user.isEmpty()) {
+            return null;
+        }
+        final UserResponse userResponse = new UserResponse();
+        userResponse.fromUser(user.get());
+        return userResponse;
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUser(final String token, final String city, final String address, final String phone) {
+        final String username = jwtUtils.extractUsername(token);
+        final Optional<User> user = userRepository.findByEmail(username);
+        if (user.isEmpty()) {
+            return null;
+        }
+        final User user1 = user.get();
+        if (StringUtils.hasText(city)) {
+            user1.setCity(city);
+        }
+
+        if (StringUtils.hasText(address)) {
+            user1.setAddress(address);
+        }
+
+        if (StringUtils.hasText(phone)) {
+            user1.setMobile(phone);
+        }
+
+        userRepository.save(user1);
+        final UserResponse userResponse = new UserResponse();
+        userResponse.fromUser(user1);
+        return userResponse;
     }
 
 }
