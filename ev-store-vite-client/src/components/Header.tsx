@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import {
     Box,
     Flex,
@@ -8,6 +8,7 @@ import {
     Image,
     Heading,
     VStack,
+    Separator,
     useDisclosure
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -15,21 +16,33 @@ import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
 import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose, FaUserAlt, FaShoppingCart } from 'react-icons/fa'
 
-const Header: React.FC = () => {
+const Header = () => {
     const { open, onOpen, onClose } = useDisclosure()
     const { colorMode, toggleColorMode } = useColorMode()
 
+    useEffect(() => {
+        if (open) {
+            document.body.style.overflow = 'auto'
+        } else {
+            document.body.style.overflow = 'auto'
+        }
+        return () => {
+            document.body.style.overflow = 'auto'
+        }
+    }, [open])
 
     return (
-        <Box position="sticky" top={0} zIndex="2"   >
+        <Box position="sticky" top={0} zIndex="2" bg="bg.muted" shadow="xl">
             <Flex
                 as="header"
+                boxSizing="border-box"
                 align="center"
                 justify="space-between"
+                justifySelf="center"
                 px={{ base: 4, md: 8 }}
                 py={4}
-                bg="bg.muted"
-                shadow="xl"
+                maxW="1296px"
+                w="100%"
                 borderBottomWidth="1px">
                 <Flex align="center">
                     <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />
@@ -73,8 +86,7 @@ const Header: React.FC = () => {
                     </Button>
                 </HStack>
 
-                <HStack>
-
+                <HStack display={{ base: 'flex', md: 'none' }}>
                     <Button
                         display={{ base: 'flex', md: 'none' }}
                         size="xl"
@@ -126,14 +138,18 @@ const Header: React.FC = () => {
                     >
                         <VStack as="nav" gap={4} align="stretch" p={4}>
                             <RouterLink to="/cms-admin" onClick={onClose}>Admin</RouterLink>
+                            <Separator />
                             <RouterLink to="/" onClick={onClose}>Home</RouterLink>
+                            <Separator />
                             <RouterLink to="/catalog" onClick={onClose}>Catalog</RouterLink>
+                            <Separator />
                             <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
+                            <Separator />
                             <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
 
                             <Button
                                 size="xl"
-                                variant="surface"
+                                variant="outline"
                                 asChild
                                 onClick={onClose}
                             >
