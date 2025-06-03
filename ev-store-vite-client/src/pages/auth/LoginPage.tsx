@@ -10,13 +10,11 @@ import {
     SimpleGrid,
     Stack,
     Text,
-    Icon,
     Field,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { BsImage } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next'
 
 interface LoginFormValues {
@@ -47,12 +45,6 @@ const LoginPage = () => {
             >
                 <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
-                        <HStack gap={3} align="center" justify="flex-start">
-                            <Icon as={BsImage} boxSize={8} />
-                            <Heading as="h2" size="md" fontWeight="semibold">
-                                Logo
-                            </Heading>
-                        </HStack>
 
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">

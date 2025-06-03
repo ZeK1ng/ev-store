@@ -4,12 +4,10 @@ import {
     Button,
     Container,
     Heading,
-    HStack,
     Input,
     SimpleGrid,
     Stack,
     Text,
-    Icon,
     Field,
     PinInput,
     Flex
@@ -17,7 +15,6 @@ import {
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { BsImage } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next'
 
 
@@ -25,6 +22,7 @@ interface SignupFormValues {
     firstName: string;
     lastName: string;
     email: string;
+    phone: string;
     password: string;
     confirmPassword: string;
 }
@@ -42,6 +40,7 @@ const SignupPage = () => {
             firstName: "",
             lastName: "",
             email: "",
+            phone: "",
             password: "",
             confirmPassword: "",
         }
@@ -71,7 +70,7 @@ const SignupPage = () => {
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
                 <Container textAlign="center" maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
-                <Heading mb={4}>
+                    <Heading mb={4}>
                         {t('signup.verify.title')}
                     </Heading>
                     <Text mb={2}>
@@ -112,13 +111,6 @@ const SignupPage = () => {
             >
                 <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
-                        <HStack gap={3} align="center">
-                            <Icon as={BsImage} boxSize={8} />
-                            <Heading as="h2" size="md" fontWeight="semibold">
-                                Logo
-                            </Heading>
-                        </HStack>
-
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
                                 {t('signup.title')}
@@ -146,7 +138,7 @@ const SignupPage = () => {
                                         </Field.Root>
                                     </Box>
                                     <Box flex={1}>
-                                    <Field.Root id="lastName" invalid={!!errors.lastName}>
+                                        <Field.Root id="lastName" invalid={!!errors.lastName}>
                                             <Field.Label fontWeight="medium" fontSize="sm">
                                                 {t('signup.lastName')}
                                             </Field.Label>
@@ -176,6 +168,21 @@ const SignupPage = () => {
                                         })}
                                     />
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
+                                </Field.Root>
+
+                                <Field.Root id="phone" invalid={!!errors.phone}>
+                                    <Field.Label fontWeight="medium" fontSize="sm">
+                                        {t('signup.phone')}
+                                    </Field.Label>
+                                    <Input
+                                        size="lg"
+                                        type="tel"
+                                        placeholder={t('signup.phonePlaceholder')}
+                                        {...register("phone", {
+                                            required: t('signup.phoneRequired')
+                                        })}
+                                    />
+                                    {errors.phone && <Field.ErrorText>{errors.phone.message}</Field.ErrorText>}
                                 </Field.Root>
 
                                 <Field.Root id="password" invalid={!!errors.password}>

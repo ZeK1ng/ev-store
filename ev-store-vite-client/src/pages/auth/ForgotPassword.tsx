@@ -5,18 +5,15 @@ import {
     Button,
     Container,
     Heading,
-    HStack,
     Input,
     SimpleGrid,
     Stack,
     Text,
-    Icon,
     Field,
     PinInput,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { BsImage } from 'react-icons/bs';
 import { useTranslation } from 'react-i18next'
 
 interface ForgotPasswordFormValues {
@@ -99,13 +96,6 @@ const ForgotPasswordPage = () => {
             >
                 <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
-                        <HStack gap={3} align="center">
-                            <Icon as={BsImage} boxSize={8} />
-                            <Heading as="h2" size="md" fontWeight="semibold">
-                                Logo
-                            </Heading>
-                        </HStack>
-
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
                                 {t('forgotPassword.title')}
