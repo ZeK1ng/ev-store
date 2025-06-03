@@ -1,9 +1,11 @@
 package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.entity.Category;
+import ge.evstore.ev_store.entity.MaxPriceEasySaver;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.exception.IsParentCategoryException;
 import ge.evstore.ev_store.repository.CategoryRepository;
+import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
 import ge.evstore.ev_store.service.interf.AdminService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -21,15 +21,29 @@ import java.util.List;
 public class AdminServiceImpl implements AdminService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final MaxPriceSaverRepository maxPriceSaverRepository;
 
-    public AdminServiceImpl(final ProductRepository productRepository, final CategoryRepository categoryRepository) {
+    public AdminServiceImpl(final ProductRepository productRepository, final CategoryRepository categoryRepository, final MaxPriceSaverRepository maxPriceSaverRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.maxPriceSaverRepository = maxPriceSaverRepository;
     }
 
     @Override
     @Transactional
     public Product addProduct(final Product product, final String accessToken) throws AccessDeniedException {
+        final List<MaxPriceEasySaver> maxPriceSaver = maxPriceSaverRepository.findAll();
+        if (maxPriceSaver.isEmpty()) {
+            final MaxPriceEasySaver maxPriceEasySaver = new MaxPriceEasySaver();
+            maxPriceEasySaver.setMaxPrice(product.getPrice());
+            maxPriceSaverRepository.save(maxPriceEasySaver);
+        } else {
+            final MaxPriceEasySaver maxPriceEasySaver = maxPriceSaver.get(0);
+            if (product.getPrice() > maxPriceEasySaver.getMaxPrice()) {
+                maxPriceEasySaver.setMaxPrice(product.getPrice());
+                maxPriceSaverRepository.save(maxPriceEasySaver);
+            }
+        }
         return productRepository.save(product);
     }
 

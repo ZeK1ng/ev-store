@@ -24,7 +24,6 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getFullCategoryPath(id));
     }
 
-    //
     @GetMapping("/all")
     public ResponseEntity<List<Category>> listCategories() {
         return ResponseEntity.ok(
