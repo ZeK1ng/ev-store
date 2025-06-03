@@ -6,6 +6,7 @@ import {
     Container,
     Heading,
     Input,
+    InputGroup,
     SimpleGrid,
     Stack,
     Text,
@@ -13,6 +14,7 @@ import {
     PinInput,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
+import { LuMail } from "react-icons/lu"
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next'
 
@@ -54,7 +56,7 @@ const ForgotPasswordPage = () => {
                 minH="100vh"
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container textAlign="center" maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
+                <Container textAlign="center" maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" py={{ base: 6, md: 8 }}>
                     <Heading mb={4}>
                         {t('forgotPassword.verifyPin.title')}
                     </Heading>
@@ -94,7 +96,7 @@ const ForgotPasswordPage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
+                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
@@ -111,14 +113,16 @@ const ForgotPasswordPage = () => {
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('forgotPassword.email')}
                                     </Field.Label>
-                                    <Input
-                                        size="lg"
-                                        type="email"
-                                        placeholder={t('forgotPassword.emailPlaceholder')}
-                                        {...register("email", {
-                                            required: t('forgotPassword.emailRequired')
-                                        })}
-                                    />
+                                    <InputGroup startElement={<LuMail />}>
+                                        <Input
+                                            size="lg"
+                                            type="email"
+                                            placeholder={t('forgotPassword.emailPlaceholder')}
+                                            {...register("email", {
+                                                required: t('forgotPassword.emailRequired')
+                                            })}
+                                        />
+                                    </InputGroup>
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
                                 </Field.Root>
 

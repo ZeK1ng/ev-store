@@ -4,13 +4,17 @@ import {
     Button,
     Heading,
     Input,
+    InputGroup,
     SimpleGrid,
     Stack,
     Flex,
     Textarea,
     Separator,
     Field,
+    HStack,
+    Text
 } from '@chakra-ui/react';
+import { LuUser, LuMail, LuPhone, LuMapPin } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 interface ProfileUpdateData {
@@ -54,12 +58,11 @@ const ProfilePage = () => {
         <SimpleGrid columns={{ base: 1 }} minH="100vh">
             <Box
                 display="flex"
-                alignItems="center"
                 justifyContent="center"
-                py={{ base: 12, md: 16 }}
+                py={{ base: 8, md: 12 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Box bg="whiteAlpha.50" borderRadius="lg" shadow="md" p={8} maxW="600px" w="full">
+                <Box bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" p={6} maxW="500px" w="full" h="max-content">
                     <Heading textAlign="center" mb={6}>{t('profile.title')}</Heading>
                     <Separator mb={6} />
                     <Stack gap={4}>
@@ -69,7 +72,7 @@ const ProfilePage = () => {
                                     <Field.Label>
                                         {t('profile.firstName')}
                                     </Field.Label>
-                                    <Input value={firstName} disabled />
+                                    <Input size="lg" value={firstName} disabled />
                                 </Field.Root>
                             </Box>
                             <Box flex={1}>
@@ -77,7 +80,7 @@ const ProfilePage = () => {
                                     <Field.Label>
                                         {t('profile.lastName')}
                                     </Field.Label>
-                                    <Input value={lastName} disabled />
+                                    <Input size="lg" value={lastName} disabled />
                                 </Field.Root>
                             </Box>
                         </Flex>
@@ -86,30 +89,46 @@ const ProfilePage = () => {
                             <Field.Label>
                                 {t('profile.email')}
                             </Field.Label>
-                            <Input value={email} disabled />
+                            <InputGroup startElement={<LuMail />}>
+                                <Input size="lg" value={email} disabled />
+                            </InputGroup>
                         </Field.Root>
+
+                        <HStack>
+                            <Separator flex="1" />
+                            <Text flexShrink="0" color="fg.muted">
+                                {t('profile.editableFields')}
+                            </Text>
+                            <Separator flex="1" />
+                        </HStack>
 
                         <Field.Root id="phone" invalid={false}>
                             <Field.Label>
                                 {t('profile.phone')}
                             </Field.Label>
-                            <Input
-                                type="number"
-                                placeholder={t('profile.phonePlaceholder')}
-                                value={phone}
-                                onChange={e => setPhone(e.target.value)}
-                            />
+                            <InputGroup startElement={<LuPhone />}>
+                                <Input
+                                    type="number"
+                                    size="lg"
+                                    placeholder={t('profile.phonePlaceholder')}
+                                    value={phone}
+                                    onChange={e => setPhone(e.target.value)}
+                                />
+                            </InputGroup>
                         </Field.Root>
 
                         <Field.Root id="city" invalid={false}>
                             <Field.Label>
                                 {t('profile.city')}
                             </Field.Label>
-                            <Input
-                                placeholder={t('profile.cityPlaceholder')}
-                                value={city}
-                                onChange={e => setCity(e.target.value)}
-                            />
+                            <InputGroup startElement={<LuMapPin />}>
+                                <Input
+                                    size="lg"
+                                    placeholder={t('profile.cityPlaceholder')}
+                                    value={city}
+                                    onChange={e => setCity(e.target.value)}
+                                />
+                            </InputGroup>
                         </Field.Root>
 
                         <Field.Root id="address" invalid={false}>
@@ -117,6 +136,7 @@ const ProfilePage = () => {
                                 {t('profile.address')}
                             </Field.Label>
                             <Textarea
+                                size="lg"
                                 placeholder={t('profile.addressPlaceholder')}
                                 value={address}
                                 onChange={e => setAddress(e.target.value)}

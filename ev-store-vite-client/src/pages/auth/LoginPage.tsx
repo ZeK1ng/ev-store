@@ -7,6 +7,7 @@ import {
     Heading,
     HStack,
     Input,
+    InputGroup,
     SimpleGrid,
     Stack,
     Text,
@@ -15,6 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
+import { LuMail, LuKeyRound } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 interface LoginFormValues {
@@ -43,7 +45,7 @@ const LoginPage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
+                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
 
                         <Stack gap={2}>
@@ -61,12 +63,14 @@ const LoginPage = () => {
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('login.email')}
                                     </Field.Label>
-                                    <Input
-                                        size="lg"
-                                        type="email"
-                                        placeholder={t('login.emailPlaceholder')}
-                                        {...register("email", { required: t('login.emailRequired') })}
-                                    />
+                                    <InputGroup startElement={<LuMail />}>
+                                        <Input
+                                            size="lg"
+                                            type="email"
+                                            placeholder={t('login.emailPlaceholder')}
+                                            {...register("email", { required: t('login.emailRequired') })}
+                                        />
+                                    </InputGroup>
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
                                 </Field.Root>
 
@@ -74,10 +78,12 @@ const LoginPage = () => {
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('login.password')}
                                     </Field.Label>
-                                    <PasswordInput
-                                        size="lg"
-                                        {...register("password", { required: t('login.passwordRequired') })}
-                                    />
+                                    <InputGroup startElement={<LuKeyRound />}>
+                                        <PasswordInput
+                                            size="lg"
+                                            {...register("password", { required: t('login.passwordRequired') })}
+                                        />
+                                    </InputGroup>
                                     {errors.password && <Field.ErrorText>{errors.password.message}</Field.ErrorText>}
                                 </Field.Root>
 
