@@ -6,7 +6,7 @@ import { FaFacebook, FaInstagram, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaTwit
 
 const Footer = () => {
     return (
-        <Box as="footer" bg="gray.800" color="white" py={16} px={{ base: 4, md: 16 }}>
+        <Box as="footer" bg="gray.900" color="white" py={16} px={{ base: 4, md: 16 }}>
             <Separator borderColor="gray.600" mb={8} />
 
             <Box w="100%" maxW='1296px' justifySelf="center">

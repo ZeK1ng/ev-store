@@ -134,7 +134,7 @@ const CartPage = () => {
             </Flex>
 
             <Flex direction={{ base: 'column', lg: 'row' }} gap={8}>
-                <Box flex={2} borderRadius="md" border="xs" borderColor="border" p={6} h="max-content">
+                <Box flex={2} borderRadius="md" border="xs" borderColor="border.emphasized" p={6} h="max-content">
                     <Heading size="lg" mb={4}>
                         {t('cart.title')}
                     </Heading>
@@ -147,7 +147,7 @@ const CartPage = () => {
                                 justify="space-between"
                                 flexDirection={{ base: 'column', md: 'row' }}
                                 p={{ base: 2, md: 4 }}
-                                bg="whiteAlpha.200" borderRadius="lg"
+                                bg="bg.muted" borderRadius="lg"
                                 gap={4}
                             >
                                 <HStack gap={4} align="center">
@@ -235,7 +235,7 @@ const CartPage = () => {
                     </Stack>
                 </Box>
 
-                <Box flex={1} borderRadius="md" border="xs" borderColor="border" p={6} h="max-content">
+                <Box flex={1} borderRadius="md" border="xs" borderColor="border.emphasized" p={6} h="max-content">
                     <Heading size="lg" mb={4}>
                         {t('reservation.title')}
                     </Heading>
@@ -342,7 +342,7 @@ const CartPage = () => {
                             </Flex>
 
                             <Button size="lg" type="submit">
-                                {t('reservation.reserve')}
+                                {t('reservation.submit')}
                             </Button>
 
                             <Text fontSize="xs" color="gray.500">

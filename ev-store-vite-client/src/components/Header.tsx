@@ -21,16 +21,15 @@ const Header: React.FC = () => {
 
 
     return (
-        <Box position="sticky" top={0} zIndex="2">
+        <Box position="sticky" top={0} zIndex="2"   >
             <Flex
                 as="header"
                 align="center"
                 justify="space-between"
                 px={{ base: 4, md: 8 }}
                 py={4}
-                backdropFilter="saturate(200%) blur(15px)"
-                style={{ WebkitBackdropFilter: 'saturate(200%) blur(15px)' }}
-                shadow="lg"
+                bg="bg.muted"
+                shadow="xl"
                 borderBottomWidth="1px">
                 <Flex align="center">
                     <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />
@@ -91,10 +90,9 @@ const Header: React.FC = () => {
                         top="100%"
                         left={0}
                         width="100%"
-                        shadow="lg"
+                        shadow="xl"
                         zIndex="2"
-                        backdropFilter="saturate(200%) blur(15px)"
-                        style={{ WebkitBackdropFilter: 'saturate(200%) blur(15px)' }}
+                        bg="bg.muted"
                     >
                         <VStack as="nav" gap={4} align="stretch" p={4}>
                             <RouterLink to="/" onClick={onClose}>Home</RouterLink>

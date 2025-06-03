@@ -32,6 +32,7 @@
     "address": "Address",
     "addressName": "9a, David Guramishvili Ave",
     "addressCity": "Tbilisi, Georgia",
-    "mapTitle": "Find Us on the Map"
+    "mapTitle": "Find Us on the Map",
+    "mapButton": "View on Map"
   }
 }
