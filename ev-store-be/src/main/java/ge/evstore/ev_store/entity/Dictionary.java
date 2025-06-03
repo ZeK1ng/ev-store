@@ -11,7 +11,7 @@ public class Dictionary {
     @Schema(hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String key;
     private String value;

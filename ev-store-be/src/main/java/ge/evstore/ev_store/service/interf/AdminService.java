@@ -11,27 +11,27 @@ public interface AdminService {
     // Product operations
     Product addProduct(Product product, String accessToken) throws AccessDeniedException;
 
-    Product getProductById(Integer id, String accessToken);
+    Product getProductById(Long id, String accessToken);
 
     Product updateProduct(Long id, Product product, String accessToken);
 
-    void deleteProduct(Integer id, String accessToken);
+    void deleteProduct(Long id, String accessToken);
 
     List<Product> getAllProducts(String accessToken);
 
-    Product updateProductStock(Integer id, int stockAmount, String accessToken);
+    Product updateProductStock(Long id, int stockAmount, String accessToken);
 
     // Category operations
     Category addCategory(Category category, String accessToken);
 
-    Category getCategoryById(Integer id, String accessToken);
+    Category getCategoryById(Long id, String accessToken);
 
-    Category updateCategory(Integer id, Category category, String accessToken);
+    Category updateCategory(Long id, Category category, String accessToken);
 
-    void deleteCategory(Integer id, String accessToken);
+    void deleteCategory(Long id, String accessToken);
 
     List<Category> getAllCategories(String accessToken);
 
-    String getFullCategoryPath(Integer categoryId, String accessToken);
+    String getFullCategoryPath(Long categoryId, String accessToken);
 
 }

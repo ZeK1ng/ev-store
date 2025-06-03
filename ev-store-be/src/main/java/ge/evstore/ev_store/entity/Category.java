@@ -12,10 +12,10 @@ public class Category {
     @Schema(hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String name;
     private String description;
 
-    private Integer parentCategory;
+    private Long parentCategory;
 }

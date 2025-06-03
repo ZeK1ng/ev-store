@@ -35,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public Product getProductById(final Integer id, final String accessToken) {
+    public Product getProductById(final Long id, final String accessToken) {
         return productRepository.findById(id).orElse(null);
     }
 
@@ -52,7 +52,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void deleteProduct(final Integer id, final String accessToken) {
+    public void deleteProduct(final Long id, final String accessToken) {
         productRepository.deleteById(id);
     }
 
@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Product updateProductStock(final Integer id, final int stockAmount, final String accessToken) {
+    public Product updateProductStock(final Long id, final int stockAmount, final String accessToken) {
         return productRepository.findById(id)
                 .map(product -> {
                     product.setStockAmount(stockAmount);
@@ -79,13 +79,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Category getCategoryById(final Integer id, final String accessToken) {
+    public Category getCategoryById(final Long id, final String accessToken) {
         return categoryRepository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional
-    public Category updateCategory(final Integer id, final Category category, final String accessToken) {
+    public Category updateCategory(final Long id, final Category category, final String accessToken) {
         return categoryRepository.findById(id)
                 .map(category1 -> {
                     category1.setParentCategory(category.getParentCategory());
@@ -98,7 +98,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public void deleteCategory(final Integer id, final String accessToken) {
+    public void deleteCategory(final Long id, final String accessToken) {
         final List<Category> byParentCategory = categoryRepository.findByParentCategory(id);
         if (!byParentCategory.isEmpty()) {
             log.error("Category with given id is parent category for categories:{}. Delete child categories first", byParentCategory);
@@ -113,7 +113,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public String getFullCategoryPath(final Integer categoryId, final String accessToken) {
+    public String getFullCategoryPath(final Long categoryId, final String accessToken) {
         Category category = this.getCategoryById(categoryId, accessToken);
         if (category == null) {
             return null;
