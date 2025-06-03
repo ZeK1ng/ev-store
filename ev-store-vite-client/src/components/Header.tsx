@@ -43,25 +43,18 @@ const Header: React.FC = () => {
                     <RouterLink to="/about-us">About Us</RouterLink>
                     <RouterLink to="/contact-us">Contact</RouterLink>
 
+                    {/* <Button variant="outline" asChild>
+                        <RouterLink to="/login">
+                            LogIn
+                        </RouterLink>
+                    </Button> */}
+
                     <Button variant="outline" asChild>
                         <RouterLink to="/cart">
                             <FaShoppingCart />
                         </RouterLink>
                     </Button>
 
-                    <Button variant="outline" asChild>
-                        <RouterLink to="/login">
-                            LogIn <FaSignInAlt />
-                        </RouterLink>
-                    </Button>
-
-                    <Button variant="outline" asChild>
-                        <RouterLink to="/profile">
-                            Profile <FaUserAlt />
-                        </RouterLink>
-                    </Button>
-
-                    <LangSwitcher />
 
                     <IconButton
                         aria-label="Toggle theme"
@@ -70,16 +63,52 @@ const Header: React.FC = () => {
                     >
                         {colorMode === 'light' ? <FaMoon /> : <FaSun />}
                     </IconButton>
+
+                    <LangSwitcher />
+
+                    <Button variant="outline" asChild>
+                        <RouterLink to="/profile">
+                            Profile <FaUserAlt />
+                        </RouterLink>
+                    </Button>
                 </HStack>
 
-                <IconButton
-                    display={{ base: 'flex', md: 'none' }}
-                    aria-label="Toggle menu"
-                    onClick={open ? onClose : onOpen}
-                    variant="ghost"
-                >
-                    {open ? <FaWindowClose /> : <FaBars />}
-                </IconButton>
+                <HStack>
+
+                    <Button
+                        display={{ base: 'flex', md: 'none' }}
+                        size="xl"
+                        variant="surface"
+                        asChild
+                        onClick={onClose}
+                    >
+                        <RouterLink to="/cart">
+                            <FaShoppingCart />
+                        </RouterLink>
+                    </Button>
+
+                    <IconButton
+                        display={{ base: 'flex', md: 'none' }}
+                        size="xl"
+                        aria-label="Toggle theme"
+                        onClick={() => {
+                            toggleColorMode()
+                        }}
+                        variant="surface"
+                    >
+                        {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                    </IconButton>
+
+                    <IconButton
+                        display={{ base: 'flex', md: 'none' }}
+                        aria-label="Toggle menu"
+                        onClick={open ? onClose : onOpen}
+                        variant="ghost"
+                    >
+                        {open ? <FaWindowClose /> : <FaBars />}
+                    </IconButton>
+                </HStack>
+
             </Flex>
 
             {
@@ -93,22 +122,14 @@ const Header: React.FC = () => {
                         shadow="xl"
                         zIndex="2"
                         bg="bg.muted"
+                        h="100dvh"
                     >
                         <VStack as="nav" gap={4} align="stretch" p={4}>
+                            <RouterLink to="/cms-admin" onClick={onClose}>Admin</RouterLink>
                             <RouterLink to="/" onClick={onClose}>Home</RouterLink>
+                            <RouterLink to="/catalog" onClick={onClose}>Catalog</RouterLink>
                             <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
                             <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
-
-                            <Button
-                                size="xl"
-                                variant="surface"
-                                asChild
-                                onClick={onClose}
-                            >
-                                <RouterLink to="/cart">
-                                    <FaShoppingCart />
-                                </RouterLink>
-                            </Button>
 
                             <Button
                                 size="xl"
@@ -134,16 +155,7 @@ const Header: React.FC = () => {
 
                             <LangSwitcher />
 
-                            <IconButton
-                                size="xl"
-                                aria-label="Toggle theme"
-                                onClick={() => {
-                                    toggleColorMode()
-                                }}
-                                variant="surface"
-                            >
-                                {colorMode === 'light' ? <FaMoon /> : <FaSun />}
-                            </IconButton>
+
                         </VStack>
                     </Box>
                 )
