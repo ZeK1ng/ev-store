@@ -30,6 +30,7 @@ public class Product {
 
     private String imageName;
     private String imageFilePath;
+    private Boolean isPopular;
 //    private byte[] image; //
 
     public void update(final Product product) {

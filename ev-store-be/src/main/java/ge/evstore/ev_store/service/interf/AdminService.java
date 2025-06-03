@@ -24,14 +24,7 @@ public interface AdminService {
     // Category operations
     Category addCategory(Category category, String accessToken);
 
-    Category getCategoryById(Long id, String accessToken);
-
     Category updateCategory(Long id, Category category, String accessToken);
 
     void deleteCategory(Long id, String accessToken);
-
-    List<Category> getAllCategories(String accessToken);
-
-    String getFullCategoryPath(Long categoryId, String accessToken);
-
 }

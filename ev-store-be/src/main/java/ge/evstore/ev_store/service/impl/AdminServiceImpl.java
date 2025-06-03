@@ -79,11 +79,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Category getCategoryById(final Long id, final String accessToken) {
-        return categoryRepository.findById(id).orElse(null);
-    }
-
-    @Override
     @Transactional
     public Category updateCategory(final Long id, final Category category, final String accessToken) {
         return categoryRepository.findById(id)
@@ -105,25 +100,5 @@ public class AdminServiceImpl implements AdminService {
             throw new IsParentCategoryException(String.format("Category with given id is parent category for categories:%s. Delete child categories first", byParentCategory));
         }
         categoryRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Category> getAllCategories(final String accessToken) {
-        return List.of();
-    }
-
-    @Override
-    public String getFullCategoryPath(final Long categoryId, final String accessToken) {
-        Category category = this.getCategoryById(categoryId, accessToken);
-        if (category == null) {
-            return null;
-        }
-        final List<String> path = new ArrayList<>();
-        while (category.getParentCategory() != null) {
-            path.add(category.getName());
-            category = this.getCategoryById(category.getParentCategory(), accessToken);
-        }
-        Collections.reverse(path);
-        return String.join(" -> ", path);
     }
 }
