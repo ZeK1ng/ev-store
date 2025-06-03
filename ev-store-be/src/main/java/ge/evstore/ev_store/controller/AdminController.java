@@ -53,7 +53,7 @@ public class AdminController {
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Product> getProduct(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
@@ -74,7 +74,7 @@ public class AdminController {
 
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Void> deleteProduct(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         adminService.deleteProduct(id, accessToken);
@@ -83,7 +83,7 @@ public class AdminController {
 
     @PatchMapping("/products/{id}/stock")
     public ResponseEntity<Product> updateStock(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             @RequestParam final int stockAmount,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
@@ -114,7 +114,7 @@ public class AdminController {
 
     @GetMapping("/categories/{id}")
     public ResponseEntity<Category> getCategory(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
@@ -124,7 +124,7 @@ public class AdminController {
 
     @PutMapping("/categories/{id}")
     public ResponseEntity<Category> updateCategory(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             @RequestBody final Category category,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
@@ -135,7 +135,7 @@ public class AdminController {
 
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<Void> deleteCategory(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         adminService.deleteCategory(id, accessToken);
@@ -144,7 +144,7 @@ public class AdminController {
 
     @GetMapping("/categories/get-full-path/{id}")
     public ResponseEntity<String> getFullCategoryPath(
-            @PathVariable final Integer id,
+            @PathVariable final Long id,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(adminService.getFullCategoryPath(id, accessToken));
@@ -157,7 +157,7 @@ public class AdminController {
     }
 
     @PutMapping("/dictionary/update/{id}")
-    public ResponseEntity<Dictionary> update(@PathVariable final Integer id, @RequestBody final Dictionary dictionary) {
+    public ResponseEntity<Dictionary> update(@PathVariable final Long id, @RequestBody final Dictionary dictionary) {
         final Dictionary updated = dictionaryService.update(id, dictionary);
         if (updated == null) {
             return ResponseEntity.notFound().build();
@@ -166,7 +166,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/dictionary/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable final Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable final Long id) {
         dictionaryService.delete(id);
         return ResponseEntity.noContent().build();
     }

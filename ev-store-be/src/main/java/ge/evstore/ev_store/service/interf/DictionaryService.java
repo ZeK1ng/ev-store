@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DictionaryService {
     Dictionary create(Dictionary dictionary);
-    Dictionary update(Integer id, Dictionary dictionary);
-    void delete(Integer id);
+    Dictionary update(Long id, Dictionary dictionary);
+    void delete(Long id);
     List<Dictionary> findAll();
 }
