@@ -1,7 +1,6 @@
 package ge.evstore.ev_store.config;
 
 
-import ge.evstore.ev_store.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +21,7 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
+
     public SecurityConfig(final AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
@@ -32,6 +32,7 @@ public class SecurityConfig {
                 authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers(
                                         "/api/v1/auth/**",
+                                        "/api/v1/category/**",
                                         "/v3/api-docs/**",
                                         "/v3/swagger-config",
                                         "/swagger-ui.html",

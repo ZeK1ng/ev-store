@@ -104,24 +104,6 @@ public class AdminController {
         );
     }
 
-    @GetMapping("/categories")
-    public ResponseEntity<List<Category>> listCategories(final HttpServletRequest request) {
-        final String accessToken = extractBearer(request);
-        return ResponseEntity.ok(
-                adminService.getAllCategories(accessToken)
-        );
-    }
-
-    @GetMapping("/categories/{id}")
-    public ResponseEntity<Category> getCategory(
-            @PathVariable final Long id,
-            final HttpServletRequest request) {
-        final String accessToken = extractBearer(request);
-        return ResponseEntity.ok(
-                adminService.getCategoryById(id, accessToken)
-        );
-    }
-
     @PutMapping("/categories/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable final Long id,
@@ -140,14 +122,6 @@ public class AdminController {
         final String accessToken = extractBearer(request);
         adminService.deleteCategory(id, accessToken);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/categories/get-full-path/{id}")
-    public ResponseEntity<String> getFullCategoryPath(
-            @PathVariable final Long id,
-            final HttpServletRequest request) {
-        final String accessToken = extractBearer(request);
-        return ResponseEntity.ok(adminService.getFullCategoryPath(id, accessToken));
     }
 
     /*-------------Dictionary endpoints-------*/
