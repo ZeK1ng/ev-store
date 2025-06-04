@@ -96,22 +96,25 @@ public class AdminController {
 
     @PostMapping("/categories")
     public ResponseEntity<Category> createCategory(
-            @RequestBody final Category category,
+            @RequestParam final String name,
+            @RequestBody final String description,
+            @RequestParam final Long parentCategoryId,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.addCategory(category, accessToken)
+                adminService.addCategory(name, description, parentCategoryId, accessToken)
         );
     }
 
     @PutMapping("/categories/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable final Long id,
-            @RequestBody final Category category,
+            @RequestParam final String name,
+            @RequestParam final String description,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.updateCategory(id, category, accessToken)
+                adminService.updateCategory(id, name, description, accessToken)
         );
     }
 
