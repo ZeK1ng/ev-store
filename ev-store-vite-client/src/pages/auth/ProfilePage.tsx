@@ -14,7 +14,7 @@ import {
     HStack,
     Text
 } from '@chakra-ui/react';
-import { LuUser, LuMail, LuPhone, LuMapPin } from "react-icons/lu"
+import { LuMail, LuPhone, LuMapPin } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 interface ProfileUpdateData {

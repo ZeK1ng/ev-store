@@ -23,6 +23,7 @@ import {
     VStack,
     EmptyState,
     List,
+    Show,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
@@ -358,43 +359,44 @@ const CatalogPage = () => {
                                 ))}
                             </SimpleGrid>
 
-                            <Pagination.Root
-                                count={filtered.length}
-                                pageSize={pageSize}
-                                page={page}
-                                onPageChange={(details) => {
-                                    // scroll to top on page change
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                    setPage(details.page)
-                                }}
-                                mt="6"
-                                justifySelf="center"
-                            >
-                                <ButtonGroup variant="ghost" size="sm">
-                                    <Pagination.PrevTrigger asChild>
-                                        <IconButton aria-label={t('pagination.prev')}>
-                                            <FaChevronLeft />
-                                        </IconButton>
-                                    </Pagination.PrevTrigger>
-
-                                    <Pagination.Items
-                                        render={pag => (
-                                            <IconButton
-                                                key={pag.value}
-                                                variant={{ base: 'ghost', _selected: 'outline' }}
-                                            >
-                                                {pag.value}
+                            <Show when={filtered.length > pageSize}>
+                                <Pagination.Root
+                                    count={filtered.length}
+                                    pageSize={pageSize}
+                                    page={page}
+                                    onPageChange={(details) => {
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        setPage(details.page)
+                                    }}
+                                    mt="6"
+                                    justifySelf="center"
+                                >
+                                    <ButtonGroup variant="ghost" size="sm">
+                                        <Pagination.PrevTrigger asChild>
+                                            <IconButton aria-label={t('pagination.prev')}>
+                                                <FaChevronLeft />
                                             </IconButton>
-                                        )}
-                                    />
+                                        </Pagination.PrevTrigger>
 
-                                    <Pagination.NextTrigger asChild>
-                                        <IconButton aria-label={t('pagination.next')}>
-                                            <FaChevronRight />
-                                        </IconButton>
-                                    </Pagination.NextTrigger>
-                                </ButtonGroup>
-                            </Pagination.Root>
+                                        <Pagination.Items
+                                            render={pag => (
+                                                <IconButton
+                                                    key={pag.value}
+                                                    variant={{ base: 'ghost', _selected: 'outline' }}
+                                                >
+                                                    {pag.value}
+                                                </IconButton>
+                                            )}
+                                        />
+
+                                        <Pagination.NextTrigger asChild>
+                                            <IconButton aria-label={t('pagination.next')}>
+                                                <FaChevronRight />
+                                            </IconButton>
+                                        </Pagination.NextTrigger>
+                                    </ButtonGroup>
+                                </Pagination.Root>
+                            </Show>
                         </>
                     }
                 </Box>

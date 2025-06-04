@@ -16,7 +16,8 @@ import {
     Badge,
     EmptyState,
     VStack,
-    ButtonGroup
+    ButtonGroup,
+    Show
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
@@ -240,9 +241,9 @@ const CartPage = () => {
                         {t('reservation.title')}
                     </Heading>
 
-                    {!isAuthenticated ? (
-                        <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-                            <Stack gap={4}>
+                    <Box as="form" onSubmit={handleSubmit(onSubmit)}>
+                        <Stack gap={4}>
+                            <Show when={!isAuthenticated}>
                                 <Field.Root id="fullName" invalid={!!errors.fullName}>
                                     <Field.Label>
                                         {t('reservation.fullName')} *
@@ -255,7 +256,9 @@ const CartPage = () => {
                                         <Field.ErrorText>{errors.fullName.message}</Field.ErrorText>
                                     )}
                                 </Field.Root>
+                            </Show>
 
+                            <Show when={!isAuthenticated}>
                                 <Field.Root id="email" invalid={!!errors.email}>
                                     <Field.Label>
                                         {t('reservation.email')} *
@@ -271,85 +274,68 @@ const CartPage = () => {
                                         <Field.ErrorText>{errors.email.message}</Field.ErrorText>
                                     )}
                                 </Field.Root>
+                            </Show>
 
-                                <Field.Root id="phone" invalid={!!errors.phone}>
-                                    <Field.Label>
-                                        {t('reservation.phone')} *
-                                    </Field.Label>
-                                    <Input
-                                        placeholder={t('reservation.phonePlaceholder')}
-                                        {...register('phone', { required: t('reservation.phoneError') })}
-                                    />
-                                    {errors.phone && (
-                                        <Field.ErrorText>{errors.phone.message}</Field.ErrorText>
-                                    )}
-                                </Field.Root>
+                            <Field.Root id="phone" invalid={!!errors.phone}>
+                                <Field.Label>
+                                    {t('reservation.phone')} *
+                                </Field.Label>
+                                <Input
+                                    placeholder={t('reservation.phonePlaceholder')}
+                                    {...register('phone', { required: t('reservation.phoneError') })}
+                                />
+                                {errors.phone && (
+                                    <Field.ErrorText>{errors.phone.message}</Field.ErrorText>
+                                )}
+                            </Field.Root>
 
-                                <Field.Root id="address" invalid={!!errors.address}>
-                                    <Field.Label>
-                                        {t('reservation.address')} *
-                                    </Field.Label>
-                                    <Input
-                                        placeholder={t('reservation.addressPlaceholder')}
-                                        {...register('address', { required: t('reservation.addressError') })}
-                                    />
-                                    {errors.address && (
-                                        <Field.ErrorText>{errors.address.message}</Field.ErrorText>
-                                    )}
-                                </Field.Root>
+                            <Field.Root id="address" invalid={!!errors.address}>
+                                <Field.Label>
+                                    {t('reservation.address')} *
+                                </Field.Label>
+                                <Input
+                                    placeholder={t('reservation.addressPlaceholder')}
+                                    {...register('address', { required: t('reservation.addressError') })}
+                                />
+                                {errors.address && (
+                                    <Field.ErrorText>{errors.address.message}</Field.ErrorText>
+                                )}
+                            </Field.Root>
 
-                                <Field.Root id="notes" invalid={false}>
-                                    <Field.Label>
-                                        {t('reservation.notes')}
-                                    </Field.Label>
-                                    <Textarea
-                                        placeholder={t('reservation.notesPlaceholder')}
-                                        {...register('notes')}
-                                    />
-                                </Field.Root>
+                            <Field.Root id="notes" invalid={false}>
+                                <Field.Label>
+                                    {t('reservation.notes')}
+                                </Field.Label>
+                                <Textarea
+                                    placeholder={t('reservation.notesPlaceholder')}
+                                    {...register('notes')}
+                                />
+                            </Field.Root>
 
-                                <Flex justify="space-between" fontSize="lg" fontWeight="bold">
-                                    <Text>
-                                        {t('reservation.totalAmount')}
-                                    </Text>
-                                    <Text>${totalValue.toFixed(2)}</Text>
-                                </Flex>
-
-                                <Text fontSize="xs" color="gray.500">
-                                    {t('reservation.noPayment')}
-                                </Text>
-
-                                <Button
-                                    type="submit"
-                                    size="lg"
-                                    loading={isSubmitting}
-                                >
-                                    {t('reservation.submit')}
-                                </Button>
-
-                                <Text fontSize="xs" color="gray.500" >
-                                    {t('reservation.concent')}
-                                </Text>
-                            </Stack>
-                        </Box>
-                    ) : (
-                        <Stack gap={4}>
-                            <Flex justify="space-between" fontSize="xl" fontWeight="bold" mb={4}>
+                            <Flex justify="space-between" fontSize="lg" fontWeight="bold">
                                 <Text>
                                     {t('reservation.totalAmount')}
                                 </Text>
                                 <Text>${totalValue.toFixed(2)}</Text>
                             </Flex>
 
-                            <Button size="lg" type="submit">
+                            <Text fontSize="xs" color="gray.500">
+                                {t('reservation.noPayment')}
+                            </Text>
+
+                            <Button
+                                type="submit"
+                                size="lg"
+                                loading={isSubmitting}
+                            >
                                 {t('reservation.submit')}
                             </Button>
 
-                            <Text fontSize="xs" color="gray.500">
+                            <Text fontSize="xs" color="gray.500" >
                                 {t('reservation.concent')}
                             </Text>
                         </Stack>
-                    )}
+                    </Box>
                 </Box>
             </Flex>
         </Box>
