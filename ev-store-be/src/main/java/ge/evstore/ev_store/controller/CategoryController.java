@@ -1,6 +1,7 @@
 package ge.evstore.ev_store.controller;
 
 import ge.evstore.ev_store.entity.Category;
+import ge.evstore.ev_store.response.CategoryFullTreeResponse;
 import ge.evstore.ev_store.service.interf.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Category>> listCategories() {
+    public ResponseEntity<List<CategoryFullTreeResponse>> listCategories() {
         return ResponseEntity.ok(
                 categoryService.getAllCategories()
         );

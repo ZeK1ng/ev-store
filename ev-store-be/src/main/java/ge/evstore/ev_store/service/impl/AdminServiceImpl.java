@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Service
@@ -88,18 +90,36 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Category addCategory(final Category category, final String accessToken) {
-        return categoryRepository.save(category);
+    public Category addCategory(final String name, final String description, final Long parentCategoryId, final String accessToken) {
+        final AtomicReference<Category> result = new AtomicReference<>();
+        if (parentCategoryId == null) {
+            final Category category = new Category();
+            category.setName(name);
+            category.setDescription(description);
+            category.setParentCategory(null);
+            categoryRepository.save(category);
+            result.set(category);
+        } else {
+            categoryRepository.findById(parentCategoryId).ifPresent(parent -> {
+                final Category child = new Category();
+                child.setName(name);
+                child.setDescription(description);
+                child.setParentCategory(parent);
+                parent.getChildren().add(child);
+                categoryRepository.save(parent); // cascading will persist the new child
+                result.set(child);
+            });
+        }
+        return result.get();
     }
 
     @Override
     @Transactional
-    public Category updateCategory(final Long id, final Category category, final String accessToken) {
+    public Category updateCategory(final Long id, final String name, final String description, final String accessToken) {
         return categoryRepository.findById(id)
                 .map(category1 -> {
-                    category1.setParentCategory(category.getParentCategory());
-                    category1.setName(category.getName());
-                    category1.setDescription(category.getDescription());
+                    category1.setName(name);
+                    category1.setDescription(description);
                     return categoryRepository.save(category1);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Category with ID " + id + " not found"));
@@ -108,10 +128,14 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public void deleteCategory(final Long id, final String accessToken) {
-        final List<Category> byParentCategory = categoryRepository.findByParentCategory(id);
-        if (!byParentCategory.isEmpty()) {
-            log.error("Category with given id is parent category for categories:{}. Delete child categories first", byParentCategory);
-            throw new IsParentCategoryException(String.format("Category with given id is parent category for categories:%s. Delete child categories first", byParentCategory));
+        final Optional<Category> category = categoryRepository.findById(id);
+        if (category.isEmpty()) {
+            return;
+        }
+        final List<Category> children = category.get().getChildren();
+        if (!children.isEmpty()) {
+            log.error("Category with given id is parent category for categories:{}. Delete child categories first", children);
+            throw new IsParentCategoryException(String.format("Category with given id is parent category for categories:%s. Delete child categories first", children));
         }
         categoryRepository.deleteById(id);
     }

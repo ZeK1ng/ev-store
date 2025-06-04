@@ -22,9 +22,9 @@ public interface AdminService {
     Product updateProductStock(Long id, int stockAmount, String accessToken);
 
     // Category operations
-    Category addCategory(Category category, String accessToken);
+    Category addCategory(String name, String description, Long parentCategoryId ,String accessToken);
 
-    Category updateCategory(Long id, Category category, String accessToken);
+    Category updateCategory(Long id, String name, String description, String accessToken);
 
     void deleteCategory(Long id, String accessToken);
 }
