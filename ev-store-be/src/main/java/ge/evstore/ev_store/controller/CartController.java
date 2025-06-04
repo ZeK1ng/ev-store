@@ -25,10 +25,10 @@ public class CartController {
     @PostMapping("/add")
     public ResponseEntity<CartResponse> addProductToCart(
             final HttpServletRequest req,
-            @RequestParam final String productId,
-            @RequestParam final String quantity) {
+            @RequestParam final Long productId,
+            @RequestParam final Integer quantity) {
         final String token = HeaderUtils.extractBearer(req);
-        final CartResponse cartResponse = cartService.addProductToCart(token, productId, quantity);
+        final CartResponse cartResponse = cartService.addProductToCart(productId, quantity, token);
         return ResponseEntity.ok(cartResponse);
     }
 
