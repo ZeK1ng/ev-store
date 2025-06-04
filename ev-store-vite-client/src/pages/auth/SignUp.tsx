@@ -4,12 +4,11 @@ import {
     Button,
     Container,
     Heading,
-    HStack,
+    InputGroup,
     Input,
     SimpleGrid,
     Stack,
     Text,
-    Icon,
     Field,
     PinInput,
     Flex
@@ -17,7 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { BsImage } from 'react-icons/bs';
+import { LuUser, LuMail, LuPhone, LuKeyRound } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 
@@ -25,6 +24,7 @@ interface SignupFormValues {
     firstName: string;
     lastName: string;
     email: string;
+    phone: string;
     password: string;
     confirmPassword: string;
 }
@@ -42,6 +42,7 @@ const SignupPage = () => {
             firstName: "",
             lastName: "",
             email: "",
+            phone: "",
             password: "",
             confirmPassword: "",
         }
@@ -70,8 +71,8 @@ const SignupPage = () => {
                 minH="100vh"
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container textAlign="center" maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
-                <Heading mb={4}>
+                <Container textAlign="center" maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" py={{ base: 6, md: 8 }}>
+                    <Heading mb={4}>
                         {t('signup.verify.title')}
                     </Heading>
                     <Text mb={2}>
@@ -110,15 +111,8 @@ const SignupPage = () => {
                 py={{ base: 12, md: 16 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="md" py={{ base: 6, md: 8 }}>
+                <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" py={{ base: 6, md: 8 }}>
                     <Stack gap={8}>
-                        <HStack gap={3} align="center">
-                            <Icon as={BsImage} boxSize={8} />
-                            <Heading as="h2" size="md" fontWeight="semibold">
-                                Logo
-                            </Heading>
-                        </HStack>
-
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
                                 {t('signup.title')}
@@ -136,26 +130,30 @@ const SignupPage = () => {
                                             <Field.Label fontWeight="medium" fontSize="sm">
                                                 {t('signup.firstName')}
                                             </Field.Label>
-                                            <Input
-                                                size="lg"
-                                                type="text"
-                                                placeholder={t('signup.firstNamePlaceholder')}
-                                                {...register("firstName", { required: t('signup.firstNameRequired') })}
-                                            />
+                                            <InputGroup startElement={<LuUser />}>
+                                                <Input
+                                                    size="lg"
+                                                    type="text"
+                                                    placeholder={t('signup.firstNamePlaceholder')}
+                                                    {...register("firstName", { required: t('signup.firstNameRequired') })}
+                                                />
+                                            </InputGroup>
                                             {errors.firstName && <Field.ErrorText>{errors.firstName.message}</Field.ErrorText>}
                                         </Field.Root>
                                     </Box>
                                     <Box flex={1}>
-                                    <Field.Root id="lastName" invalid={!!errors.lastName}>
+                                        <Field.Root id="lastName" invalid={!!errors.lastName}>
                                             <Field.Label fontWeight="medium" fontSize="sm">
                                                 {t('signup.lastName')}
                                             </Field.Label>
-                                            <Input
-                                                size="lg"
-                                                type="text"
-                                                placeholder={t('signup.lastNamePlaceholder')}
-                                                {...register("lastName", { required: t('signup.lastNameRequired') })}
-                                            />
+                                            <InputGroup startElement={<LuUser />}>
+                                                <Input
+                                                    size="lg"
+                                                    type="text"
+                                                    placeholder={t('signup.lastNamePlaceholder')}
+                                                    {...register("lastName", { required: t('signup.lastNameRequired') })}
+                                                />
+                                            </InputGroup>
                                             {errors.lastName && <Field.ErrorText>{errors.lastName.message}</Field.ErrorText>}
                                         </Field.Root>
                                     </Box>
@@ -167,28 +165,49 @@ const SignupPage = () => {
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('signup.email')}
                                     </Field.Label>
-                                    <Input
-                                        size="lg"
-                                        type="email"
-                                        placeholder={t('signup.emailPlaceholder')}
-                                        {...register("email", {
-                                            required: t('signup.emailRequired')
-                                        })}
-                                    />
+                                    <InputGroup startElement={<LuMail />}>
+                                        <Input
+                                            size="lg"
+                                            type="email"
+                                            placeholder={t('signup.emailPlaceholder')}
+                                            {...register("email", {
+                                                required: t('signup.emailRequired')
+                                            })}
+                                        />
+                                    </InputGroup>
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
+                                </Field.Root>
+
+                                <Field.Root id="phone" invalid={!!errors.phone}>
+                                    <Field.Label fontWeight="medium" fontSize="sm">
+                                        {t('signup.phone')}
+                                    </Field.Label>
+                                    <InputGroup startElement={<LuPhone />}>
+                                        <Input
+                                            size="lg"
+                                            type="tel"
+                                            placeholder={t('signup.phonePlaceholder')}
+                                            {...register("phone", {
+                                                required: t('signup.phoneRequired')
+                                            })}
+                                        />
+                                    </InputGroup>
+                                    {errors.phone && <Field.ErrorText>{errors.phone.message}</Field.ErrorText>}
                                 </Field.Root>
 
                                 <Field.Root id="password" invalid={!!errors.password}>
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('signup.password')}
                                     </Field.Label>
-                                    <PasswordInput
-                                        size="lg"
-                                        {...register("password", {
-                                            required: t('signup.passwordRequired'),
-                                            minLength: { value: 8, message: t('signup.passwordMinLength') },
-                                        })}
-                                    />
+                                    <InputGroup startElement={<LuKeyRound />}>
+                                        <PasswordInput
+                                            size="lg"
+                                            {...register("password", {
+                                                required: t('signup.passwordRequired'),
+                                                minLength: { value: 8, message: t('signup.passwordMinLength') },
+                                            })}
+                                        />
+                                    </InputGroup>
                                     {errors.password && <Field.ErrorText>{errors.password.message}</Field.ErrorText>}
                                 </Field.Root>
 
@@ -196,13 +215,15 @@ const SignupPage = () => {
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('signup.confirmPassword')}
                                     </Field.Label>
-                                    <PasswordInput
-                                        size="lg"
-                                        {...register("confirmPassword", {
-                                            required: t('signup.confirmPasswordRequired'),
-                                            validate: value => value === passwordValue || t('signup.passwordsDoNotMatch'),
-                                        })}
-                                    />
+                                    <InputGroup startElement={<LuKeyRound />}>
+                                        <PasswordInput
+                                            size="lg"
+                                            {...register("confirmPassword", {
+                                                required: t('signup.confirmPasswordRequired'),
+                                                validate: value => value === passwordValue || t('signup.passwordsDoNotMatch'),
+                                            })}
+                                        />
+                                    </InputGroup>
                                     {errors.confirmPassword && <Field.ErrorText>{errors.confirmPassword.message}</Field.ErrorText>}
                                 </Field.Root>
 

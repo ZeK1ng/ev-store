@@ -13,7 +13,7 @@ import { FaSitemap, FaLayerGroup, FaChartBar } from "react-icons/fa";
 
 const AdminPage: React.FC = () => {
     return (
-        <Box p={8}>
+        <Box p={8} h="100dvh">
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>
                 <Card.Root overflow="hidden">
                     <Card.Body>

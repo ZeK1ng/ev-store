@@ -69,7 +69,7 @@ const AboutUs = () => {
                     >
                         <Center mb={4}>
                             <Flex
-                                bg="green.400"
+                                bg="green.500"
                                 p={4}
                                 borderRadius="full"
                                 align="center"

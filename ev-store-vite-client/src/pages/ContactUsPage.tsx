@@ -36,7 +36,7 @@ const ContactUsPage = () => {
           {/* Phone Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
-              <Icon as={FaPhone} boxSize={8} color="blue.400" />
+              <Icon as={FaPhone} boxSize={8} color="green.500" />
               <Heading size="md">
                 {t('contact.phone')}
               </Heading>
@@ -54,7 +54,7 @@ const ContactUsPage = () => {
           {/* Email Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
-              <Icon as={FaEnvelope} boxSize={8} color="green.400" />
+              <Icon as={FaEnvelope} boxSize={8} color="green.500" />
               <Heading size="md">
                 {t('contact.email')}
               </Heading>
@@ -72,17 +72,18 @@ const ContactUsPage = () => {
           {/* Address Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
-              <Icon as={FaMapMarkerAlt} boxSize={8} color="red.400" />
+              <Icon as={FaMapMarkerAlt} boxSize={8} color="green.500" />
               <Heading size="md">
                 {t('contact.address')}
               </Heading>
-              <Stack gap={1}>
-                {addressLines.map((line, idx) => (
-                  <Text key={idx} fontSize="md">
-                    {line}
-                  </Text>
-                ))}
-              </Stack>
+              <Text fontSize="lg" fontWeight="semibold">
+                {t('contact.addressName')}
+              </Text>
+              <Button w="full" asChild>
+                <a href="https://maps.app.goo.gl/XqaUXpcvc7qfRW3w8" target="_blank">
+                  {t('contact.mapButton')}
+                </a>
+              </Button>
             </VStack>
           </Box>
         </SimpleGrid>

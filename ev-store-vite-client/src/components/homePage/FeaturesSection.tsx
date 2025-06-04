@@ -28,7 +28,7 @@ const FeaturesSection = () => {
                     >
                         <Center mb={4}>
                             <Flex
-                                bg="green.400"
+                                bg="green.500"
                                 p={6}
                                 borderRadius="full"
                                 align="center"

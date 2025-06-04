@@ -13,13 +13,17 @@ import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom';
 
-
 export interface Product {
     id: string
     title: string
     description: string
     price: string
     imageUrl: string
+}
+
+interface PopularProductsSliderProps {
+    categories: string[];
+    showAll?: boolean;
 }
 
 const dummyProducts: Product[] = Array.from({ length: 10 }, (_, i) => ({
@@ -30,7 +34,9 @@ const dummyProducts: Product[] = Array.from({ length: 10 }, (_, i) => ({
     imageUrl: `https://placehold.co/300x200?text=Prod+${i + 1}`
 }))
 
-const PopularProductsSlider = () => {
+const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSliderProps) => {
+    console.log('PopularProductsSlider categories:', categories);
+    
     const sliderRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation('home')
 
@@ -43,7 +49,7 @@ const PopularProductsSlider = () => {
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
             <Flex justify="space-between" align="center" mb={4}>
-                <Heading size={{ base: '2xl', md: '4xl' }} textAlign={'left'}>{t('popularProducts.title')}</Heading>
+                <Heading size={{ base: '2xl', md: '4xl' }} textAlign='left'>{t('popularProducts.title')}</Heading>
                 <Flex>
                     <IconButton
                         aria-label="Scroll left"
@@ -73,7 +79,6 @@ const PopularProductsSlider = () => {
                 scrollBehavior="smooth"
             >
                 {dummyProducts.map((product, index) => (
-
                     <Box
                         key={product.id}
                         flex={{ base: '0 0 300px', md: '0 0 27%' }}
@@ -108,11 +113,13 @@ const PopularProductsSlider = () => {
                     </Box>
                 ))}
             </Flex>
-            <Flex justify="center" align="center" mt={4}>
-                <Button size="lg" variant="subtle">
-                    {t('popularProducts.seeAllLabel')}
-                </Button>
-            </Flex>
+            {showAll && (
+                <Flex justify="center" align="center" mt={4}>
+                    <Button size="lg" variant="subtle">
+                        {t('popularProducts.seeAllLabel')}
+                    </Button>
+                </Flex>
+            )}
         </Box >
     )
 }

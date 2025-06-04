@@ -61,8 +61,8 @@ const ProductDetailsPage = () => {
                         src={activeImage}
                         alt={product.nameEn}
                         objectFit="cover"
-                        w="100%"
-                        h={{ base: '300px', md: '500px' }}
+                        h={{ base: '300px', md: '400px' }}
+                        w="full"
                         borderRadius="md"
                     />
 
@@ -72,17 +72,19 @@ const ProductDetailsPage = () => {
                         overflowX="auto"
                         flexWrap="nowrap"
                         css={{
-                            '&::-webkit-scrollbar': { display: 'none' },
-                            '-ms-overflow-style': 'none',
-                            'scrollbar-width': 'none',
-                        }}
+                            msOverflowStyle: 'none',
+                            scrollbarWidth: 'none',
+                            '::-webkit-slider-value-text': {
+                              display: 'none', 
+                            }
+                          }}
                     >
                         {allThumbnails.map((src, idx) => (
                             <IconButton
                                 key={idx}
                                 onClick={() => setActiveImage(src)}
                                 aria-label={`Thumbnail ${idx + 1}`}
-                                border="md"
+                                border="xs"
                                 borderColor={src === activeImage ? 'green.500' : 'blackAlpha.200'}
                                 borderRadius="md"
                                 _hover={{ borderColor: 'green.400' }}
@@ -109,25 +111,20 @@ const ProductDetailsPage = () => {
                             ${product.price.toFixed(2)}
                         </Text>
 
-                        <Field.Root id="quantity" invalid={!!errors.quantity}>
-                            <Field.Label>
-                                {t('details.quantity')}
-                            </Field.Label>
-                            <NumberInput.Root unstyled defaultValue="1" spinOnPress={false} min={1} max={1000}>
-                                <HStack gap={2}>
+                        <Field.Root invalid={false}>
+                            <NumberInput.Root defaultValue="1" unstyled spinOnPress={false}
+                                min={1} max={50} step={1}
+                                onValueChange={(e) => console.log(e.value)}
+                            >
+                                <HStack gap="2">
                                     <NumberInput.DecrementTrigger asChild>
-                                        <IconButton variant="outline" size="sm" aria-label="Decrease quantity">
+                                        <IconButton variant="outline" size="sm">
                                             <LuMinus />
                                         </IconButton>
                                     </NumberInput.DecrementTrigger>
-                                    <NumberInput.Input
-                                        textAlign="center"
-                                        fontSize="lg"
-                                        maxW="3ch"
-                                        {...register('quantity')}
-                                    />
+                                    <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
                                     <NumberInput.IncrementTrigger asChild>
-                                        <IconButton variant="outline" size="sm" aria-label="Increase quantity">
+                                        <IconButton variant="outline" size="sm">
                                             <LuPlus />
                                         </IconButton>
                                     </NumberInput.IncrementTrigger>
@@ -135,14 +132,14 @@ const ProductDetailsPage = () => {
                             </NumberInput.Root>
                         </Field.Root>
 
-                        <Button size="lg" colorScheme="blue">
+                        <Button size="lg" colorScheme="blue" w="max-content">
                             {t('details.addToCart')}
                         </Button>
                     </Stack>
                 </Box>
             </Flex>
 
-            <PopularProductsSlider />
+            <PopularProductsSlider categories={["ulala"]} showAll={false} />
         </Box>
     );
 };

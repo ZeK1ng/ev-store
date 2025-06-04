@@ -32,6 +32,7 @@
     "address": "მისამართი",
     "addressName": "9ა, დავით გურამიშვილის გამზირი",
     "addressCity": "თბილისი, საქართველო",
-    "mapTitle": "ჩვენს მდებარეობას იხილეთ Google Maps-ზე"
+    "mapTitle": "ჩვენს მდებარეობას იხილეთ Google Maps-ზე",
+    "mapButton": "გადახედეთ რუკას"
   }
 }
