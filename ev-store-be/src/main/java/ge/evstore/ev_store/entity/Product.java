@@ -26,7 +26,9 @@ public class Product {
     private Double price;
 
     private Integer stockAmount;
-    private Integer categoryId;
+
+    @ManyToOne
+    private Category category;
 
     private String imageName;
     private String imageFilePath;

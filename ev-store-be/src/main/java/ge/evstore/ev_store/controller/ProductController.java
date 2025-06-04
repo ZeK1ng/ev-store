@@ -1,19 +1,19 @@
 package ge.evstore.ev_store.controller;
 
-import ge.evstore.ev_store.entity.Category;
+import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.service.interf.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/product")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 public class ProductController {
+
     private final ProductService productService;
 
     @GetMapping("/max-price")
@@ -21,5 +21,32 @@ public class ProductController {
         return ResponseEntity.ok(
                 productService.getOverAllMaxPrice()
         );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable final Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Product>> getProductsBulk(@RequestBody final List<Long> productIds) {
+        final List<Product> products = productService.getProductsByIds(productIds);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<Product>> getAllProducts(
+            @RequestParam(defaultValue = "0") final int page,
+            @RequestParam(defaultValue = "10") final int size,
+            @RequestParam(defaultValue = "id") final String sortBy,
+            @RequestParam(defaultValue = "asc") final String direction,
+            @RequestParam(required = false) final String name,
+            @RequestParam(required = false) final Long categoryId,
+            @RequestParam(required = false) final Double minPrice,
+            @RequestParam(required = false) final Double maxPrice,
+            @RequestParam(required = false) final Boolean inStock
+    ) {
+        final Page<Product> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock);
+        return ResponseEntity.ok(products);
     }
 }
