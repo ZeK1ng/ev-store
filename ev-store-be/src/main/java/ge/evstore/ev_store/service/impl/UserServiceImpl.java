@@ -99,7 +99,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse updateUser(final String token, final String city, final String address, final String phone) {
+    @UserTokenAspectMarker
+    public UserResponse updateUser(final String city, final String address, final String phone, final String token) {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> user = userRepository.findByEmail(username);
         if (user.isEmpty()) {

@@ -1,5 +1,6 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.annotation.UserTokenAspectMarker;
 import ge.evstore.ev_store.entity.Cart;
 import ge.evstore.ev_store.entity.CartItem;
 import ge.evstore.ev_store.entity.Product;
@@ -28,6 +29,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
 
     @Override
+    @UserTokenAspectMarker
     public CartResponse getCartForUser(final String token) {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> userOptional = userService.findUser(username);
@@ -43,7 +45,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartResponse addProductToCart(final String token, final String productId, final String quantity) {
+    @UserTokenAspectMarker
+    public CartResponse addProductToCart(final String productId, final String quantity, final String token) {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> userOptional = userService.findUser(username);
         if (userOptional.isEmpty()) {
@@ -74,6 +77,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
+    @UserTokenAspectMarker
     public void clearCart(final String token) {
         final String username = jwtUtils.extractUsername(token);
         final User user = userService.findUser(username)
@@ -89,7 +93,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void deleteProductFromCart(final String token, final String productId, final String quantity) {
+    @UserTokenAspectMarker
+    public void deleteProductFromCart(final String productId, final String quantity, final String token) {
         final String username = jwtUtils.extractUsername(token);
         final User user = userService.findUser(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found for username: " + username));
