@@ -54,7 +54,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<GeneralExceptionResponse> handleAuthenticationException(final MessagingException ex) {
         log.info(ex.getMessage());
-        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse("Verification Mail send failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
