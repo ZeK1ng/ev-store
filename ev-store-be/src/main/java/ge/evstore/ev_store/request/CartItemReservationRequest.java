@@ -6,5 +6,6 @@ import lombok.Data;
 public class CartItemReservationRequest {
     private int quantity;
     private Long productId;
-    private Double price;
+    private String productName;
+    private Double productPrice;
 }

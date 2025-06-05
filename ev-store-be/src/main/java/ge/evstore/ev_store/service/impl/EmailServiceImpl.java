@@ -1,49 +1,64 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.request.CartItemReservationRequest;
+import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.service.interf.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import static ge.evstore.ev_store.constants.EmailTemplates.BASE_HTML_EMAIL_VERIFICATION_TEMPLATE;
-import static ge.evstore.ev_store.constants.EmailTemplates.BASE_HTML_PWD_RESET_TEMPLATE;
+import java.util.List;
+
+import static ge.evstore.ev_store.constants.EmailTemplates.*;
 
 @Service
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 
-    private static final String VERIFICATION_CODE_STR = "{{VERIFICATION_CODE}}";
-    private static final String CODE_EXPIRATION_DURATION_STR = "{{CODE_EXPIRATION_DURATION}}";
-
     private final JavaMailSender mailSender;
     @Value("${verification.code.expiration.duration.minutes}")
     private String verifyCodeExpirationDuration;
+    @Value("${store.email.address}")
+    private String emailToStore;
 
     public EmailServiceImpl(final JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
     public void sendVerificationCode(final String email, final String verificationCode) throws MessagingException {
-        sendHtmlEmailForVerificationOrPassword(email, getHtmlForVerificationCode(verificationCode));
+        sendHtmlEmail(email, getHtmlForVerificationCode(verificationCode), VERIFICATION_EMAIL_SUBJECT);
     }
 
     public void sendPasswordResetCode(final String email, final String code) throws MessagingException {
-        sendHtmlEmailForVerificationOrPassword(email, getHtmlForPasswordResetCode(code));
+        sendHtmlEmail(email, getHtmlForPasswordResetCode(code), PASSWORD_RESET_EMAIL_SUBJECT);
+    }
+
+    @Override
+    public void sendReservationMailForUnauthorizedUser(final UnauthenticatedUserReservationRequest request) throws MessagingException {
+        sendHtmlEmail(emailToStore, getHtmlForReservation(new ReservationRequestEntity(request)), RESERVATION_EMAIL_SUBJECT);
+    }
+
+    private String getHtmlForReservation(final ReservationRequestEntity reservationRequestEntity) {
+        final double totalPrice = reservationRequestEntity.getCartItems().stream()
+                .mapToDouble(item -> item.getProductPrice() * item.getQuantity())
+                .sum();
+        return BASE_HTML_RESERVATION_TEMPLATE_START + buildCartDetailsHtml(reservationRequestEntity.getCartItems()) + BASE_HTML_RESERVATION_TEMPLATE_END.replace();
     }
 
 
-    private void sendHtmlEmailForVerificationOrPassword(final String email, final String text) throws MessagingException {
+    private void sendHtmlEmail(final String email, final String text, final String subject) throws MessagingException {
         final MimeMessage mimeMessage = mailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setSubject("EV Store Verification Code");
+        helper.setSubject(subject);
         helper.setTo(email);
         helper.setText(text, true);
         mailSender.send(mimeMessage);
-        log.info("Verification email sent to {}", email);
+        log.info("Email sent to {}", email);
     }
 
     private String getHtmlForVerificationCode(final String verificationCode) {
@@ -56,6 +71,47 @@ public class EmailServiceImpl implements EmailService {
         return BASE_HTML_PWD_RESET_TEMPLATE
                 .replace(VERIFICATION_CODE_STR, verificationCode)
                 .replace(CODE_EXPIRATION_DURATION_STR, verifyCodeExpirationDuration);
+    }
+
+    private String buildCartDetailsHtml(final List<CartItemReservationRequest> cartItems) {
+        final StringBuilder builder = new StringBuilder();
+        for (final CartItemReservationRequest item : cartItems) {
+            builder.append("<tr>")
+                    .append("<td><span class=\"badge\">")
+                    .append(item.getProductId())
+                    .append("</span></td>")
+                    .append("<td>")
+                    .append(item.getProductName())
+                    .append("</td>")
+                    .append("<td><span class=\"badge\">")
+                    .append(item.getQuantity())
+                    .append("</span></td>")
+                    .append("<td>")
+                    .append(item.getProductPrice())
+                    .append("</td>")
+                    .append("<td>")
+                    .append(item.getProductPrice() * item.getQuantity())
+                    .append("</td>")
+                    .append("</tr>");
+        }
+        return builder.toString();
+    }
+
+    @Getter
+    private static class ReservationRequestEntity {
+        private final String name;
+        private final String mobile;
+        private final String city;
+        private final String address;
+        private final List<CartItemReservationRequest> cartItems;
+
+        public ReservationRequestEntity(final UnauthenticatedUserReservationRequest request) {
+            this.name = request.getName();
+            this.mobile = request.getMobile();
+            this.city = request.getCity();
+            this.address = request.getAddress();
+            this.cartItems = request.getCartItems();
+        }
     }
 
 }

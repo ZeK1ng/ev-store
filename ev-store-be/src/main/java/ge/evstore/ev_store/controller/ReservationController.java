@@ -2,6 +2,7 @@ package ge.evstore.ev_store.controller;
 
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.service.interf.ReservationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<String> createGuestReservation(@RequestBody final UnauthenticatedUserReservationRequest request) {
+    public ResponseEntity<String> createGuestReservation(@RequestBody final UnauthenticatedUserReservationRequest request) throws MessagingException {
         reservationService.createGuestReservation(request);
         return ResponseEntity.ok("Reservation received and email sent.");
     }
