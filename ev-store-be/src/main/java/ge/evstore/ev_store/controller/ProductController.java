@@ -34,13 +34,13 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<Page<Product>> getAllProducts(
             @RequestParam(defaultValue = "0") final int page,
             @RequestParam(defaultValue = "10") final int size,
             @RequestParam(defaultValue = "id") final String sortBy,
             @RequestParam(defaultValue = "asc") final String direction,
-            @RequestParam(required = false) final String name,
+            @RequestParam(required = false) final String name, //TOdo saxelit jebna
             @RequestParam(required = false) final Long categoryId,
             @RequestParam(required = false) final Double minPrice,
             @RequestParam(required = false) final Double maxPrice,
