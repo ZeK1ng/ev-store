@@ -16,6 +16,7 @@ import ContactUsPage from '@/pages/ContactUsPage';
 import ProductDetailsPage from '@/pages/ProductDetailsPage';
 import CartPage from '@/pages/CartPage';
 import PageNotFound from '@/pages/PageNotFound';
+import OrderHistoryPage from '@/pages/auth/OrderHistoryPage';
 
 const AppRoutes = () => {
   return (
@@ -33,6 +34,7 @@ const AppRoutes = () => {
       <Route path="/about-us" element={<AboutUs /> }/>
       <Route path="/contact-us" element={<ContactUsPage />} />
       <Route path="/cart" element={<CartPage />} />
+      <Route path="/order-history" element={<OrderHistoryPage />} />
       
       {/* Auth routes */}
       <Route path="/login" element={<LoginPage />} />

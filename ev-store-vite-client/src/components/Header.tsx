@@ -9,12 +9,14 @@ import {
     Heading,
     VStack,
     Separator,
-    useDisclosure
+    useDisclosure,
+    Menu,
+    Portal
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
-import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftClose, LuPanelRightClose } from "react-icons/lu";
+import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftClose, LuPanelRightClose, LuLogOut } from "react-icons/lu";
 
 const Header = () => {
     const { open, onOpen, onClose } = useDisclosure()
@@ -79,11 +81,38 @@ const Header = () => {
 
                     <LangSwitcher />
 
-                    <Button variant="outline" asChild>
-                        <RouterLink to="/profile">
-                            Profile <LuCircleUserRound />
-                        </RouterLink>
-                    </Button>
+                    <Menu.Root size="md">
+                        <Menu.Trigger asChild>
+                            <Button variant="outline">
+                                Profile <LuCircleUserRound />
+                            </Button>
+                        </Menu.Trigger>
+                        <Portal>
+                            <Menu.Positioner>
+                                <Menu.Content>
+                                    <Menu.Item value="profile">
+                                        <RouterLink to="/profile">
+                                            My Profile
+                                        </RouterLink>
+                                    </Menu.Item>
+                                    <Separator />
+                                    <Menu.Item value="history">
+                                        <RouterLink to="/order-history">
+                                            Order History
+                                        </RouterLink>
+                                    </Menu.Item>
+                                    <Separator />
+                                    <Menu.Item value="logout">
+                                        <RouterLink to="/logout">
+                                            <HStack>
+                                                Log Out <LuLogOut />
+                                            </HStack>
+                                        </RouterLink>
+                                    </Menu.Item>
+                                </Menu.Content>
+                            </Menu.Positioner>
+                        </Portal>
+                    </Menu.Root>
                 </HStack>
 
                 <HStack display={{ base: 'flex', md: 'none' }}>
