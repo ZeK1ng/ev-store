@@ -22,6 +22,10 @@ import kaCart from '../public/locales/ka/cart.json'
 import enCart from '../public/locales/en/cart.json'
 import ruCart from '../public/locales/ru/cart.json'
 
+import kaCatalog from '../public/locales/ka/catalog.json'
+import enCatalog from '../public/locales/en/catalog.json'
+import ruCatalog from '../public/locales/ru/catalog.json'
+
 const stored = localStorage.getItem('ev-i18nextLng') || 'ka';
 
 i18n
@@ -29,9 +33,9 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ka: { common: kaCommon, about: kaAbout, home: kaHome, auth: kaAuth, cart: kaCart },
-      en: { common: enCommon, about: enAbout, home: enHome, auth: enAuth, cart: enCart},
-      ru: { common: ruCommon, about: ruAbout, home: ruHome, auth: ruAuth, cart: ruCart},
+      ka: { common: kaCommon, about: kaAbout, home: kaHome, auth: kaAuth, cart: kaCart, catalog: kaCatalog},
+      en: { common: enCommon, about: enAbout, home: enHome, auth: enAuth, cart: enCart, catalog: enCatalog},
+      ru: { common: ruCommon, about: ruAbout, home: ruHome, auth: ruAuth, cart: ruCart, catalog: ruCatalog},
     },
     fallbackLng: 'ka',
     lng: stored,

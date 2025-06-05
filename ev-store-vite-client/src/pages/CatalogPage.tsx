@@ -41,7 +41,7 @@ interface Item {
 }
 
 const CatalogPage = () => {
-    const { t } = useTranslation('home')
+    const { t } = useTranslation('catalog')
 
     const products: Item[] = [
         {
@@ -201,7 +201,9 @@ const CatalogPage = () => {
 
     return (
         <Box p={{ base: 4, md: 8 }}>
-            <Heading size="lg" mb="6">Product Catalog</Heading>
+            <Heading size="lg" mb="6">
+                {t('title')}
+            </Heading>
 
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
                 <Accordion.Root
@@ -213,7 +215,9 @@ const CatalogPage = () => {
                 >
                     <Accordion.Item value="price">
                         <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Price Range</Text>
+                            <Text flex="1" fontWeight="medium">
+                                {t('priceFilterTitle')}
+                            </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
@@ -240,7 +244,9 @@ const CatalogPage = () => {
 
                     <Accordion.Item value="category">
                         <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Category</Text>
+                            <Text flex="1" fontWeight="medium">
+                                {t('categoryFilterTitle')}
+                            </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
@@ -264,7 +270,9 @@ const CatalogPage = () => {
 
                     <Accordion.Item value="subcategory">
                         <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Subcategory</Text>
+                            <Text flex="1" fontWeight="medium">
+                                {t('subcategoryFilterTitle')}
+                            </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
@@ -290,16 +298,26 @@ const CatalogPage = () => {
                 <Box flex="1" w="100%">
                     <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
                         <Field.Root flex="1" maxW={{ base: "100%", md: "400px" }}>
-                            <Field.Label>Search Products</Field.Label>
-                            <Input placeholder="Search products..." size="md" onChange={e => setSearch(e.target.value)} />
+                            <Field.Label>
+                                {t('searchLabel')}
+                            </Field.Label>
+                            <Input placeholder={t('searchPlaceholder')} size="md" onChange={e => setSearch(e.target.value)} />
                         </Field.Root>
                         <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
-                            <Field.Label>Sort By</Field.Label>
+                            <Field.Label>
+                                {t('sortByLabel')}
+                            </Field.Label>
                             <NativeSelect.Root>
                                 <NativeSelect.Field defaultValue="">
-                                    <option value="" disabled hidden>Sort By</option>
-                                    <option value="priceAsc">Price: Low to High</option>
-                                    <option value="priceDesc">Price: High to Low</option>
+                                    <option value="" disabled hidden>
+                                        {t('sortByPlaceholder')}
+                                    </option>
+                                    <option value="priceAsc">
+                                        {t('sortByPriceAsc')}
+                                    </option>
+                                    <option value="priceDesc">
+                                        {t('sortByPriceDesc')}
+                                    </option>
                                 </NativeSelect.Field>
                                 <NativeSelect.Indicator />
                             </NativeSelect.Root>
@@ -313,14 +331,20 @@ const CatalogPage = () => {
                                     <FaSearch />
                                 </EmptyState.Indicator>
                                 <VStack textAlign="center">
-                                    <EmptyState.Title>No results found</EmptyState.Title>
+                                    <EmptyState.Title>
+                                        {t('noResultsTitle')}
+                                    </EmptyState.Title>
                                     <EmptyState.Description>
-                                        Try adjusting your search
+                                        {t('noResultsDescription')}
                                     </EmptyState.Description>
                                 </VStack>
                                 <List.Root variant="marker">
-                                    <List.Item>Try removing filters</List.Item>
-                                    <List.Item>Try different keywords</List.Item>
+                                    <List.Item>
+                                        {t('noResultsSuggestions')}
+                                    </List.Item>
+                                    <List.Item>
+                                        {t('noResultsSuggestions2')}
+                                    </List.Item>
                                 </List.Root>
                             </EmptyState.Content>
                         </EmptyState.Root>

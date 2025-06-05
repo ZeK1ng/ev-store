@@ -1,0 +1,16 @@
+{
+    "title": "Catalog",
+    "priceFilterTitle": "Price Filter",
+    "categoryFilterTitle": "Category Filter",
+    "subcategoryFilterTitle": "Subcategory Filter",
+    "searchLabel": "Search Products",
+    "searchPlaceholder": "Search for products...",
+    "sortByLabel": "Sort By",
+    "sortByPlaceholder": "Select sorting option",
+    "sortByPriceAsc": "Price: Low to High",
+    "sortByPriceDesc": "Price: High to Low",
+    "noResultsTitle": "No Results Found",
+    "noResultsDescription": "We couldn't find any products matching your search.",
+    "noResultsSuggestions": "Try adjusting your search or filter options.",
+    "noResultsSuggestions2": "You can also check our latest arrivals."
+}

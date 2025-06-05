@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Box,
     Flex,
@@ -14,9 +14,14 @@ import {
     DataList,
     CloseButton,
     Text,
-    SimpleGrid
+    SimpleGrid,
+    VStack,
+    Field,
+    Input,
+    EmptyState,
+    List
 } from '@chakra-ui/react'
-import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
+import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft, FaSearch } from "react-icons/fa";
 
 
 // Define your item type
@@ -93,12 +98,33 @@ const ItemsAdminPage = () => {
         }
     ])
 
+
+    const [searchName, setSearchName] = useState<string>('')
+    const [searchId, setSearchId] = useState<string>('')
+
+    const [filteredItems, setFilteredItems] = useState<Item[]>(items)
+
+    useEffect(() => {
+        let updated = items
+
+        if (searchName.trim() !== '') {
+            const lowerName = searchName.toLowerCase()
+            updated = updated.filter((item) => item.nameEn.toLowerCase().includes(lowerName))
+        }
+
+        if (searchId.trim() !== '') {
+            updated = updated.filter((item) => item.id.includes(searchId.trim()))
+        }
+
+        setFilteredItems(updated)
+    }, [searchName, searchId, items])
+
     const handleDelete = (id: string) => {
         setItems(prev => prev.filter(item => item.id !== id))
     }
 
     return (
-        <Box p={8} maxW="800px" mx="auto">
+        <Box p={8} maxW="800px" mx="auto" h="100dvh">
             <Button size="xs" asChild variant='outline'>
                 <a href="/cms-admin">
                     <FaArrowLeft />
@@ -112,180 +138,212 @@ const ItemsAdminPage = () => {
                         <FaLayerGroup />Items
                     </HStack>
                 </Heading>
-                <Button
-                    asChild
-                >
-
-                    <a href="/cms-admin/items/create">
-                        Create Item <FaPlus />
-                    </a>
-                </Button>
+                <HStack gap={2}>
+                    <Field.Root flex="1">
+                        <Input
+                            placeholder="Enter Name"
+                            size="md"
+                            value={searchName}
+                            onChange={(e) => setSearchName(e.target.value)}
+                        />
+                    </Field.Root>
+                    <Field.Root flex="1">
+                        <Input
+                            placeholder="Enter ID"
+                            size="md"
+                            value={searchId}
+                            onChange={(e) => setSearchId(e.target.value)}
+                        />
+                    </Field.Root>
+                    <Button asChild>
+                        <a href="/cms-admin/items/create">
+                            Create Item <FaPlus />
+                        </a>
+                    </Button>
+                </HStack>
             </Flex>
 
-            <Stack gap={5}>
-                {items.map(item => (
-                    <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
-                        <Image
-                            objectFit="cover"
-                            maxW={{ base: '100%', md: '200px' }}
-                            maxH={{ base: '150px', md: '100%' }}
-                            src={item.mainImage}
-                            alt={item.nameEn}
-                        />
-                        <Box>
-                            <Card.Body>
-                                <Card.Title mb="2">{item.nameEn}</Card.Title>
-                                <Card.Description>
-                                    {item.descriptionEn}
-                                </Card.Description>
-                                <HStack mt="4">
-                                    <Badge>Price: {item.price} $</Badge>
-                                    <Badge>quantity: {item.quantity}</Badge>
-                                </HStack>
-                            </Card.Body>
-                            <Card.Footer>
+            {filteredItems.length === 0 ?
+                <EmptyState.Root>
+                    <EmptyState.Content>
+                        <EmptyState.Indicator>
+                            <FaSearch />
+                        </EmptyState.Indicator>
+                        <VStack textAlign="center">
+                            <EmptyState.Title>No results found</EmptyState.Title>
+                            <EmptyState.Description>
+                                Try adjusting your search
+                            </EmptyState.Description>
+                        </VStack>
+                        <List.Root variant="marker">
+                            <List.Item>Try removing filters</List.Item>
+                            <List.Item>Try different keywords</List.Item>
+                        </List.Root>
+                    </EmptyState.Content>
+                </EmptyState.Root>
+                :
+                <Stack gap={5}>
+                    {filteredItems.map(item => (
+                        <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
+                            <Image
+                                objectFit="cover"
+                                maxW={{ base: '100%', md: '200px' }}
+                                maxH={{ base: '150px', md: '100%' }}
+                                src={item.mainImage}
+                                alt={item.nameEn}
+                            />
+                            <Box>
+                                <Card.Body>
+                                    <Card.Title mb="2">{item.nameEn}</Card.Title>
+                                    <Card.Description>
+                                        {item.descriptionEn}
+                                    </Card.Description>
+                                    <HStack mt="4">
+                                        <Badge>Price: {item.price} $</Badge>
+                                        <Badge>quantity: {item.quantity}</Badge>
+                                    </HStack>
+                                </Card.Body>
+                                <Card.Footer>
 
-                                {/* View details dialog */}
-                                <Dialog.Root scrollBehavior="inside" size="lg">
-                                    <Dialog.Trigger asChild>
-                                        <Button size="sm" variant="outline" mr={2}>
-                                            <FaEye />
-                                            <Box display={{ base: 'none', md: 'inline' }}>
-                                                View
-                                            </Box>
-                                        </Button>
-                                    </Dialog.Trigger>
-                                    <Portal>
-                                        <Dialog.Backdrop />
-                                        <Dialog.Positioner>
-                                            <Dialog.Content>
-                                                <Dialog.Header>
-                                                    <Dialog.Title>Item Details</Dialog.Title>
+                                    <Dialog.Root scrollBehavior="inside" size="lg">
+                                        <Dialog.Trigger asChild>
+                                            <Button size="sm" variant="outline" mr={2}>
+                                                <FaEye />
+                                                <Box display={{ base: 'none', md: 'inline' }}>
+                                                    View
+                                                </Box>
+                                            </Button>
+                                        </Dialog.Trigger>
+                                        <Portal>
+                                            <Dialog.Backdrop />
+                                            <Dialog.Positioner>
+                                                <Dialog.Content>
+                                                    <Dialog.Header>
+                                                        <Dialog.Title>Item Details</Dialog.Title>
+                                                        <Dialog.CloseTrigger asChild>
+                                                            <CloseButton size="sm" />
+                                                        </Dialog.CloseTrigger>
+                                                    </Dialog.Header>
+                                                    <Dialog.Body pb={8}>
+                                                        <DataList.Root orientation="vertical">
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Name (EN)</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.nameEn}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Name (GE)</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.nameGe}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Name (RU)</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.nameRu}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.descriptionEn}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.descriptionGe}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Description (RU)</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.descriptionRu}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Price</DataList.ItemLabel>
+                                                                <DataList.ItemValue>${item.price}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                            <DataList.Item>
+                                                                <DataList.ItemLabel>Quantity</DataList.ItemLabel>
+                                                                <DataList.ItemValue>{item.quantity}</DataList.ItemValue>
+                                                            </DataList.Item>
+                                                        </DataList.Root>
+
+                                                        {item.images.length > 0 && (
+                                                            <Box mt={6}>
+                                                                <Text fontWeight="semibold" mb={2}>Additional Images</Text>
+                                                                <SimpleGrid columns={3} gap={2}>
+                                                                    {item.images.map((src, idx) => (
+                                                                        <Image
+                                                                            key={idx}
+                                                                            src={src}
+                                                                            alt={`Image ${idx + 1}`}
+                                                                            objectFit="cover"
+                                                                            w="100%"
+                                                                            aspectRatio="1"
+                                                                            borderRadius="md"
+                                                                        />
+                                                                    ))}
+                                                                </SimpleGrid>
+                                                            </Box>
+                                                        )}
+                                                    </Dialog.Body>
                                                     <Dialog.CloseTrigger asChild>
                                                         <CloseButton size="sm" />
                                                     </Dialog.CloseTrigger>
-                                                </Dialog.Header>
-                                                <Dialog.Body pb={8}>
-                                                    <DataList.Root orientation="vertical">
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Name (EN)</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.nameEn}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Name (GE)</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.nameGe}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Name (RU)</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.nameRu}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.descriptionEn}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.descriptionGe}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Description (RU)</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.descriptionRu}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Price</DataList.ItemLabel>
-                                                            <DataList.ItemValue>${item.price}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                        <DataList.Item>
-                                                            <DataList.ItemLabel>Quantity</DataList.ItemLabel>
-                                                            <DataList.ItemValue>{item.quantity}</DataList.ItemValue>
-                                                        </DataList.Item>
-                                                    </DataList.Root>
+                                                </Dialog.Content>
+                                            </Dialog.Positioner>
+                                        </Portal>
+                                    </Dialog.Root>
 
-                                                    {item.images.length > 0 && (
-                                                        <Box mt={6}>
-                                                            <Text fontWeight="semibold" mb={2}>Additional Images</Text>
-                                                            <SimpleGrid columns={3} gap={2}>
-                                                                {item.images.map((src, idx) => (
-                                                                    <Image
-                                                                        key={idx}
-                                                                        src={src}
-                                                                        alt={`Image ${idx + 1}`}
-                                                                        objectFit="cover"
-                                                                        w="100%"
-                                                                        aspectRatio="1"
-                                                                        borderRadius="md"
-                                                                    />
-                                                                ))}
-                                                            </SimpleGrid>
-                                                        </Box>
-                                                    )}
-                                                </Dialog.Body>
-                                                <Dialog.CloseTrigger asChild>
-                                                    <CloseButton size="sm" />
-                                                </Dialog.CloseTrigger>
-                                            </Dialog.Content>
-                                        </Dialog.Positioner>
-                                    </Portal>
-                                </Dialog.Root>
-
-                                {/* Edit button */}
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    mr={2}
-                                    asChild
-                                >
-                                    <a href={`/cms-admin/items/${item.id}`}>
-                                        <FaEdit />
-                                        <Box display={{ base: 'none', md: 'inline' }}>
-                                            Edit
-                                        </Box>
-                                    </a>
-                                </Button>
-
-                                {/* Delete confirmation dialog */}
-                                <Dialog.Root>
-                                    <Dialog.Trigger asChild>
-                                        <Button size="sm" colorPalette="red">
-                                            <FaTrashAlt />
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        mr={2}
+                                        asChild
+                                    >
+                                        <a href={`/cms-admin/items/${item.id}`}>
+                                            <FaEdit />
                                             <Box display={{ base: 'none', md: 'inline' }}>
-                                                Delete
+                                                Edit
                                             </Box>
-                                        </Button>
-                                    </Dialog.Trigger>
-                                    <Portal>
-                                        <Dialog.Backdrop />
-                                        <Dialog.Positioner>
-                                            <Dialog.Content>
-                                                <Dialog.Header>
-                                                    <Dialog.Title>Confirm Deletion</Dialog.Title>
-                                                    <Dialog.CloseTrigger asChild>
-                                                        <CloseButton size="sm" />
-                                                    </Dialog.CloseTrigger>
-                                                </Dialog.Header>
-                                                <Dialog.Body>
-                                                    Are you sure you want to delete “{item.nameEn}”?
-                                                </Dialog.Body>
-                                                <Dialog.Footer>
-                                                    <Dialog.ActionTrigger>
-                                                        <Button variant="outline">Cancel</Button>
-                                                    </Dialog.ActionTrigger>
-                                                    <Button
-                                                        colorPalette="red"
-                                                        onClick={() => handleDelete(item.id)}
-                                                    >
-                                                        Delete
-                                                    </Button>
-                                                </Dialog.Footer>
-                                            </Dialog.Content>
-                                        </Dialog.Positioner>
-                                    </Portal>
-                                </Dialog.Root>
-                            </Card.Footer>
-                        </Box>
-                    </Card.Root>
-                ))}
-            </Stack>
+                                        </a>
+                                    </Button>
+
+                                    <Dialog.Root>
+                                        <Dialog.Trigger asChild>
+                                            <Button size="sm" colorPalette="red">
+                                                <FaTrashAlt />
+                                                <Box display={{ base: 'none', md: 'inline' }}>
+                                                    Delete
+                                                </Box>
+                                            </Button>
+                                        </Dialog.Trigger>
+                                        <Portal>
+                                            <Dialog.Backdrop />
+                                            <Dialog.Positioner>
+                                                <Dialog.Content>
+                                                    <Dialog.Header>
+                                                        <Dialog.Title>Confirm Deletion</Dialog.Title>
+                                                        <Dialog.CloseTrigger asChild>
+                                                            <CloseButton size="sm" />
+                                                        </Dialog.CloseTrigger>
+                                                    </Dialog.Header>
+                                                    <Dialog.Body>
+                                                        Are you sure you want to delete “{item.nameEn}”?
+                                                    </Dialog.Body>
+                                                    <Dialog.Footer>
+                                                        <Dialog.ActionTrigger>
+                                                            <Button variant="outline">Cancel</Button>
+                                                        </Dialog.ActionTrigger>
+                                                        <Button
+                                                            colorPalette="red"
+                                                            onClick={() => handleDelete(item.id)}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </Dialog.Footer>
+                                                </Dialog.Content>
+                                            </Dialog.Positioner>
+                                        </Portal>
+                                    </Dialog.Root>
+                                </Card.Footer>
+                            </Box>
+                        </Card.Root>
+                    ))}
+                </Stack>
+            }
         </Box>
     )
 }
