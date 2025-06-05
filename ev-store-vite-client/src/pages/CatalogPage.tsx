@@ -28,6 +28,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
+import { LuShoppingCart } from "react-icons/lu";
 
 
 interface Item {
@@ -371,11 +372,12 @@ const CatalogPage = () => {
 
                                         <Card.Footer gap="2">
                                             <Button variant="solid">
-                                                {t('popularProducts.buyNowLabel')}
+                                                <LuShoppingCart />
+                                                {t('addToCart')}
                                             </Button>
                                             <Button variant="ghost">
                                                 <Link to={`/product/${product.id}`}>
-                                                    {t('popularProducts.learnMoreLabel')}
+                                                    {t('learnMore')}
                                                 </Link>
                                             </Button>
                                         </Card.Footer>

@@ -12,5 +12,7 @@
     "noResultsTitle": "No Results Found",
     "noResultsDescription": "We couldn't find any products matching your search.",
     "noResultsSuggestions": "Try adjusting your search or filter options.",
-    "noResultsSuggestions2": "You can also check our latest arrivals."
+    "noResultsSuggestions2": "You can also check our latest arrivals.",
+    "addToCart": "Add to Cart",
+    "learnMore": "Learn More"
 }
