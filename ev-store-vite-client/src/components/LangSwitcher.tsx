@@ -11,6 +11,7 @@ const LangSwitcher = () => {
       { label: "Русский", value: "ru" },
     ],
   })
+  
 
   return (
     <Select.Root
