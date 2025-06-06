@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserController {
@@ -30,8 +32,8 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(token, city, address, phone));
     }
 
-    @GetMapping
-    public ResponseEntity<OrderHistoryResponse> getUserOrderHistory(final HttpServletRequest request){
+    @GetMapping("/order-history")
+    public ResponseEntity<List<OrderHistoryResponse>> getUserOrderHistory(final HttpServletRequest request) {
         final String token = HeaderUtils.extractBearer(request);
         return ResponseEntity.ok(userService.getUserOrderHistory(token));
     }

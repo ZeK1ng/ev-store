@@ -10,6 +10,7 @@ import ge.evstore.ev_store.response.*;
 import ge.evstore.ev_store.service.interf.ProductService;
 import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
+import ge.evstore.ev_store.utils.NumberFormatUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -145,15 +146,15 @@ public class UserServiceImpl implements UserService {
         final List<OrderItem> orderItems = new ArrayList<>();
 
         for (final CartItemResponse item : items) {
-            final OrderItem ordt = new OrderItem();
-            ordt.setQuantity(item.getQuantity());
-            ordt.setProduct(productService.getProductById(item.getProductId()));
-            ordt.setUnitPrice(item.getPrice());
+            final OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setProduct(productService.getProductById(item.getProductId()));
+            orderItem.setUnitPrice(item.getPrice());
             final double lineTotal = item.getPrice() * item.getQuantity();
-            ordt.setTotalPrice(lineTotal);
+            orderItem.setTotalPrice(lineTotal);
             totalOrderPrice += lineTotal;
-            ordt.setOrder(order);
-            orderItems.add(ordt);
+            orderItem.setOrder(order);
+            orderItems.add(orderItem);
         }
 
         order.setTotalPrice(totalOrderPrice);
@@ -165,21 +166,29 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @UserTokenAspectMarker
-    public OrderHistoryResponse getUserOrderHistory(final String token) {
+    public List<OrderHistoryResponse> getUserOrderHistory(final String token) {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> userOpt = userRepository.findByEmail(username);
         if (userOpt.isEmpty()) {
             throw new UsernameNotFoundException("User not found for name: " + username);
         }
         final User user = userOpt.get();
-        final Order orderByUser = orderRepository.getOrderByUser(user);
+        final List<Order> orderByUser = orderRepository.getOrderByUser(user);
+        final List<OrderHistoryResponse> orderHistoryResponse = new ArrayList<>();
+        orderByUser.forEach(order -> {
+            orderHistoryResponse.add(createOrderHistory(order));
+        });
+        return orderHistoryResponse;
+    }
+
+    private OrderHistoryResponse createOrderHistory(final Order order) {
         final OrderHistoryResponse orderHistoryResponse = new OrderHistoryResponse();
-        orderHistoryResponse.setOrderNumber(orderByUser.getOrderNumber());
-        orderHistoryResponse.setOrderDate(orderHistoryResponse.getOrderDate());
-        orderHistoryResponse.setTotalPrice(orderByUser.getTotalPrice());
-        orderHistoryResponse.setOrderId(orderByUser.getId());
+        orderHistoryResponse.setOrderNumber(order.getOrderNumber());
+        orderHistoryResponse.setOrderDate(order.getOrderDate());
+        orderHistoryResponse.setTotalPrice(NumberFormatUtil.roundDouble(order.getTotalPrice()));
+        orderHistoryResponse.setOrderId(order.getId());
         final List<OrderItemResponse> orderItemResponses = new ArrayList<>();
-        final List<OrderItem> items = orderByUser.getItems();
+        final List<OrderItem> items = order.getItems();
         for (final OrderItem orderItem : items) {
             orderItemResponses.add(new OrderItemResponse(orderItem));
         }
@@ -193,7 +202,7 @@ public class UserServiceImpl implements UserService {
         final int i1 = calendar.get(Calendar.MONTH);
         final int i2 = calendar.get(Calendar.DATE);
 
-        return i + "-" + i1 + "-" + i2 + generateRandomString(6);
+        return i + "-" + i1 + "-" + i2 + generateRandomString(SUFFIX_RANDOM_LENGTH);
     }
 
 

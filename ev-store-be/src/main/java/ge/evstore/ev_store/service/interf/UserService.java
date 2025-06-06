@@ -7,6 +7,7 @@ import ge.evstore.ev_store.response.CartResponse;
 import ge.evstore.ev_store.response.OrderHistoryResponse;
 import ge.evstore.ev_store.response.UserResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -27,5 +28,5 @@ public interface UserService {
 
     void saveOrderHistory(User user, CartResponse cartForUser);
 
-    OrderHistoryResponse getUserOrderHistory(String token);
+    List<OrderHistoryResponse> getUserOrderHistory(String token);
 }

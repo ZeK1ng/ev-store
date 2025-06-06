@@ -19,7 +19,7 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @PostMapping("/createGuest")
+    @PostMapping("/create-guest")
     public ResponseEntity<String> createGuestReservation(@RequestBody final UnauthenticatedUserReservationRequest request) throws MessagingException {
         reservationService.createGuestReservation(request);
         return ResponseEntity.ok("Reservation received and email sent.");

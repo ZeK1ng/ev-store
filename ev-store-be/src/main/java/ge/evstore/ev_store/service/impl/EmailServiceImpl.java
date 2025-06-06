@@ -5,6 +5,7 @@ import ge.evstore.ev_store.request.CartItemReservationRequest;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.response.CartResponse;
 import ge.evstore.ev_store.service.interf.EmailService;
+import ge.evstore.ev_store.utils.NumberFormatUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.Getter;
@@ -96,8 +97,6 @@ public class EmailServiceImpl implements EmailService {
         final StringBuilder builder = new StringBuilder();
         for (final CartItemReservationRequest item : cartItems) {
             final double totalPrice = item.getProductPrice() * item.getQuantity();
-            final BigDecimal bd = new BigDecimal(totalPrice);
-            final BigDecimal roundedBd = bd.setScale(2, RoundingMode.HALF_UP);
             builder.append("<tr>")
                     .append("<td><span class=\"badge\">")
                     .append(item.getProductId())
@@ -112,7 +111,7 @@ public class EmailServiceImpl implements EmailService {
                     .append(item.getProductPrice())
                     .append("</td>")
                     .append("<td>")
-                    .append(roundedBd)
+                    .append(NumberFormatUtil.roundDouble(totalPrice))
                     .append("</td>")
                     .append("</tr>");
         }
