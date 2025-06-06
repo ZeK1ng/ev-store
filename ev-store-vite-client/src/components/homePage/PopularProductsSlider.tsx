@@ -12,6 +12,7 @@ import {
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom';
+import { LuShoppingCart } from 'react-icons/lu'
 
 export interface Product {
     id: string
@@ -102,7 +103,10 @@ const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSl
                             </Card.Body>
 
                             <Card.Footer gap="2">
-                                <Button variant="solid">{t('popularProducts.buyNowLabel')}</Button>
+                                <Button variant="solid">
+                                    <LuShoppingCart />
+                                    {t('popularProducts.addToCart')}
+                                    </Button>
                                 <Button variant="ghost">
                                     <Link to={`/product/${product.id}`}>
                                         {t('popularProducts.learnMoreLabel')}

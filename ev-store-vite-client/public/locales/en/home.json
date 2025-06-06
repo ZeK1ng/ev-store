@@ -33,7 +33,7 @@
         "title": "Popular Products",
         "seeAllLabel": "See All",
         "learnMoreLabel": "Learn More",
-        "buyNowLabel": "Buy Now"
+        "addToCart": "Add to Cart"
     },
     "faq": {
         "title": "Frequently Asked Questions",

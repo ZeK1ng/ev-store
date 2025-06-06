@@ -23,10 +23,12 @@ import {
     VStack,
     EmptyState,
     List,
+    Show,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
+import { LuShoppingCart } from "react-icons/lu";
 
 
 interface Item {
@@ -40,7 +42,7 @@ interface Item {
 }
 
 const CatalogPage = () => {
-    const { t } = useTranslation('home')
+    const { t } = useTranslation('catalog')
 
     const products: Item[] = [
         {
@@ -200,7 +202,9 @@ const CatalogPage = () => {
 
     return (
         <Box p={{ base: 4, md: 8 }}>
-            <Heading size="lg" mb="6">Product Catalog</Heading>
+            <Heading size="lg" mb="6">
+                {t('title')}
+            </Heading>
 
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
                 <Accordion.Root
@@ -212,7 +216,9 @@ const CatalogPage = () => {
                 >
                     <Accordion.Item value="price">
                         <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Price Range</Text>
+                            <Text flex="1" fontWeight="medium">
+                                {t('priceFilterTitle')}
+                            </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
@@ -239,7 +245,9 @@ const CatalogPage = () => {
 
                     <Accordion.Item value="category">
                         <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Category</Text>
+                            <Text flex="1" fontWeight="medium">
+                                {t('categoryFilterTitle')}
+                            </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
@@ -263,7 +271,9 @@ const CatalogPage = () => {
 
                     <Accordion.Item value="subcategory">
                         <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">Subcategory</Text>
+                            <Text flex="1" fontWeight="medium">
+                                {t('subcategoryFilterTitle')}
+                            </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
@@ -289,16 +299,26 @@ const CatalogPage = () => {
                 <Box flex="1" w="100%">
                     <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
                         <Field.Root flex="1" maxW={{ base: "100%", md: "400px" }}>
-                            <Field.Label>Search Products</Field.Label>
-                            <Input placeholder="Search products..." size="md" onChange={e => setSearch(e.target.value)} />
+                            <Field.Label>
+                                {t('searchLabel')}
+                            </Field.Label>
+                            <Input placeholder={t('searchPlaceholder')} size="md" onChange={e => setSearch(e.target.value)} />
                         </Field.Root>
                         <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
-                            <Field.Label>Sort By</Field.Label>
+                            <Field.Label>
+                                {t('sortByLabel')}
+                            </Field.Label>
                             <NativeSelect.Root>
                                 <NativeSelect.Field defaultValue="">
-                                    <option value="" disabled hidden>Sort By</option>
-                                    <option value="priceAsc">Price: Low to High</option>
-                                    <option value="priceDesc">Price: High to Low</option>
+                                    <option value="" disabled hidden>
+                                        {t('sortByPlaceholder')}
+                                    </option>
+                                    <option value="priceAsc">
+                                        {t('sortByPriceAsc')}
+                                    </option>
+                                    <option value="priceDesc">
+                                        {t('sortByPriceDesc')}
+                                    </option>
                                 </NativeSelect.Field>
                                 <NativeSelect.Indicator />
                             </NativeSelect.Root>
@@ -312,14 +332,20 @@ const CatalogPage = () => {
                                     <FaSearch />
                                 </EmptyState.Indicator>
                                 <VStack textAlign="center">
-                                    <EmptyState.Title>No results found</EmptyState.Title>
+                                    <EmptyState.Title>
+                                        {t('noResultsTitle')}
+                                    </EmptyState.Title>
                                     <EmptyState.Description>
-                                        Try adjusting your search
+                                        {t('noResultsDescription')}
                                     </EmptyState.Description>
                                 </VStack>
                                 <List.Root variant="marker">
-                                    <List.Item>Try removing filters</List.Item>
-                                    <List.Item>Try different keywords</List.Item>
+                                    <List.Item>
+                                        {t('noResultsSuggestions')}
+                                    </List.Item>
+                                    <List.Item>
+                                        {t('noResultsSuggestions2')}
+                                    </List.Item>
                                 </List.Root>
                             </EmptyState.Content>
                         </EmptyState.Root>
@@ -346,11 +372,12 @@ const CatalogPage = () => {
 
                                         <Card.Footer gap="2">
                                             <Button variant="solid">
-                                                {t('popularProducts.buyNowLabel')}
+                                                <LuShoppingCart />
+                                                {t('addToCart')}
                                             </Button>
                                             <Button variant="ghost">
                                                 <Link to={`/product/${product.id}`}>
-                                                    {t('popularProducts.learnMoreLabel')}
+                                                    {t('learnMore')}
                                                 </Link>
                                             </Button>
                                         </Card.Footer>
@@ -358,43 +385,44 @@ const CatalogPage = () => {
                                 ))}
                             </SimpleGrid>
 
-                            <Pagination.Root
-                                count={filtered.length}
-                                pageSize={pageSize}
-                                page={page}
-                                onPageChange={(details) => {
-                                    // scroll to top on page change
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                    setPage(details.page)
-                                }}
-                                mt="6"
-                                justifySelf="center"
-                            >
-                                <ButtonGroup variant="ghost" size="sm">
-                                    <Pagination.PrevTrigger asChild>
-                                        <IconButton aria-label={t('pagination.prev')}>
-                                            <FaChevronLeft />
-                                        </IconButton>
-                                    </Pagination.PrevTrigger>
-
-                                    <Pagination.Items
-                                        render={pag => (
-                                            <IconButton
-                                                key={pag.value}
-                                                variant={{ base: 'ghost', _selected: 'outline' }}
-                                            >
-                                                {pag.value}
+                            <Show when={filtered.length > pageSize}>
+                                <Pagination.Root
+                                    count={filtered.length}
+                                    pageSize={pageSize}
+                                    page={page}
+                                    onPageChange={(details) => {
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        setPage(details.page)
+                                    }}
+                                    mt="6"
+                                    justifySelf="center"
+                                >
+                                    <ButtonGroup variant="ghost" size="sm">
+                                        <Pagination.PrevTrigger asChild>
+                                            <IconButton aria-label={t('pagination.prev')}>
+                                                <FaChevronLeft />
                                             </IconButton>
-                                        )}
-                                    />
+                                        </Pagination.PrevTrigger>
 
-                                    <Pagination.NextTrigger asChild>
-                                        <IconButton aria-label={t('pagination.next')}>
-                                            <FaChevronRight />
-                                        </IconButton>
-                                    </Pagination.NextTrigger>
-                                </ButtonGroup>
-                            </Pagination.Root>
+                                        <Pagination.Items
+                                            render={pag => (
+                                                <IconButton
+                                                    key={pag.value}
+                                                    variant={{ base: 'ghost', _selected: 'outline' }}
+                                                >
+                                                    {pag.value}
+                                                </IconButton>
+                                            )}
+                                        />
+
+                                        <Pagination.NextTrigger asChild>
+                                            <IconButton aria-label={t('pagination.next')}>
+                                                <FaChevronRight />
+                                            </IconButton>
+                                        </Pagination.NextTrigger>
+                                    </ButtonGroup>
+                                </Pagination.Root>
+                            </Show>
                         </>
                     }
                 </Box>

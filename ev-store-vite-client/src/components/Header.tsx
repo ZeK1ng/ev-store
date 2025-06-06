@@ -9,12 +9,14 @@ import {
     Heading,
     VStack,
     Separator,
-    useDisclosure
+    useDisclosure,
+    Menu,
+    Portal
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
-import { FaMoon, FaSun, FaSignInAlt, FaBars, FaWindowClose, FaUserAlt, FaShoppingCart } from 'react-icons/fa'
+import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftClose, LuPanelRightClose, LuLogOut } from "react-icons/lu";
 
 const Header = () => {
     const { open, onOpen, onClose } = useDisclosure()
@@ -32,7 +34,7 @@ const Header = () => {
     }, [open])
 
     return (
-        <Box position="sticky" top={0} zIndex="2" bg="bg.muted" shadow="xl">
+        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl">
             <Flex
                 as="header"
                 boxSizing="border-box"
@@ -56,15 +58,15 @@ const Header = () => {
                     <RouterLink to="/about-us">About Us</RouterLink>
                     <RouterLink to="/contact-us">Contact</RouterLink>
 
-                    {/* <Button variant="outline" asChild>
-                        <RouterLink to="/login">
-                            LogIn
-                        </RouterLink>
-                    </Button> */}
-
                     <Button variant="outline" asChild>
+                        <RouterLink to="/login">
+                            LogIn <LuLogIn />
+                        </RouterLink>
+                    </Button>
+
+                    <Button variant="outline" >
                         <RouterLink to="/cart">
-                            <FaShoppingCart />
+                            <LuShoppingCart />
                         </RouterLink>
                     </Button>
 
@@ -74,16 +76,43 @@ const Header = () => {
                         onClick={toggleColorMode}
                         variant="outline"
                     >
-                        {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                        {colorMode === 'light' ? <LuMoon /> : <LuSun />}
                     </IconButton>
 
                     <LangSwitcher />
 
-                    <Button variant="outline" asChild>
-                        <RouterLink to="/profile">
-                            Profile <FaUserAlt />
-                        </RouterLink>
-                    </Button>
+                    <Menu.Root size="md">
+                        <Menu.Trigger asChild>
+                            <Button variant="outline">
+                                Profile <LuCircleUserRound />
+                            </Button>
+                        </Menu.Trigger>
+                        <Portal>
+                            <Menu.Positioner>
+                                <Menu.Content>
+                                    <Menu.Item value="profile">
+                                        <RouterLink to="/profile">
+                                            My Profile
+                                        </RouterLink>
+                                    </Menu.Item>
+                                    <Separator />
+                                    <Menu.Item value="history">
+                                        <RouterLink to="/order-history">
+                                            Order History
+                                        </RouterLink>
+                                    </Menu.Item>
+                                    <Separator />
+                                    <Menu.Item value="logout">
+                                        <RouterLink to="/logout">
+                                            <HStack>
+                                                Log Out <LuLogOut />
+                                            </HStack>
+                                        </RouterLink>
+                                    </Menu.Item>
+                                </Menu.Content>
+                            </Menu.Positioner>
+                        </Portal>
+                    </Menu.Root>
                 </HStack>
 
                 <HStack display={{ base: 'flex', md: 'none' }}>
@@ -95,7 +124,7 @@ const Header = () => {
                         onClick={onClose}
                     >
                         <RouterLink to="/cart">
-                            <FaShoppingCart />
+                            <LuShoppingCart />
                         </RouterLink>
                     </Button>
 
@@ -108,74 +137,84 @@ const Header = () => {
                         }}
                         variant="surface"
                     >
-                        {colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                        {colorMode === 'light' ? <LuMoon /> : <LuSun />}
                     </IconButton>
 
                     <IconButton
                         display={{ base: 'flex', md: 'none' }}
                         aria-label="Toggle menu"
                         onClick={open ? onClose : onOpen}
-                        variant="ghost"
+                        variant="surface"
+                        size="xl"
+
                     >
-                        {open ? <FaWindowClose /> : <FaBars />}
+                        {open ?
+                            <Box
+                                data-state="open"
+                                _open={{
+                                    animation: "spin 300ms",
+                                }}
+                            >
+                                <LuPanelRightClose />
+                            </Box> : <LuPanelLeftClose />}
                     </IconButton>
                 </HStack>
 
             </Flex>
 
-            {
-                open && (
+            <Box
+                position="absolute"
+                display={open ? 'block' : 'none'}
+                top="100%"
+                left={0}
+                width="100%"
+                shadow="xl"
+                zIndex="2"
+                bg="bg.muted"
+                h="100dvh"
+                data-state="open"
+                _open={{
+                    animation: "slide-from-right-full 300ms ease-in",
+                }}
+            >
+                <VStack as="nav" gap={4} align="stretch" p={4}>
+                    <RouterLink to="/cms-admin" onClick={onClose}>Admin</RouterLink>
+                    <Separator />
+                    <RouterLink to="/" onClick={onClose}>Home</RouterLink>
+                    <Separator />
+                    <RouterLink to="/catalog" onClick={onClose}>Catalog</RouterLink>
+                    <Separator />
+                    <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
+                    <Separator />
+                    <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
 
-                    <Box
-                        position="absolute"
-                        top="100%"
-                        left={0}
-                        width="100%"
-                        shadow="xl"
-                        zIndex="2"
-                        bg="bg.muted"
-                        h="100dvh"
+                    <Button
+                        size="xl"
+                        variant="outline"
+                        asChild
+                        onClick={onClose}
                     >
-                        <VStack as="nav" gap={4} align="stretch" p={4}>
-                            <RouterLink to="/cms-admin" onClick={onClose}>Admin</RouterLink>
-                            <Separator />
-                            <RouterLink to="/" onClick={onClose}>Home</RouterLink>
-                            <Separator />
-                            <RouterLink to="/catalog" onClick={onClose}>Catalog</RouterLink>
-                            <Separator />
-                            <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
-                            <Separator />
-                            <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
+                        <RouterLink to="/login" >
+                            LogIn <LuLogIn />
+                        </RouterLink>
+                    </Button>
 
-                            <Button
-                                size="xl"
-                                variant="outline"
-                                asChild
-                                onClick={onClose}
-                            >
-                                <RouterLink to="/login" >
-                                    LogIn <FaSignInAlt />
-                                </RouterLink>
-                            </Button>
+                    <Button
+                        size="xl"
+                        variant="surface"
+                        asChild
+                        onClick={onClose}
+                    >
+                        <RouterLink to="/profile">
+                            Profile <LuCircleUserRound />
+                        </RouterLink>
+                    </Button>
 
-                            <Button
-                                size="xl"
-                                variant="surface"
-                                asChild
-                                onClick={onClose}
-                            >
-                                <RouterLink to="/profile">
-                                    Profile <FaUserAlt />
-                                </RouterLink>
-                            </Button>
-
-                            <LangSwitcher />
+                    <LangSwitcher />
 
 
-                        </VStack>
-                    </Box>
-                )
-            }
+                </VStack>
+            </Box>
         </Box >
     )
 }

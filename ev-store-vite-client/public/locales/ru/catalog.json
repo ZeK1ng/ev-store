@@ -1,0 +1,18 @@
+{
+    "title": "Каталог",
+    "priceFilterTitle": "Фильтр по цене",
+    "categoryFilterTitle": "Фильтр по категории",
+    "subcategoryFilterTitle": "Фильтр по подкатегории",
+    "searchLabel": "Поиск товаров",
+    "searchPlaceholder": "Поиск товаров...",
+    "sortByLabel": "Сортировать по",
+    "sortByPlaceholder": "Выберите вариант сортировки",
+    "sortByPriceAsc": "Цена: от низкой к высокой",
+    "sortByPriceDesc": "Цена: от высокой к низкой",
+    "noResultsTitle": "Результаты не найдены",
+    "noResultsDescription": "Мы не нашли товаров, соответствующих вашему запросу.",
+    "noResultsSuggestions": "Попробуйте изменить параметры поиска или фильтры.",
+    "noResultsSuggestions2": "Вы также можете посмотреть наши новинки.",
+    "addToCart": "Добавить",
+    "learnMore": "Подробнее"
+}

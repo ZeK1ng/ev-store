@@ -32,8 +32,8 @@
     "popularProducts": {
         "title": "Популярные продукты",
         "seeAllLabel": "Смотреть все",
-        "learnMoreLabel": "Узнать больше",
-        "buyNowLabel": "Купить сейчас"
+        "learnMoreLabel": "Подробнее",
+        "addToCart": "Добавить"
     },
     "faq": {
         "title": "Часто задаваемые вопросы",
