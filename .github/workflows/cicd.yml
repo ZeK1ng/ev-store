@@ -76,10 +76,16 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/ev-store-be:latest
   deploy-client:
     needs: build
-    runs-on: [ self-hosted, aws-ec2-evstore ]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
       - name: build client app
         run: |
           cd ev-store-vite-client && \
