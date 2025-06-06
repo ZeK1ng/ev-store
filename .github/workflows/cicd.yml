@@ -78,6 +78,8 @@ jobs:
     needs: build
     runs-on: [ self-hosted, aws-ec2-evstore ]
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
       - name: build client app
         run: |
           cd ev-store-vite-client && \
