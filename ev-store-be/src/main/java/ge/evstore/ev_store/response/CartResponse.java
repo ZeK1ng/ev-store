@@ -4,6 +4,8 @@ import ge.evstore.ev_store.entity.Cart;
 import lombok.Data;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 public class CartResponse {
     private Long cartId;
     private List<CartItemResponse> items;
-    private Double cartTotalPrice;
+    private BigDecimal cartTotalPrice;
 
     public static CartResponse fromCart(final Cart cart) {
         final CartResponse response = new CartResponse();
@@ -27,8 +29,9 @@ public class CartResponse {
         final double totalPrice = itemResponses.stream()
                 .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
-
-        response.setCartTotalPrice(totalPrice);
+        final BigDecimal bd = new BigDecimal(totalPrice);
+        final BigDecimal roundedBd = bd.setScale(2, RoundingMode.HALF_UP);
+        response.setCartTotalPrice(roundedBd);
         return response;
     }
 }

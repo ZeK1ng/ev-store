@@ -26,9 +26,9 @@ public class CartController {
     public ResponseEntity<CartResponse> addProductToCart(
             final HttpServletRequest req,
             @RequestParam final Long productId,
-            @RequestParam final Integer quantity) {
+            @RequestParam(required = false, defaultValue = "1") final String  quantity) {
         final String token = HeaderUtils.extractBearer(req);
-        final CartResponse cartResponse = cartService.addProductToCart(productId, quantity, token);
+        final CartResponse cartResponse = cartService.addProductToCart(productId, Integer.parseInt(quantity), token);
         return ResponseEntity.ok(cartResponse);
     }
 

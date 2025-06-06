@@ -7,6 +7,9 @@ import lombok.Data;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "products")
@@ -30,8 +33,12 @@ public class Product {
     @ManyToOne
     private Category category;
 
-    private String imageName;
-    private String imageFilePath;
+    @OneToOne(cascade = CascadeType.ALL)
+    private ImageEntity mainImage;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+    private List<ImageEntity> otherImages = new ArrayList<>();
+
     private Boolean isPopular;
 //    private byte[] image; //
 

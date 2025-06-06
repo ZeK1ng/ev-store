@@ -5,4 +5,6 @@ import jakarta.mail.MessagingException;
 
 public interface ReservationService {
     void createGuestReservation(UnauthenticatedUserReservationRequest request) throws MessagingException;
+
+    void createReservationForUser(String bearer) throws MessagingException;
 }

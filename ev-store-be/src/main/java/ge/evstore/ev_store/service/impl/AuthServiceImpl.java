@@ -186,7 +186,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     public void resetPassword(final ResetPasswordRequest request) {
-        final Optional<User> userOtp = userService.findUser(request.getUsername());
+        final Optional<User> userOtp = userService.findUser(request.getEmail());
         if (userOtp.isEmpty()) throw new UsernameNotFoundException("User not found");
 
         final User user = userOtp.get();

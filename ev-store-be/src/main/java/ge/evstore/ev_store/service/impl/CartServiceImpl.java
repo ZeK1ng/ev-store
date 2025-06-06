@@ -5,6 +5,8 @@ import ge.evstore.ev_store.entity.Cart;
 import ge.evstore.ev_store.entity.CartItem;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.entity.User;
+import ge.evstore.ev_store.exception.AmountExceededException;
+import ge.evstore.ev_store.exception.CartNotFoundException;
 import ge.evstore.ev_store.repository.CartRepository;
 import ge.evstore.ev_store.response.CartResponse;
 import ge.evstore.ev_store.service.interf.CartService;
@@ -34,11 +36,11 @@ public class CartServiceImpl implements CartService {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> userOptional = userService.findUser(username);
         if (userOptional.isEmpty()) {
-            throw new UsernameNotFoundException("User not found for username:" + username);
+            throw new UsernameNotFoundException("User not found for username: " + username);
         }
         final Cart cart = userOptional.get().getCart();
         if (cart == null) {
-            return null;
+            throw new CartNotFoundException("Cart not found for user: " + username);
         }
         return CartResponse.fromCart(cart);
     }
@@ -61,9 +63,19 @@ public class CartServiceImpl implements CartService {
                 .findFirst();
 
         if (existingItem.isPresent()) {
+
             final CartItem item = existingItem.get();
-            item.setQuantity(quantity);
+            final int newQuantity = item.getQuantity() + quantity;
+            final Integer stockAmount = existingItem.get().getProduct().getStockAmount();
+            if (stockAmount < newQuantity) {
+                throw new AmountExceededException("Amount exceeded for product" + "Max amount is:" + stockAmount);
+            }
+            item.setQuantity(item.getQuantity() + quantity);
         } else {
+            final Integer stockAmount = existingItem.get().getProduct().getStockAmount();
+            if (stockAmount < quantity) {
+                throw new AmountExceededException("Amount exceeded for product" + "Max amount is:" + stockAmount);
+            }
             final CartItem cartItem = new CartItem();
             cartItem.setProduct(productById);
             cartItem.setQuantity(quantity);
@@ -82,6 +94,16 @@ public class CartServiceImpl implements CartService {
         final User user = userService.findUser(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found for username: " + username));
 
+        final Cart cart = user.getCart();
+        if (cart != null && cart.getItems() != null) {
+            cart.getItems().clear();
+            cartRepository.save(cart); // to persist the change
+        }
+    }
+
+    @Override
+    @Transactional
+    public void clearCartForUser(final User user) {
         final Cart cart = user.getCart();
         if (cart != null && cart.getItems() != null) {
             cart.getItems().clear();
