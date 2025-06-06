@@ -41,7 +41,7 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "10") final int size,
             @RequestParam(required = false,defaultValue = "id") final String sortBy,
             @RequestParam(required = false, defaultValue = "asc") final String direction,
-            @RequestParam(required = false) final String name, //TOdo saxelit jebna
+            @RequestParam(required = false) final String name,
             @RequestParam(required = false) final Long categoryId,
             @RequestParam(required = false) final Double minPrice,
             @RequestParam(required = false) final Double maxPrice,
