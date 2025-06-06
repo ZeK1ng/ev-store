@@ -2,8 +2,10 @@ package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.entity.MaxPriceEasySaver;
 import ge.evstore.ev_store.entity.Product;
+import ge.evstore.ev_store.exception.ProductNotFoundException;
 import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
+import ge.evstore.ev_store.response.MaxPriceResponse;
 import ge.evstore.ev_store.service.interf.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,17 +32,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(final Long productId) {
         final Optional<Product> product = productRepository.findById(productId);
-        return product.orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
+        return product.orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
     }
 
     @Override
-    public Double getOverAllMaxPrice() {
+    public MaxPriceResponse getOverAllMaxPrice() {
         final List<MaxPriceEasySaver> all = maxPriceSaverRepository.findAll();
         if (all.isEmpty()) {
-            return 0.0;
+           return new MaxPriceResponse(0.0);
         }
         final Double maxPrice = all.get(0).getMaxPrice();
-        return Math.ceil(maxPrice);
+        return new MaxPriceResponse(Math.ceil(maxPrice));
     }
 
     @Override
@@ -49,15 +51,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock) {
+    public Page<Product> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular) {
         final Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         final Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<Product> spec = Specification.where(null);
 
         if (name != null && !name.isBlank()) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(cb.lower(root.get("nameENG")), "%" + name.toLowerCase() + "%"));
+            final String pattern = "%" + name.toLowerCase() + "%";
+            spec = spec.and((root, query, cb) -> cb.or(
+                    cb.like(cb.lower(root.get("nameENG")), pattern),
+                    cb.like(cb.lower(root.get("nameGE")), pattern),
+                    cb.like(cb.lower(root.get("nameRUS")), pattern)
+            ));
         }
 
         if (categoryId != null) {
@@ -78,6 +84,10 @@ public class ProductServiceImpl implements ProductService {
         if (inStock != null && inStock) {
             spec = spec.and((root, query, cb) ->
                     cb.greaterThan(root.get("stock"), 0));
+        }
+        if (isPopular != null && isPopular) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("isPopular"), true));
         }
 
         return productRepository.findAll(spec, pageable);

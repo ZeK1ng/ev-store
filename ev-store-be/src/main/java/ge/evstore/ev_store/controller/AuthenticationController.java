@@ -55,14 +55,14 @@ public class AuthenticationController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody final ForgotPasswordRequest request) throws MessagingException {
-        log.info("Sending password reset code to email:{}", request.getUsername());
-        authService.sendPasswordResetCode(request.getUsername());
+        log.info("Sending password reset code to email:{}", request.getEmail());
+        authService.sendPasswordResetCode(request.getEmail());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody final ResetPasswordRequest request) {
-        log.info("Setting new password for email:{}", request.getUsername());
+        log.info("Setting new password for email:{}", request.getEmail());
         authService.resetPassword(request);
         return ResponseEntity.ok().build();
     }

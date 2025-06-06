@@ -152,5 +152,10 @@ public class AdminController {
     public ResponseEntity<List<Dictionary>> getAll() {
         return ResponseEntity.ok(dictionaryService.findAll());
     }
+
+    //TODO List all orders, and update order endpoints and services.
+
+
+
 }
 

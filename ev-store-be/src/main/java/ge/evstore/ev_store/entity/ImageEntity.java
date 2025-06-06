@@ -11,7 +11,8 @@ public class ImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    @Column(name = "file_path")
-    private String filePath;
+    private String type;
+    @Lob
+    @Column(columnDefinition = "BYTEA") // For PostgreSQL
     private byte[] image; // either this or the path
 }

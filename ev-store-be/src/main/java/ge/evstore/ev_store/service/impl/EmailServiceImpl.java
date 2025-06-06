@@ -1,7 +1,9 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.request.CartItemReservationRequest;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
+import ge.evstore.ev_store.response.CartResponse;
 import ge.evstore.ev_store.service.interf.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,6 +14,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ge.evstore.ev_store.constants.EmailTemplates.*;
@@ -43,11 +48,25 @@ public class EmailServiceImpl implements EmailService {
         sendHtmlEmail(emailToStore, getHtmlForReservation(new ReservationRequestEntity(request)), RESERVATION_EMAIL_SUBJECT);
     }
 
+    @Override
+    public void sendReservationMailForUser(final User user, final CartResponse cartForUser) throws MessagingException {
+        final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(user, cartForUser);
+        sendHtmlEmail(emailToStore, getHtmlForReservation(reservationRequestEntity), RESERVATION_EMAIL_SUBJECT);
+    }
+
     private String getHtmlForReservation(final ReservationRequestEntity reservationRequestEntity) {
         final double totalPrice = reservationRequestEntity.getCartItems().stream()
                 .mapToDouble(item -> item.getProductPrice() * item.getQuantity())
                 .sum();
-        return BASE_HTML_RESERVATION_TEMPLATE_START + buildCartDetailsHtml(reservationRequestEntity.getCartItems()) + BASE_HTML_RESERVATION_TEMPLATE_END.replace();
+        final BigDecimal bd = new BigDecimal(totalPrice);
+        final BigDecimal roundedBd = bd.setScale(2, RoundingMode.HALF_UP);
+        return replaceClientInfo(reservationRequestEntity) + buildCartDetailsHtml(reservationRequestEntity.getCartItems()) + BASE_HTML_RESERVATION_TEMPLATE_END.replace(GRAND_TOTAL, roundedBd.toString());
+    }
+
+    private String replaceClientInfo(final ReservationRequestEntity reservationRequestEntity) {
+        return ge.evstore.ev_store.constants.EmailTemplates.BASE_HTML_RESERVATION_TEMPLATE_START.replace(PHONE, reservationRequestEntity.phone).replace(NAME, reservationRequestEntity.name)
+                .replace(CITY, reservationRequestEntity.city).replace(ADDRESS, reservationRequestEntity.address).replace(NOTE, reservationRequestEntity.specialInstructions)
+                .replace(EMAIL, reservationRequestEntity.getEmail());
     }
 
 
@@ -76,6 +95,9 @@ public class EmailServiceImpl implements EmailService {
     private String buildCartDetailsHtml(final List<CartItemReservationRequest> cartItems) {
         final StringBuilder builder = new StringBuilder();
         for (final CartItemReservationRequest item : cartItems) {
+            final double totalPrice = item.getProductPrice() * item.getQuantity();
+            final BigDecimal bd = new BigDecimal(totalPrice);
+            final BigDecimal roundedBd = bd.setScale(2, RoundingMode.HALF_UP);
             builder.append("<tr>")
                     .append("<td><span class=\"badge\">")
                     .append(item.getProductId())
@@ -90,7 +112,7 @@ public class EmailServiceImpl implements EmailService {
                     .append(item.getProductPrice())
                     .append("</td>")
                     .append("<td>")
-                    .append(item.getProductPrice() * item.getQuantity())
+                    .append(roundedBd)
                     .append("</td>")
                     .append("</tr>");
         }
@@ -100,17 +122,34 @@ public class EmailServiceImpl implements EmailService {
     @Getter
     private static class ReservationRequestEntity {
         private final String name;
-        private final String mobile;
+        private final String phone;
         private final String city;
         private final String address;
+        private final String email;
         private final List<CartItemReservationRequest> cartItems;
+        private final String specialInstructions;
 
         public ReservationRequestEntity(final UnauthenticatedUserReservationRequest request) {
             this.name = request.getName();
-            this.mobile = request.getMobile();
+            this.phone = request.getPhone();
             this.city = request.getCity();
             this.address = request.getAddress();
             this.cartItems = request.getCartItems();
+            this.specialInstructions = request.getSpecialInstructions();
+            this.email = request.getEmail();
+        }
+
+        public ReservationRequestEntity(final User user, final CartResponse cartForUser) {
+            this.name = user.getFirstName() + " " + user.getLastName();
+            this.address = user.getAddress();
+            this.city = user.getCity();
+            this.phone = user.getMobile();
+            this.specialInstructions = "";
+            this.cartItems = new ArrayList<>();
+            this.email = user.getEmail();
+            cartForUser.getItems().forEach(item -> {
+                this.cartItems.add(new CartItemReservationRequest(item.getQuantity(), item.getProductId(), item.getProductNameENG(), item.getPrice()));
+            });
         }
     }
 

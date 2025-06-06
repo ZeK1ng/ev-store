@@ -30,8 +30,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @JsonIgnore
     private Role role;
-    @OneToMany
-    private List<Product> favourites;
     @Column(name = "otp_verification_code")
     @JsonIgnore
     private String verificationCode;
