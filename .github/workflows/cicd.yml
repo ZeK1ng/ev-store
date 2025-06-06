@@ -75,7 +75,6 @@ jobs:
             -p 5005:5005 \
             ${{ secrets.DOCKER_USERNAME }}/ev-store-be:latest
   deploy-client:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
@@ -97,6 +96,10 @@ jobs:
       - name: Revalidate CloudFront
         run: |
           aws cloudfront create-invalidation --distribution-id E21E1G3Q9IQHYO --paths "/*"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
 
 
 #        run: docker run -d -p 8080:8080 --name ev-store-container ${{secrets.DOCKER_USERNAME}}/ev-store-be:latest
