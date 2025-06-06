@@ -5,7 +5,24 @@ on:
     branches: [ main ]
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'ev-store-be/**'
+            frontend:
+              - 'ev-store-vite-client/**'
   build:
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +43,6 @@ jobs:
         with:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWORD}}
-
 
       - name: Build with Maven
         working-directory: ./ev-store-be
@@ -75,6 +91,8 @@ jobs:
             -p 5005:5005 \
             ${{ secrets.DOCKER_USERNAME }}/ev-store-be:latest
   deploy-client:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
