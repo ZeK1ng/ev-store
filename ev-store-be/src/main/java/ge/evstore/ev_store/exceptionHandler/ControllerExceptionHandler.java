@@ -1,11 +1,10 @@
 package ge.evstore.ev_store.exceptionHandler;
 
 
-import ge.evstore.ev_store.exception.IsParentCategoryException;
-import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
-import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
-import ge.evstore.ev_store.exception.VerificationFailedException;
+import ge.evstore.ev_store.exception.*;
 import ge.evstore.ev_store.response.GeneralExceptionResponse;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +51,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(MessagingException.class)
     public ResponseEntity<GeneralExceptionResponse> handleAuthenticationException(final MessagingException ex) {
         log.info(ex.getMessage());
-        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse("Verification Mail send failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
@@ -90,6 +89,51 @@ public class ControllerExceptionHandler {
         log.info(ex.getMessage());
         final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleMalformedJwt(final MalformedJwtException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleJwtMismatch(final UnsupportedJwtException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(CartNotFoundException.class)
+    public ResponseEntity<GeneralExceptionResponse> handleCartNotFound(final CartNotFoundException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<GeneralExceptionResponse> productNotFound(final ProductNotFoundException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).
+                contentType(MediaType.APPLICATION_JSON).
+                body(generalExceptionResponse);
+    }
+
+    @ExceptionHandler(AmountExceededException.class)
+    public ResponseEntity<GeneralExceptionResponse> productNotFound(final AmountExceededException ex) {
+        log.info(ex.getMessage());
+        final GeneralExceptionResponse generalExceptionResponse = new GeneralExceptionResponse(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).
                 contentType(MediaType.APPLICATION_JSON).
                 body(generalExceptionResponse);
     }

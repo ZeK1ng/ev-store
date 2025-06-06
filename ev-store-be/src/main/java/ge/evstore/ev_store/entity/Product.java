@@ -7,6 +7,9 @@ import lombok.Data;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "products")
@@ -14,7 +17,7 @@ public class Product {
     @Schema(hidden = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String nameGE;
     private String nameENG;
     private String nameRUS;
@@ -26,10 +29,17 @@ public class Product {
     private Double price;
 
     private Integer stockAmount;
-    private Integer categoryId;
 
-    private String imageName;
-    private String imageFilePath;
+    @ManyToOne
+    private Category category;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ImageEntity mainImage;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id")
+    private List<ImageEntity> otherImages = new ArrayList<>();
+
+    private Boolean isPopular;
 //    private byte[] image; //
 
     public void update(final Product product) {

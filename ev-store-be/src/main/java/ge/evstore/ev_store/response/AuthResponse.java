@@ -1,9 +1,11 @@
 package ge.evstore.ev_store.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
 @AllArgsConstructor
 public class AuthResponse {
-    public String accessToken;
-    public String refreshToken;
+    private String accessToken;
+    private String refreshToken;
 }

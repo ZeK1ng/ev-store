@@ -24,7 +24,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     @Transactional
-    public Dictionary update(final Integer id, final Dictionary dictionary) {
+    public Dictionary update(final Long id, final Dictionary dictionary) {
         final Optional<Dictionary> existingOpt = dictionaryRepository.findById(id);
         if (existingOpt.isEmpty()) {
             return null;
@@ -38,7 +38,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     }
 
     @Override
-    public void delete(final Integer id) {
+    public void delete(final Long id) {
         dictionaryRepository.deleteById(id);
     }
 

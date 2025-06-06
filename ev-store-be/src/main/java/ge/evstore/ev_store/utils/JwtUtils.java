@@ -31,6 +31,7 @@ public class JwtUtils {
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(Object::toString)
                 .toList());
+        claims.put("type", tokenType.toString());
         claims.put("username", userDetails.getUsername());
         final SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecretStr.getBytes());
         return Jwts.builder()
@@ -67,6 +68,11 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String extractTokenTypeFromClaims(final String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("type", String.class);
     }
 
     private Instant getTokenExpiryInstant(final TokenType tokenType) {

@@ -24,7 +24,7 @@ public class EMailConfig {
 
     @Bean
     public JavaMailSender getMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);
         mailSender.setUsername(username);
@@ -33,8 +33,8 @@ public class EMailConfig {
         return mailSender;
     }
 
-    private void setupProperties(JavaMailSenderImpl mailSender) {
-        Properties props = mailSender.getJavaMailProperties();
+    private void setupProperties(final JavaMailSenderImpl mailSender) {
+        final Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");

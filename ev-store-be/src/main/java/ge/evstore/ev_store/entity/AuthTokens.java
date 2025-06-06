@@ -15,7 +15,8 @@ public class AuthTokens {
 
     @OneToOne
     private User user;
-
+    @Column(length = 350)
     private String accessToken;
+    @Column(length = 350)
     private String refreshToken;
 }

@@ -12,7 +12,6 @@ public class UserRegisterRequest {
     private String mobile;
     private String address;
     private String city;
-    private String personalIdCode;
     private String password;
 
     @Override

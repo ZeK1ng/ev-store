@@ -9,29 +9,22 @@ import java.util.List;
 public interface AdminService {
 
     // Product operations
-    Product addProduct(Product product, String accessToken, String refreshToken) throws AccessDeniedException;
+    Product addProduct(Product product, String accessToken) throws AccessDeniedException;
 
-    Product getProductById(Integer id, String accessToken, String refreshToken);
+    Product getProductById(Long id, String accessToken);
 
-    Product updateProduct(Integer id, Product product, String accessToken, String refreshToken);
+    Product updateProduct(Long id, Product product, String accessToken);
 
-    void deleteProduct(Integer id, String accessToken, String refreshToken);
+    void deleteProduct(Long id, String accessToken);
 
-    List<Product> getAllProducts(String accessToken, String refreshToken);
+    List<Product> getAllProducts(String accessToken);
 
-    Product updateProductStock(Integer id, int stockAmount, String accessToken, String refreshToken);
+    Product updateProductStock(Long id, int stockAmount, String accessToken);
 
     // Category operations
-    Category addCategory(Category category, String accessToken, String refreshToken);
+    Category addCategory(String name, String description, Long parentCategoryId ,String accessToken);
 
-    Category getCategoryById(Integer id, String accessToken, String refreshToken);
+    Category updateCategory(Long id, String name, String description, String accessToken);
 
-    Category updateCategory(Integer id, Category category, String accessToken, String refreshToken);
-
-    void deleteCategory(Integer id, String accessToken, String refreshToken);
-
-    List<Category> getAllCategories(String accessToken, String refreshToken);
-
-    String getFullCategoryPath(Integer categoryId, String accessToken, String refreshToken);
-
+    void deleteCategory(Long id, String accessToken);
 }
