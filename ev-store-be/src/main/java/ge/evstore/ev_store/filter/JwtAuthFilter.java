@@ -1,6 +1,7 @@
 package ge.evstore.ev_store.filter;
 
 import ge.evstore.ev_store.utils.JwtUtils;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +41,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         final String token = authHeader.substring(7);
-        final String username = jwtUtils.extractUsername(token);
+        final String username;
+        try {
+            username = jwtUtils.extractUsername(token);
+        } catch (final JwtException ex) {
+            // Token parsing/validation failed
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+            return;
+        }
+
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             final var userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtUtils.isTokenValid(token, userDetails)) {
