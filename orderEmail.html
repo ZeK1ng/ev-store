@@ -301,7 +301,7 @@
   <div class="container">
     <div class="header">
       <h1>New Order Received</h1>
-      <div class="order-id">{{OrderId}}</div>
+      <div class="order-id">{{ORDER_ID}}</div>
     </div>
 
     <div class="content">
@@ -312,21 +312,21 @@
         <div class="info-row">
           <div class="info-left">
             <p class="label">Customer Name</p>
-            <p class="value">{{Name}}</p>
+            <p class="value">{{NAME}}</p>
             <p class="label" style="margin-top:12px;">Delivery Address</p>
-            <p class="value">{{Address}}</p>
-            <p class="city">City: {{City}}</p>
+            <p class="value">{{ADDRESS}}</p>
+            <p class="city">City: {{CITY}}</p>
           </div>
           <div class="info-right">
             <p class="label">Phone</p>
-            <p class="value">{{Phone}}</p>
+            <p class="value">{{PHONE}}</p>
             <p class="label" style="margin-top:12px;">Email</p>
-            <p class="value">{{Email}}</p>
+            <p class="value">{{EMAIL}}</p>
           </div>
         </div>
         <p class="label" style="margin-bottom:4px;">Special Instructions</p>
         <div class="instructions">
-          {{Note}}
+          {{NOTE}}
         </div>
       </div>
 
@@ -343,24 +343,24 @@
         </thead>
         <tbody>
           <tr>
-            <td data-label="Product ID"><span class="badge">{{ProductId}}</span></td>
-            <td data-label="Product Name">{{ProductName}}</td>
-            <td data-label="Quantity"><span class="badge">{{ProductQuantity}}</span></td>
-            <td data-label="Unit Price">{{ProductPrice}}</td>
-            <td data-label="Total">{{ProductTotalPrice}}</td>
+            <td data-label="Product ID"><span class="badge">{{PRODUCT_ID}}</span></td>
+            <td data-label="Product Name">{{PRODUCT_NAME}}</td>
+            <td data-label="Quantity"><span class="badge">{{PRODUCT_QUANTITY}}</span></td>
+            <td data-label="Unit Price">{{PRODUCT_PRICE}}</td>
+            <td data-label="Total">{{PRODUCT_TOTAL_PRICE}}</td>
           </tr>
         </tbody>
       </table>
 
       <div class="total-container">
         <div class="total-box">
-          Total Amount &nbsp;<span style="font-size:18px; color:#003F9D;">{{grandTotal}}</span>
+          Total Amount &nbsp;<span style="font-size:18px; color:#003F9D;">{{GRAND_TOTAL}}</span>
         </div>
       </div>
     </div>
 
     <div class="footer">
-      This order was placed on {{OrderDate}}<br>
+      This order was placed on {{ORDER_DATE}}<br>
       Please process this order and contact the customer if you have any questions.
     </div>
   </div>
