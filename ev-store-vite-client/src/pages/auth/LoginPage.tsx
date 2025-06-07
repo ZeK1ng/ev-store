@@ -1,4 +1,6 @@
-// src/pages/LoginPage.tsx
+import { useState } from 'react';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 
 import {
     Box,
@@ -12,8 +14,9 @@ import {
     Stack,
     Text,
     Field,
+    Alert
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
 import { LuMail, LuKeyRound } from "react-icons/lu"
@@ -26,14 +29,46 @@ interface LoginFormValues {
 
 const LoginPage = () => {
     const { t } = useTranslation('auth');
+    const navigate = useNavigate();
+
+    if (AuthController.isLoggedIn()) {
+        navigate('/');
+    }
+
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormValues>({});
 
-    const onSubmit = handleSubmit((data: LoginFormValues) => {
-        console.log('Login data:', data);
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const onSubmit = handleSubmit(async (data: LoginFormValues) => {
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            const response = await API.post('/auth/login', {
+                username: data.email,
+                password: data.password,
+            });
+
+            if (!response.data || !response.data.accessToken || !response.data.refreshToken) {
+                setApiError(t('login.errors.somethingWentWrong'));
+                return;
+            }
+           
+            AuthController.login({
+                accessToken: response.data.accessToken,
+                refreshToken: response.data.refreshToken,
+            });
+            
+            navigate('/');
+        } catch (err: any) {
+            setApiError(t('login.errors.loginFailed'));
+        } finally {
+            setIsLoading(false);
+        }
     });
 
     return (
@@ -80,6 +115,7 @@ const LoginPage = () => {
                                     </Field.Label>
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
+                                            placeholder={t('login.passwordPlaceholder')}
                                             size="lg"
                                             {...register("password", { required: t('login.passwordRequired') })}
                                         />
@@ -87,7 +123,7 @@ const LoginPage = () => {
                                     {errors.password && <Field.ErrorText>{errors.password.message}</Field.ErrorText>}
                                 </Field.Root>
 
-                                <HStack justify="flex-end" mt={-2} mb={3}>
+                                <HStack justify="flex-end" mt={-2}>
                                     <Link to="/forgot-password">
                                         <Text fontSize="sm" color="blue.500" textDecoration="underline">
                                             {t('login.forgotPassword')}
@@ -95,11 +131,15 @@ const LoginPage = () => {
                                     </Link>
                                 </HStack>
 
-
+                                {apiError && <Alert.Root status="error">
+                                    <Alert.Indicator />
+                                    <Alert.Title>{apiError}</Alert.Title>
+                                </Alert.Root>}
                                 <Button
                                     type="submit"
                                     width="full"
                                     size="lg"
+                                    loading={isLoading}
                                 >
                                     {t('login.submit')}
                                 </Button>

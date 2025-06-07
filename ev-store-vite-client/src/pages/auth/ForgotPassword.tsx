@@ -1,5 +1,7 @@
 
 import { useState } from 'react';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -12,8 +14,9 @@ import {
     Text,
     Field,
     PinInput,
+    Alert
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
 import { LuMail, LuKeyRound } from "react-icons/lu"
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next'
@@ -31,6 +34,11 @@ interface SetNewPasswordFormValues {
 
 const ForgotPasswordPage = () => {
     const { t } = useTranslation('auth');
+    const navigate = useNavigate();
+
+    if (AuthController.isLoggedIn()) {
+        navigate('/');
+    }
 
     const {
         register,
@@ -56,20 +64,43 @@ const ForgotPasswordPage = () => {
     const [verificationPin, setVerificationPin] = useState('');
     const passwordValue = watch("newPassword");
 
-    const onSubmit: SubmitHandler<ForgotPasswordFormValues> = (data) => {
-        console.log('Forgot password request:', data);
-        // TODO: send reset link & trigger PIN step
-        setStep('pin');
+    const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const onSubmit: SubmitHandler<ForgotPasswordFormValues> = async (data) => {
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            await API.post('/auth/resend-verification', { email: data.email });
+            setEmail(data.email);
+            setStep('pin');
+        } catch (err: any) {
+            setApiError(t('forgotPassword.errors.sendOTPFailed'));
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const onVerify = () => {
-        console.log('Entered PIN for reset:', verificationPin);
-        // TODO: verify PIN and redirect to reset-password form
         setStep('new-password');
     };
 
-    const onNewPwdSubmit: SubmitHandler<SetNewPasswordFormValues> = (data) => {
-        console.log('New password submitted:', data);
+    const onNewPwdSubmit: SubmitHandler<SetNewPasswordFormValues> = async (data) => {
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            await API.post('/auth/reset-password', {
+                email,
+                verificationCode: verificationPin,
+                newPassword: data.newPassword,
+            });
+            navigate('/login')
+        } catch (err: any) {
+            setApiError(t('forgotPassword.errors.resetPasswordFailed'));
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     if (step === 'pin') {
@@ -97,12 +128,14 @@ const ForgotPasswordPage = () => {
                             <PinInput.Input index={1} />
                             <PinInput.Input index={2} />
                             <PinInput.Input index={3} />
+                            <PinInput.Input index={4} />
+                            <PinInput.Input index={5} />
                         </PinInput.Control>
                     </PinInput.Root>
 
                     <Button
                         colorScheme="blue"
-                        disabled={verificationPin.length < 4}
+                        disabled={verificationPin.length < 6}
                         onClick={onVerify}
                     >
                         {t('forgotPassword.verifyPin.verifyButton')}
@@ -166,11 +199,16 @@ const ForgotPasswordPage = () => {
                                 {errorsNewPassword.confirmPassword && <Field.ErrorText>{errorsNewPassword.confirmPassword.message}</Field.ErrorText>}
                             </Field.Root>
 
+                            {apiError && <Alert.Root status="error">
+                                <Alert.Indicator />
+                                <Alert.Title>{apiError}</Alert.Title>
+                            </Alert.Root>}
                             <Button
                                 type="submit"
                                 colorScheme="blue"
                                 width="full"
                                 size="lg"
+                                loading={isLoading}
                             >
                                 {t('forgotPassword.newPassword.submitButton')}
                             </Button>
@@ -220,12 +258,17 @@ const ForgotPasswordPage = () => {
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
                                 </Field.Root>
 
+                                {apiError && <Alert.Root status="error">
+                                    <Alert.Indicator />
+                                    <Alert.Title>{apiError}</Alert.Title>
+                                </Alert.Root>}
+
                                 <Button
                                     type="submit"
                                     colorScheme="blue"
                                     width="full"
                                     size="lg"
-                                    mt={3}
+                                    loading={isLoading}
                                 >
                                     {t('forgotPassword.submitButton')}
                                 </Button>

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, } from 'react';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -11,12 +13,17 @@ import {
     Text,
     Field,
     PinInput,
-    Flex
+    Flex,
+    Alert,
+    Accordion,
+    Span,
+    HStack,
+    Separator
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { LuUser, LuMail, LuPhone, LuKeyRound } from "react-icons/lu"
+import { LuUser, LuMail, LuPhone, LuKeyRound, LuMapPin } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 
@@ -27,10 +34,17 @@ interface SignupFormValues {
     phone: string;
     password: string;
     confirmPassword: string;
+    address?: string;
+    city?: string;
 }
 
 const SignupPage = () => {
     const { t } = useTranslation('auth');
+    const navigate = useNavigate();
+
+    if (AuthController.isLoggedIn()) {
+        navigate('/');
+    }
 
     const {
         register,
@@ -45,6 +59,8 @@ const SignupPage = () => {
             phone: "",
             password: "",
             confirmPassword: "",
+            address: "",
+            city: "",
         }
     });
 
@@ -53,13 +69,62 @@ const SignupPage = () => {
 
     const passwordValue = watch("password");
 
-    const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
-        console.log('Signup data:', data);
+    const [formValues, setFormValues] = useState<SignupFormValues | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const onSubmit: SubmitHandler<SignupFormValues> = async (data) => {
+        setFormValues(data);
+        setIsLoading(true);
+
+        try {
+            await API.post('/auth/register', {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                mobile: data.phone,
+                address: data.address,
+                city: data.city,
+                password: data.password,
+            });
+        } catch (err: any) {
+            setApiError(t('signup.errors.sendOTPFailed'));
+            return;
+        } finally {
+            setIsLoading(false);
+        }
+
+        setApiError(null);
         setStep('pin');
     };
 
-    const onVerify = () => {
-        console.log('Entered PIN:', verificationPin);
+    const onVerify = async () => {
+        if (!formValues) return;
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            const res = await API.post('/auth/verify', {
+                email: formValues.email,
+                verificationCode: verificationPin,
+            });
+
+            if (!res.data || !res.data.accessToken || !res.data.refreshToken) {
+                setApiError(t('signup.errors.somethingWentWrong'));
+                return;
+            }
+
+            AuthController.login({
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+            });
+
+            navigate('/');
+        } catch (err: any) {
+            setApiError(t('signup.errors.verificationFailed'));
+            return;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (step === 'pin') {
@@ -87,12 +152,19 @@ const SignupPage = () => {
                             <PinInput.Input index={1} />
                             <PinInput.Input index={2} />
                             <PinInput.Input index={3} />
+                            <PinInput.Input index={4} />
+                            <PinInput.Input index={5} />
                         </PinInput.Control>
                     </PinInput.Root>
 
+                    {apiError && <Alert.Root status="error" mb={4}>
+                        <Alert.Indicator />
+                        <Alert.Title>{apiError}</Alert.Title>
+                    </Alert.Root>}
                     <Button
                         colorScheme="blue"
-                        disabled={verificationPin.length < 4}
+                        disabled={verificationPin.length < 6 || isLoading}
+                        loading={isLoading}
                         onClick={onVerify}
                     >
                         {t('signup.verify.verifyButton')}
@@ -160,7 +232,6 @@ const SignupPage = () => {
                                 </Flex>
 
 
-
                                 <Field.Root id="email" invalid={!!errors.email}>
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('signup.email')}
@@ -195,6 +266,57 @@ const SignupPage = () => {
                                     {errors.phone && <Field.ErrorText>{errors.phone.message}</Field.ErrorText>}
                                 </Field.Root>
 
+                                <Accordion.Root size="md" collapsible>
+                                    <Accordion.Item value="profile">
+                                        <Accordion.ItemTrigger>
+                                            <Span flex="1">
+                                                <HStack align="center" gap={2}>
+                                                    <LuMapPin />
+                                                    {t('signup.address.title')}
+                                                </HStack>
+                                            </Span>
+                                            <Accordion.ItemIndicator />
+                                        </Accordion.ItemTrigger>
+                                        <Accordion.ItemContent>
+                                            <Accordion.ItemBody>
+                                                <Separator />
+                                                <Stack gap={2} p={2}>
+                                                    <Text fontSize="sm" color="fg.muted">
+                                                        {t('signup.address.description')}
+                                                    </Text>
+                                                    <Field.Root id="city" invalid={false}>
+                                                        <Field.Label fontWeight="medium" fontSize="sm">
+                                                            {t('signup.address.city')}
+                                                        </Field.Label>
+                                                        <InputGroup >
+                                                            <Input
+                                                                size="lg"
+                                                                type="text"
+                                                                placeholder={t('signup.address.cityPlaceholder')}
+                                                                {...register("city")}
+                                                            />
+                                                        </InputGroup>
+                                                    </Field.Root>
+
+                                                    <Field.Root id="address" invalid={false}>
+                                                        <Field.Label fontWeight="medium" fontSize="sm">
+                                                            {t('signup.address.address')}
+                                                        </Field.Label>
+                                                        <InputGroup>
+                                                            <Input
+                                                                size="lg"
+                                                                type="text"
+                                                                placeholder={t('signup.address.addressPlaceholder')}
+                                                                {...register("address")}
+                                                            />
+                                                        </InputGroup>
+                                                    </Field.Root>
+                                                </Stack>
+                                            </Accordion.ItemBody>
+                                        </Accordion.ItemContent>
+                                    </Accordion.Item>
+                                </Accordion.Root>
+
                                 <Field.Root id="password" invalid={!!errors.password}>
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('signup.password')}
@@ -202,6 +324,7 @@ const SignupPage = () => {
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
                                             size="lg"
+                                            placeholder={t('signup.passwordPlaceholder')}
                                             {...register("password", {
                                                 required: t('signup.passwordRequired'),
                                                 minLength: { value: 8, message: t('signup.passwordMinLength') },
@@ -217,6 +340,7 @@ const SignupPage = () => {
                                     </Field.Label>
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
+                                            placeholder={t('signup.confirmPasswordPlaceholder')}
                                             size="lg"
                                             {...register("confirmPassword", {
                                                 required: t('signup.confirmPasswordRequired'),
@@ -227,11 +351,12 @@ const SignupPage = () => {
                                     {errors.confirmPassword && <Field.ErrorText>{errors.confirmPassword.message}</Field.ErrorText>}
                                 </Field.Root>
 
-                                <Button type="submit" width="full" size="lg">
-                                    {step === 'form' ?
-                                        t('signup.submitButton') :
-                                        t('signup.verifyButton')
-                                    }
+                                {apiError && <Alert.Root status="error">
+                                    <Alert.Indicator />
+                                    <Alert.Title>{apiError}</Alert.Title>
+                                </Alert.Root>}
+                                <Button type="submit" width="full" size="lg" loading={isLoading}>
+                                    {t('signup.submitButton')}
                                 </Button>
 
                                 <Box textAlign="center">

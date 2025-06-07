@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -17,8 +19,17 @@ import {
 import { LuMail, LuPhone, LuMapPin } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
+interface UserDetails {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+    city: string;
+    address: string;
+}
+
 interface ProfileUpdateData {
-    phone: string;
+    mobile: string;
     city: string;
     address: string;
 }
@@ -26,33 +37,54 @@ interface ProfileUpdateData {
 const ProfilePage = () => {
     const { t } = useTranslation('auth');
 
-    const firstName = 'John'
-    const lastName = 'Doe'
-    const email = 'john.doe@example.com'
+    const [userData, setUserData] = useState<UserDetails>({
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobile: '',
+        city: '',
+        address: ''
+    });
 
-    const initialData: ProfileUpdateData = useMemo(() => ({
-        phone: '555555',
-        city: 'Tbilisi',
-        address: '123 Main Street',
-    }), [])
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await API.get('/user/details', {
+                    headers: {
+                        Authorization: `Bearer ${AuthController.getAccessToken()}`
+                    }
+                });
+                setUserData(response.data);
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
+        fetchUserData();
+    }, []);
 
-    // Editable fields
-    const [phone, setPhone] = useState(initialData.phone)
-    const [city, setCity] = useState(initialData.city)
-    const [address, setAddress] = useState(initialData.address)
+    const [isDirty, setIsDirty] = useState(false);
 
-    const handleSave = () => {
-        const updatePayload: ProfileUpdateData = { phone, city, address };
-        // TODO: send updatePayload to backend
-        console.log('Profile saved:', updatePayload)
-    }
+    const handleSave = async () => {
+        if (!isDirty) return;
 
-    // determine if any field was changed
-    const isDirty = (
-        phone !== initialData.phone ||
-        city !== initialData.city ||
-        address !== initialData.address
-    )
+        const updateData: ProfileUpdateData = {
+            mobile: userData.mobile,
+            city: userData.city,
+            address: userData.address
+        };
+
+        try {
+            await API.patch('/user/update', updateData, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            });
+            setIsDirty(false);
+        } catch (error) {
+            console.error('Failed to update user data:', error);
+        }
+
+    };
 
     return (
         <SimpleGrid columns={{ base: 1 }} minH="100vh">
@@ -72,7 +104,7 @@ const ProfilePage = () => {
                                     <Field.Label>
                                         {t('profile.firstName')}
                                     </Field.Label>
-                                    <Input size="lg" value={firstName} disabled />
+                                    <Input size="lg" value={userData?.firstName} disabled />
                                 </Field.Root>
                             </Box>
                             <Box flex={1}>
@@ -80,7 +112,7 @@ const ProfilePage = () => {
                                     <Field.Label>
                                         {t('profile.lastName')}
                                     </Field.Label>
-                                    <Input size="lg" value={lastName} disabled />
+                                    <Input size="lg" value={userData?.lastName} disabled />
                                 </Field.Root>
                             </Box>
                         </Flex>
@@ -90,7 +122,7 @@ const ProfilePage = () => {
                                 {t('profile.email')}
                             </Field.Label>
                             <InputGroup startElement={<LuMail />}>
-                                <Input size="lg" value={email} disabled />
+                                <Input size="lg" value={userData?.email} disabled />
                             </InputGroup>
                         </Field.Root>
 
@@ -111,8 +143,11 @@ const ProfilePage = () => {
                                     type="number"
                                     size="lg"
                                     placeholder={t('profile.phonePlaceholder')}
-                                    value={phone}
-                                    onChange={e => setPhone(e.target.value)}
+                                    value={userData?.mobile}
+                                    onChange={e => setUserData({
+                                        ...userData,
+                                        mobile: e.target.value
+                                    })}
                                 />
                             </InputGroup>
                         </Field.Root>
@@ -125,8 +160,11 @@ const ProfilePage = () => {
                                 <Input
                                     size="lg"
                                     placeholder={t('profile.cityPlaceholder')}
-                                    value={city}
-                                    onChange={e => setCity(e.target.value)}
+                                    value={userData?.city}
+                                    onChange={e => setUserData({
+                                        ...userData,
+                                        city: e.target.value
+                                    })}
                                 />
                             </InputGroup>
                         </Field.Root>
@@ -138,8 +176,11 @@ const ProfilePage = () => {
                             <Textarea
                                 size="lg"
                                 placeholder={t('profile.addressPlaceholder')}
-                                value={address}
-                                onChange={e => setAddress(e.target.value)}
+                                value={userData?.address}
+                                onChange={e => setUserData({
+                                    ...userData,
+                                    address: e.target.value
+                                })}
                             />
                         </Field.Root>
 

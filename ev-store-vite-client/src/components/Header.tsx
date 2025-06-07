@@ -1,4 +1,6 @@
 import { useEffect } from 'react'
+import API from '@/utils/AxiosAPI'
+import AuthController from '@/utils/AuthController'
 import {
     Box,
     Flex,
@@ -11,9 +13,11 @@ import {
     Separator,
     useDisclosure,
     Menu,
-    Portal
+    Portal,
+    Accordion,
+    Span
 } from '@chakra-ui/react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
 import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftClose, LuPanelRightClose, LuLogOut } from "react-icons/lu";
@@ -21,6 +25,7 @@ import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftC
 const Header = () => {
     const { open, onOpen, onClose } = useDisclosure()
     const { colorMode, toggleColorMode } = useColorMode()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (open) {
@@ -32,6 +37,26 @@ const Header = () => {
             document.body.style.overflow = 'auto'
         }
     }, [open])
+
+    const logOut = async () => {
+        try {
+            await API.post('/auth/logout', {}, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                }
+            })
+            localStorage.removeItem('accessToken')
+            localStorage.removeItem('refreshToken')
+            localStorage.removeItem('isLogedIn')
+            navigate('/')
+
+            if (open) {
+                onClose()
+            }
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
+    }
 
     return (
         <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl">
@@ -52,17 +77,10 @@ const Header = () => {
                 </Flex>
 
                 <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
-                    <RouterLink to="/cms-admin">Admin</RouterLink>
                     <RouterLink to="/">Home</RouterLink>
                     <RouterLink to="/catalog">Catalog</RouterLink>
                     <RouterLink to="/about-us">About Us</RouterLink>
                     <RouterLink to="/contact-us">Contact</RouterLink>
-
-                    <Button variant="outline" asChild>
-                        <RouterLink to="/login">
-                            LogIn <LuLogIn />
-                        </RouterLink>
-                    </Button>
 
                     <Button variant="outline" >
                         <RouterLink to="/cart">
@@ -81,38 +99,46 @@ const Header = () => {
 
                     <LangSwitcher />
 
-                    <Menu.Root size="md">
-                        <Menu.Trigger asChild>
-                            <Button variant="outline">
-                                Profile <LuCircleUserRound />
-                            </Button>
-                        </Menu.Trigger>
-                        <Portal>
-                            <Menu.Positioner>
-                                <Menu.Content>
-                                    <Menu.Item value="profile">
-                                        <RouterLink to="/profile">
-                                            My Profile
-                                        </RouterLink>
-                                    </Menu.Item>
-                                    <Separator />
-                                    <Menu.Item value="history">
-                                        <RouterLink to="/order-history">
-                                            Order History
-                                        </RouterLink>
-                                    </Menu.Item>
-                                    <Separator />
-                                    <Menu.Item value="logout">
-                                        <RouterLink to="/logout">
-                                            <HStack>
-                                                Log Out <LuLogOut />
-                                            </HStack>
-                                        </RouterLink>
-                                    </Menu.Item>
-                                </Menu.Content>
-                            </Menu.Positioner>
-                        </Portal>
-                    </Menu.Root>
+                    {
+                        AuthController.isLoggedIn() ? (
+                            <Menu.Root size="md">
+                                <Menu.Trigger asChild>
+                                    <Button variant="outline">
+                                        Profile <LuCircleUserRound />
+                                    </Button>
+                                </Menu.Trigger>
+                                <Portal>
+                                    <Menu.Positioner>
+                                        <Menu.Content>
+                                            <Menu.Item value="profile">
+                                                <RouterLink to="/profile">
+                                                    My Profile
+                                                </RouterLink>
+                                            </Menu.Item>
+                                            <Separator />
+                                            <Menu.Item value="history">
+                                                <RouterLink to="/order-history">
+                                                    Order History
+                                                </RouterLink>
+                                            </Menu.Item>
+                                            <Separator />
+                                            <Menu.Item value="logout" onClick={logOut}>
+                                                <HStack>
+                                                    Log Out <LuLogOut />
+                                                </HStack>
+                                            </Menu.Item>
+                                        </Menu.Content>
+                                    </Menu.Positioner>
+                                </Portal>
+                            </Menu.Root>
+                        ) : <Button variant="outline" asChild>
+                            <RouterLink to="/login">
+                                LogIn <LuLogIn />
+                            </RouterLink>
+                        </Button>
+                    }
+
+
                 </HStack>
 
                 <HStack display={{ base: 'flex', md: 'none' }}>
@@ -178,8 +204,6 @@ const Header = () => {
                 }}
             >
                 <VStack as="nav" gap={4} align="stretch" p={4}>
-                    <RouterLink to="/cms-admin" onClick={onClose}>Admin</RouterLink>
-                    <Separator />
                     <RouterLink to="/" onClick={onClose}>Home</RouterLink>
                     <Separator />
                     <RouterLink to="/catalog" onClick={onClose}>Catalog</RouterLink>
@@ -187,28 +211,55 @@ const Header = () => {
                     <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
                     <Separator />
                     <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
+                    <Separator />
 
-                    <Button
-                        size="xl"
-                        variant="outline"
-                        asChild
-                        onClick={onClose}
-                    >
-                        <RouterLink to="/login" >
-                            LogIn <LuLogIn />
-                        </RouterLink>
-                    </Button>
+                    {
+                        AuthController.isLoggedIn() ? (
+                            <Accordion.Root size="lg" collapsible>
+                                <Accordion.Item value="profile">
+                                    <Accordion.ItemTrigger>
+                                        <Span flex="1">
+                                            <HStack align="center" gap={2}>
+                                                <LuCircleUserRound />
+                                                Profile
+                                            </HStack>
+                                        </Span>
 
-                    <Button
-                        size="xl"
-                        variant="surface"
-                        asChild
-                        onClick={onClose}
-                    >
-                        <RouterLink to="/profile">
-                            Profile <LuCircleUserRound />
-                        </RouterLink>
-                    </Button>
+                                        <Accordion.ItemIndicator />
+
+                                    </Accordion.ItemTrigger>
+                                    <Accordion.ItemContent>
+                                        <Accordion.ItemBody>
+                                            <VStack gap={2} align="stretch" ml={2}>
+                                                <RouterLink to="/profile" onClick={onClose}>
+                                                    My Profile
+                                                </RouterLink>
+                                                <Separator />
+                                                <RouterLink to="/order-history" onClick={onClose}>
+                                                    Order History
+                                                </RouterLink>
+                                                <Separator />
+                                                <HStack onClick={logOut}>
+                                                    Log Out <LuLogOut />
+                                                </HStack>
+                                            </VStack>
+                                        </Accordion.ItemBody>
+                                    </Accordion.ItemContent>
+                                </Accordion.Item>
+                            </Accordion.Root>
+                        ) : (
+                            <Button
+                                size="xl"
+                                variant="outline"
+                                asChild
+                                onClick={onClose}
+                            >
+                                <RouterLink to="/login" >
+                                    LogIn <LuLogIn />
+                                </RouterLink>
+                            </Button>
+                        )
+                    }
 
                     <LangSwitcher />
 
