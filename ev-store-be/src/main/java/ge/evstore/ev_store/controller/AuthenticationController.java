@@ -5,6 +5,7 @@ import ge.evstore.ev_store.response.AccessTokenResponse;
 import ge.evstore.ev_store.response.AuthResponse;
 import ge.evstore.ev_store.service.interf.AuthService;
 import ge.evstore.ev_store.utils.HeaderUtils;
+import jakarta.mail.Header;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -68,9 +69,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody final LogoutRequest request) {
-        log.info("LogoutRequest for email:{}", request.getUsername());
-        authService.handleLogout(request.getUsername());
+    public ResponseEntity<?> logout(final HttpServletRequest request) {
+        authService.handleLogout(HeaderUtils.extractBearer(request));
         return ResponseEntity.ok().build();
     }
 

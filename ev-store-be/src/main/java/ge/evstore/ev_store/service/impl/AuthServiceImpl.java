@@ -1,5 +1,6 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.annotation.UserTokenAspectMarker;
 import ge.evstore.ev_store.entity.AuthTokens;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
@@ -88,10 +89,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void handleLogout(final String email) {
-        final Optional<User> user = userService.findUser(email);
+    @UserTokenAspectMarker
+    public void handleLogout(final String token) {
+        final String username = jwtUtils.extractUsername(token);
+        final Optional<User> user = userService.findUser(username);
         if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User " + email + " not found");
+            throw new UsernameNotFoundException("User " + username + " not found");
         }
         authTokenRepository.deleteByUser(user.get());
     }

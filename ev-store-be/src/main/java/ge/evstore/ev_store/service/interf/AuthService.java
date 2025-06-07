@@ -35,7 +35,7 @@ public interface AuthService {
 
     AccessTokenResponse rotateAccessTokenForUser(final String refreshToken);
 
-    void handleLogout(String email);
+    void handleLogout(String token);
 
     boolean validateToken(final String token , final TokenType tokenType);
 }
