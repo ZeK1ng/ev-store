@@ -3,5 +3,35 @@
         "title": "404 Not Found",
         "description": "Oops! The page you are looking for does not exist or may have been moved.",
         "backToHome": "Back to Home"
+    },
+    "header": {
+        "home": "Home",
+        "catalog": "Catalog",
+        "aboutUs": "About Us",
+        "contact": "Contact",
+        "profile": "Profile",
+        "myProfile": "My Profile",
+        "orderHistory": "Order History",
+        "logout": "Logout",
+        "login": "Login",
+        "logoutError": "Logout Error",
+        "logoutErrorDescription": "There was an error while trying to log you out. Please try again later."
+    },
+    "footer": {
+        "phoneNumber": "+995568698300",
+        "emailAddress": "yourstore@gmail.com",
+        "quickLinks": "Quick Links",
+        "category1url": "/category1",
+        "category1name": "Category 1",
+        "category2url": "/category2",
+        "category2name": "Category 2",
+        "category3url": "/category3",
+        "category3name": "Category 3",
+        "address": "123 Your Store St, City, Country",
+        "phone": "(+995) 568-698-300",
+        "email": "yourstore@gmail.com",
+        "aboutUs": "About Us",
+        "catalog": "Catalog",
+        "contactUs": "Contact Us"
     }
 }

@@ -3,5 +3,35 @@
         "title": "404 გვერდი ვერ მოიძებნა",
         "description": "უკაცრავად! გვერდი, რომელსაც ეძებთ, არ არსებობს ან გადატანილია.",
         "backToHome": "მთავარ გვერდზე დაბრუნება"
+    },
+    "header": {
+        "home": "მთავარი",
+        "catalog": "კატალოგი",
+        "aboutUs": "ჩვენს შესახებ",
+        "contact": "კონტაქტი",
+        "profile": "პროფილი",
+        "myProfile": "ჩემი პროფილი",
+        "orderHistory": "შეკვეთების ისტორია",
+        "logout": "გამოსვლა",
+        "login": "შესვლა",
+        "logoutError": "გამოსვლის შეცდომა",
+        "logoutErrorDescription": "თქვენი გამოსვლის მცდელობა ვერ მოხერხდა. გთხოვთ, სცადოთ მოგვიანებით."
+    },
+    "footer": {
+        "phoneNumber": "+995568698300",
+        "emailAddress":"yourstore@gmail.com",
+        "quickLinks": "სწრაფი ბმულები",
+        "category1url": "/category1",
+        "category1name": "კატეგორია 1",
+        "category2url": "/category2",
+        "category2name": "კატეგორია 2",
+        "category3url": "/category3",
+        "category3name": "კატეგორია 3",
+        "address": "123 თქვენი მაღაზიის ქუჩა, ქალაქი, ქვეყანა",
+        "phone": "(+995) 568-698-300",
+        "email": "yourstore@gmail.com",
+        "aboutUs": "ჩვენს შესახებ",
+        "catalog": "კატალოგი",
+        "contactUs": "კონტაქტი"
     }
 }

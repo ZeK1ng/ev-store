@@ -17,12 +17,16 @@ import {
     Accordion,
     Span
 } from '@chakra-ui/react'
+import { toaster } from "@/components/ui/toaster"
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
 import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftClose, LuPanelRightClose, LuLogOut } from "react-icons/lu";
+import { useTranslation } from 'react-i18next'
 
 const Header = () => {
+    const { t } = useTranslation('common');
+
     const { open, onOpen, onClose } = useDisclosure()
     const { colorMode, toggleColorMode } = useColorMode()
     const navigate = useNavigate()
@@ -40,21 +44,18 @@ const Header = () => {
 
     const logOut = async () => {
         try {
-            await API.post('/auth/logout', {}, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            })
-            localStorage.removeItem('accessToken')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('isLogedIn')
+            await API.post('/auth/logout')
+            AuthController.logout()
             navigate('/')
 
             if (open) {
                 onClose()
             }
         } catch (error) {
-            console.error('Logout failed:', error)
+            toaster.error({
+                title: t('header.logoutError'),
+                description: t('header.logoutErrorDescription')
+            })
         }
     }
 
@@ -77,10 +78,18 @@ const Header = () => {
                 </Flex>
 
                 <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
-                    <RouterLink to="/">Home</RouterLink>
-                    <RouterLink to="/catalog">Catalog</RouterLink>
-                    <RouterLink to="/about-us">About Us</RouterLink>
-                    <RouterLink to="/contact-us">Contact</RouterLink>
+                    <RouterLink to="/">
+                        {t('header.home')}
+                    </RouterLink>
+                    <RouterLink to="/catalog">
+                        {t('header.catalog')}
+                    </RouterLink>
+                    <RouterLink to="/about-us">
+                        {t('header.aboutUs')}
+                    </RouterLink>
+                    <RouterLink to="/contact-us">
+                        {t('header.contact')}
+                    </RouterLink>
 
                     <Button variant="outline" >
                         <RouterLink to="/cart">
@@ -104,7 +113,7 @@ const Header = () => {
                             <Menu.Root size="md">
                                 <Menu.Trigger asChild>
                                     <Button variant="outline">
-                                        Profile <LuCircleUserRound />
+                                        {t('header.profile')} <LuCircleUserRound />
                                     </Button>
                                 </Menu.Trigger>
                                 <Portal>
@@ -112,19 +121,19 @@ const Header = () => {
                                         <Menu.Content>
                                             <Menu.Item value="profile">
                                                 <RouterLink to="/profile">
-                                                    My Profile
+                                                    {t('header.myProfile')}
                                                 </RouterLink>
                                             </Menu.Item>
                                             <Separator />
                                             <Menu.Item value="history">
                                                 <RouterLink to="/order-history">
-                                                    Order History
+                                                    {t('header.orderHistory')}
                                                 </RouterLink>
                                             </Menu.Item>
                                             <Separator />
                                             <Menu.Item value="logout" onClick={logOut}>
                                                 <HStack>
-                                                    Log Out <LuLogOut />
+                                                    {t('header.logout')} <LuLogOut />
                                                 </HStack>
                                             </Menu.Item>
                                         </Menu.Content>
@@ -133,7 +142,7 @@ const Header = () => {
                             </Menu.Root>
                         ) : <Button variant="outline" asChild>
                             <RouterLink to="/login">
-                                LogIn <LuLogIn />
+                                {t('header.login')} <LuLogIn />
                             </RouterLink>
                         </Button>
                     }
@@ -204,13 +213,21 @@ const Header = () => {
                 }}
             >
                 <VStack as="nav" gap={4} align="stretch" p={4}>
-                    <RouterLink to="/" onClick={onClose}>Home</RouterLink>
+                    <RouterLink to="/" onClick={onClose}>
+                        {t('header.home')}
+                    </RouterLink>
                     <Separator />
-                    <RouterLink to="/catalog" onClick={onClose}>Catalog</RouterLink>
+                    <RouterLink to="/catalog" onClick={onClose}>
+                        {t('header.catalog')}
+                    </RouterLink>
                     <Separator />
-                    <RouterLink to="/about-us" onClick={onClose}>About Us</RouterLink>
+                    <RouterLink to="/about-us" onClick={onClose}>
+                        {t('header.aboutUs')}
+                    </RouterLink>
                     <Separator />
-                    <RouterLink to="/contact-us" onClick={onClose}>Contact</RouterLink>
+                    <RouterLink to="/contact-us" onClick={onClose}>
+                        {t('header.contact')}
+                    </RouterLink>
                     <Separator />
 
                     {
@@ -221,7 +238,7 @@ const Header = () => {
                                         <Span flex="1">
                                             <HStack align="center" gap={2}>
                                                 <LuCircleUserRound />
-                                                Profile
+                                                {t('header.profile')}
                                             </HStack>
                                         </Span>
 
@@ -232,15 +249,15 @@ const Header = () => {
                                         <Accordion.ItemBody>
                                             <VStack gap={2} align="stretch" ml={2}>
                                                 <RouterLink to="/profile" onClick={onClose}>
-                                                    My Profile
+                                                    {t('header.myProfile')}
                                                 </RouterLink>
                                                 <Separator />
                                                 <RouterLink to="/order-history" onClick={onClose}>
-                                                    Order History
+                                                    {t('header.orderHistory')}
                                                 </RouterLink>
                                                 <Separator />
                                                 <HStack onClick={logOut}>
-                                                    Log Out <LuLogOut />
+                                                    {t('header.logout')} <LuLogOut />
                                                 </HStack>
                                             </VStack>
                                         </Accordion.ItemBody>
@@ -255,15 +272,13 @@ const Header = () => {
                                 onClick={onClose}
                             >
                                 <RouterLink to="/login" >
-                                    LogIn <LuLogIn />
+                                    {t('header.login')} <LuLogIn />
                                 </RouterLink>
                             </Button>
                         )
                     }
 
                     <LangSwitcher />
-
-
                 </VStack>
             </Box>
         </Box >

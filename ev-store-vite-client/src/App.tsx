@@ -3,6 +3,7 @@ import { Box } from '@chakra-ui/react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AppRoutes from '@/routes/AppRoutes';
+import { Toaster } from '@/components/ui/toaster';
 
 const AppContent = () => {
   const { pathname } = useLocation()
@@ -17,6 +18,7 @@ const AppContent = () => {
         </Box>
       </Box>
       {!hideFooter && <Footer />}
+      <Toaster />
     </>
   )
 }

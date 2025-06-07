@@ -1,10 +1,14 @@
 import { Flex, HStack, VStack, Image, Separator, Stack, IconButton, Heading, Text, Box } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
-
 import { FaFacebook, FaInstagram, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaTwitter } from 'react-icons/fa';
-
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+    const { t } = useTranslation('common');
+
+    const phone = t('contact.phoneNumber');
+    const email = t('contact.emailAddress');
+
     return (
         <Box as="footer" bg="gray.900" color="white" py={16} px={{ base: 4, md: 16 }}>
             <Separator borderColor="gray.600" mb={8} />
@@ -37,24 +41,44 @@ const Footer = () => {
                     </VStack>
 
                     <VStack align="flex-start" gap={2} mb={{ base: 8, md: 0 }}>
-                        <Heading size="sm" fontWeight="bold">EV Store</Heading>
-                        <Link color="white" to="/shop">Shop</Link>
-                        <Link color="white" to="/charge-ev">Charge - EV</Link>
-                        <Link color="white" to="/obd2-tools">OBD-II Diagnostic tools</Link>
+                        <Heading size="sm" fontWeight="bold">
+                            {t('footer.quickLinks')}
+                        </Heading>
+                        <Link color="white" to={t('footer.category1url')}>
+                            {t('footer.category1name')}
+                        </Link>
+                        <Link color="white" to={t('footer.category2url')}>
+                            {t('footer.category2name')}
+                        </Link>
+                        <Link color="white" to={t('footer.category3url')}>
+                            {t('footer.category3name')}
+                        </Link>
                     </VStack>
 
                     <VStack align="flex-start" gap={2}>
                         <HStack align="center">
                             <FaMapMarkerAlt />
-                            <Text>9a David Guramishvili Ave, Tbilisi 0178</Text>
+                            <Text>
+                                <a href="https://maps.app.goo.gl/XqaUXpcvc7qfRW3w8" target="_blank">
+                                    {t('footer.address')}
+                                </a>
+                            </Text>
                         </HStack>
                         <HStack align="center">
                             <FaPhoneAlt />
-                            <Text>+995 568 69 83 00</Text>
+                            <Text>
+                                <a href={`tel:${phone}`}>
+                                    {t('footer.phone')}
+                                </a>
+                            </Text>
                         </HStack>
                         <HStack align="center">
                             <FaEnvelope />
-                            <Text>YourStoreGeo@gmail.com</Text>
+                            <Text>
+                                <a href={`mailto:${email}`}>
+                                    {t('footer.email')}
+                                </a>
+                            </Text>
                         </HStack>
                     </VStack>
                 </Flex>
@@ -69,10 +93,15 @@ const Footer = () => {
                         width={{ base: '100%', md: 'auto' }}
                         align={{ base: 'flex-start', md: 'center' }}
                     >
-                        <Link color="white" to="/about">About us</Link>
-                        <Link color="white" to="/contact">Contact us</Link>
-                        <Link color="white" to="/terms">Terms & Conditions</Link>
-                        <Link color="white" to="/privacy">Privacy Policy</Link>
+                        <Link color="white" to="/about-us">
+                            {t('footer.aboutUs')}
+                        </Link>
+                        <Link color="white" to="/catalog">
+                            {t('footer.catalog')}
+                        </Link>
+                        <Link color="white" to="/contact-us">
+                            {t('footer.contactUs')}
+                        </Link>
                     </Stack>
                     <Text fontSize="sm" textAlign={{ base: 'left', md: 'right' }}>
                         © 2025 • EV Store
