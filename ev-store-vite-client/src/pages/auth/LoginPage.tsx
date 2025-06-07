@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import API from '@/utils/api';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 
 import {
     Box,
@@ -30,6 +31,10 @@ const LoginPage = () => {
     const { t } = useTranslation('auth');
     const navigate = useNavigate();
 
+    if (AuthController.isLoggedIn()) {
+        navigate('/');
+    }
+
     const {
         register,
         handleSubmit,
@@ -47,18 +52,20 @@ const LoginPage = () => {
                 username: data.email,
                 password: data.password,
             });
-            if (response.data?.accessToken) {
-                localStorage.setItem('accessToken', response.data.accessToken);
+
+            if (!response.data || !response.data.accessToken || !response.data.refreshToken) {
+                setApiError(t('login.errors.somethingWentWrong'));
+                return;
             }
-            if (response.data?.refreshToken) {
-                localStorage.setItem('refreshToken', response.data.refreshToken);
-            }
-            localStorage.setItem('isLogedIn', 'true');
+           
+            AuthController.login({
+                accessToken: response.data.accessToken,
+                refreshToken: response.data.refreshToken,
+            });
+            
             navigate('/');
         } catch (err: any) {
-            setApiError(
-                err?.response?.data?.message || 'Login failed. Please check your credentials.'
-            );
+            setApiError(t('login.errors.loginFailed'));
         } finally {
             setIsLoading(false);
         }

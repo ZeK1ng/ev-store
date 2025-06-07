@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
-import API from '@/utils/api';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -15,7 +16,7 @@ import {
     PinInput,
     Alert
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
 import { LuMail, LuKeyRound } from "react-icons/lu"
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next'
@@ -33,6 +34,11 @@ interface SetNewPasswordFormValues {
 
 const ForgotPasswordPage = () => {
     const { t } = useTranslation('auth');
+    const navigate = useNavigate();
+
+    if (AuthController.isLoggedIn()) {
+        navigate('/');
+    }
 
     const {
         register,
@@ -70,7 +76,7 @@ const ForgotPasswordPage = () => {
             setEmail(data.email);
             setStep('pin');
         } catch (err: any) {
-            setApiError('Failed to send verification code');
+            setApiError(t('forgotPassword.errors.sendOTPFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -89,9 +95,9 @@ const ForgotPasswordPage = () => {
                 verificationCode: verificationPin,
                 newPassword: data.newPassword,
             });
-            window.location.href = '/login';
+            navigate('/login')
         } catch (err: any) {
-            setApiError('Failed to reset password');
+            setApiError(t('forgotPassword.errors.resetPasswordFailed'));
         } finally {
             setIsLoading(false);
         }

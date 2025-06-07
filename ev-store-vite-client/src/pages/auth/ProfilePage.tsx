@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import API from '@/utils/api';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -50,7 +51,7 @@ const ProfilePage = () => {
             try {
                 const response = await API.get('/user/details', {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                        Authorization: `Bearer ${AuthController.getAccessToken()}`
                     }
                 });
                 setUserData(response.data);

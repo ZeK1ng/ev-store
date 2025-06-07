@@ -1,5 +1,6 @@
-import { useState,  } from 'react';
-import API from '@/utils/api';
+import { useState, } from 'react';
+import API from '@/utils/AxiosAPI';
+import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -13,12 +14,16 @@ import {
     Field,
     PinInput,
     Flex,
-    Alert
+    Alert,
+    Accordion,
+    Span,
+    HStack,
+    Separator
 } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { LuUser, LuMail, LuPhone, LuKeyRound } from "react-icons/lu"
+import { LuUser, LuMail, LuPhone, LuKeyRound, LuMapPin } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 
@@ -29,11 +34,17 @@ interface SignupFormValues {
     phone: string;
     password: string;
     confirmPassword: string;
+    address?: string;
+    city?: string;
 }
 
 const SignupPage = () => {
     const { t } = useTranslation('auth');
     const navigate = useNavigate();
+
+    if (AuthController.isLoggedIn()) {
+        navigate('/');
+    }
 
     const {
         register,
@@ -48,6 +59,8 @@ const SignupPage = () => {
             phone: "",
             password: "",
             confirmPassword: "",
+            address: "",
+            city: "",
         }
     });
 
@@ -70,12 +83,12 @@ const SignupPage = () => {
                 lastName: data.lastName,
                 email: data.email,
                 mobile: data.phone,
-                address: '',
-                city: '',
+                address: data.address,
+                city: data.city,
                 password: data.password,
             });
         } catch (err: any) {
-            setApiError(err.response?.data?.errorMessage || t('signup.errorSendingVerification'));
+            setApiError(t('signup.errors.sendOTPFailed'));
             return;
         } finally {
             setIsLoading(false);
@@ -96,20 +109,18 @@ const SignupPage = () => {
             });
 
             if (!res.data || !res.data.accessToken || !res.data.refreshToken) {
-                setApiError(t('signup.errorVerificationFailed'));
+                setApiError(t('signup.errors.somethingWentWrong'));
                 return;
             }
 
-            localStorage.setItem('accessToken', res.data.accessToken);
-            localStorage.setItem('refreshToken', res.data.refreshToken);
-            localStorage.setItem('isLogedIn', 'true');
+            AuthController.login({
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+            });
+
             navigate('/');
         } catch (err: any) {
-            if (err.response && err.response.data) {
-                setApiError(err.response.data.message || t('signup.errorVerificationFailed'));
-            } else {
-                setApiError(t('signup.errorVerificationFailed'));
-            }
+            setApiError(t('signup.errors.verificationFailed'));
             return;
         } finally {
             setIsLoading(false);
@@ -221,7 +232,6 @@ const SignupPage = () => {
                                 </Flex>
 
 
-
                                 <Field.Root id="email" invalid={!!errors.email}>
                                     <Field.Label fontWeight="medium" fontSize="sm">
                                         {t('signup.email')}
@@ -255,6 +265,57 @@ const SignupPage = () => {
                                     </InputGroup>
                                     {errors.phone && <Field.ErrorText>{errors.phone.message}</Field.ErrorText>}
                                 </Field.Root>
+
+                                <Accordion.Root size="md" collapsible>
+                                    <Accordion.Item value="profile">
+                                        <Accordion.ItemTrigger>
+                                            <Span flex="1">
+                                                <HStack align="center" gap={2}>
+                                                    <LuMapPin />
+                                                    {t('signup.address.title')}
+                                                </HStack>
+                                            </Span>
+                                            <Accordion.ItemIndicator />
+                                        </Accordion.ItemTrigger>
+                                        <Accordion.ItemContent>
+                                            <Accordion.ItemBody>
+                                                <Separator />
+                                                <Stack gap={2} p={2}>
+                                                    <Text fontSize="sm" color="fg.muted">
+                                                        {t('signup.address.description')}
+                                                    </Text>
+                                                    <Field.Root id="city" invalid={false}>
+                                                        <Field.Label fontWeight="medium" fontSize="sm">
+                                                            {t('signup.address.city')}
+                                                        </Field.Label>
+                                                        <InputGroup >
+                                                            <Input
+                                                                size="lg"
+                                                                type="text"
+                                                                placeholder={t('signup.address.cityPlaceholder')}
+                                                                {...register("city")}
+                                                            />
+                                                        </InputGroup>
+                                                    </Field.Root>
+
+                                                    <Field.Root id="address" invalid={false}>
+                                                        <Field.Label fontWeight="medium" fontSize="sm">
+                                                            {t('signup.address.address')}
+                                                        </Field.Label>
+                                                        <InputGroup>
+                                                            <Input
+                                                                size="lg"
+                                                                type="text"
+                                                                placeholder={t('signup.address.addressPlaceholder')}
+                                                                {...register("address")}
+                                                            />
+                                                        </InputGroup>
+                                                    </Field.Root>
+                                                </Stack>
+                                            </Accordion.ItemBody>
+                                        </Accordion.ItemContent>
+                                    </Accordion.Item>
+                                </Accordion.Root>
 
                                 <Field.Root id="password" invalid={!!errors.password}>
                                     <Field.Label fontWeight="medium" fontSize="sm">
