@@ -1,5 +1,6 @@
 package ge.evstore.ev_store.controller;
 
+import ge.evstore.ev_store.request.UpdateUserRequest;
 import ge.evstore.ev_store.response.OrderHistoryResponse;
 import ge.evstore.ev_store.response.UserResponse;
 import ge.evstore.ev_store.service.interf.UserService;
@@ -27,9 +28,9 @@ public class UserController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<UserResponse> updateUser(@RequestParam(required = false) final String city, @RequestParam(required = false) final String address, @RequestParam(required = false) final String phone, final HttpServletRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@RequestBody final UpdateUserRequest userDetails, final HttpServletRequest request) {
         final String token = HeaderUtils.extractBearer(request);
-        return ResponseEntity.ok(userService.updateUser(token, city, address, phone));
+        return ResponseEntity.ok(userService.updateUser(token, userDetails.getCity(), userDetails.getAddress(), userDetails.getMobile()));
     }
 
     @GetMapping("/order-history")
