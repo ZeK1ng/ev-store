@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import API from '@/utils/AxiosAPI';
-import AuthController from '@/utils/AuthController';
 import {
     Box,
     Button,
@@ -14,9 +13,14 @@ import {
     Separator,
     Field,
     HStack,
-    Text
+    Text,
+    EmptyState,
+    Spinner,
+    Center,
+    VStack,
+    ButtonGroup
 } from '@chakra-ui/react';
-import { LuMail, LuPhone, LuMapPin } from "react-icons/lu"
+import { LuMail, LuPhone, LuMapPin, LuWifiOff } from "react-icons/lu"
 import { useTranslation } from 'react-i18next'
 
 interface UserDetails {
@@ -36,36 +40,54 @@ interface ProfileUpdateData {
 
 const ProfilePage = () => {
     const { t } = useTranslation('auth');
+    const [userData, setUserData] = useState<UserDetails | null>(null);
+    const [originalData, setOriginalData] = useState<UserDetails | null>(null);
 
-    const [userData, setUserData] = useState<UserDetails>({
-        firstName: '',
-        lastName: '',
-        email: '',
-        mobile: '',
-        city: '',
-        address: ''
-    });
+    const [isDirty, setIsDirty] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [updateLoading, setUpdateLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchUserData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await API.get('/user/details');
+            setUserData(response.data);
+            setOriginalData(response.data);
+        } catch (err: any) {
+            setError(t('profile.loadError') || 'Failed to fetch user data');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await API.get('/user/details', {
-                    headers: {
-                        Authorization: `Bearer ${AuthController.getAccessToken()}`
-                    }
-                });
-                setUserData(response.data);
-            } catch (error) {
-                console.error('Failed to fetch user data:', error);
-            }
-        };
         fetchUserData();
     }, []);
 
-    const [isDirty, setIsDirty] = useState(false);
+    useEffect(() => {
+        if (userData && originalData) {
+            setIsDirty(
+                userData.mobile !== originalData.mobile ||
+                userData.city !== originalData.city ||
+                userData.address !== originalData.address
+            );
+        } else {
+            setIsDirty(false);
+        }
+    }, [userData, originalData]);
+
+    const handleFieldChange = (field: keyof ProfileUpdateData, value: string) => {
+        if (userData) {
+            setUserData({ ...userData, [field]: value });
+        }
+    };
 
     const handleSave = async () => {
-        if (!isDirty) return;
+        if (!isDirty || !userData) return;
+        setUpdateLoading(true);
+        setError(null);
 
         const updateData: ProfileUpdateData = {
             mobile: userData.mobile,
@@ -74,20 +96,56 @@ const ProfilePage = () => {
         };
 
         try {
-            await API.patch('/user/update', updateData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-                }
-            });
+            await API.patch('/user/update', updateData);
+            setOriginalData({ ...userData });
             setIsDirty(false);
-        } catch (error) {
-            console.error('Failed to update user data:', error);
+        } catch (err: any) {
+            setError(t('profile.updateError'));
+        } finally {
+            setUpdateLoading(false);
         }
-
     };
 
+    // UI - Loading
+    if (loading) {
+        return (
+            <Center minH="90vh">
+                <Spinner size="xl" borderWidth="4px"/>
+            </Center>
+        );
+    }
+
+    // UI - Error with retry
+    if (error) {
+        return (
+            <Center minH="90vh">
+                <Stack gap={8} maxW="lg" w="full">
+                    <EmptyState.Root>
+                        <EmptyState.Content>
+                            <EmptyState.Indicator>
+                                <LuWifiOff />
+                            </EmptyState.Indicator>
+                            <VStack textAlign="center">
+                                <EmptyState.Title>
+                                    {t('profile.emptyTitle')}
+                                </EmptyState.Title>
+                                <EmptyState.Description>
+                                    {t('profile.emptyDescription')}
+                                </EmptyState.Description>
+                            </VStack>
+                            <ButtonGroup>
+                                <Button onClick={fetchUserData}>{t('profile.tryAgain')}</Button>
+                            </ButtonGroup>
+                        </EmptyState.Content>
+                    </EmptyState.Root>
+                </Stack>
+            </Center>
+        );
+    }
+
+    // Main Profile UI
     return (
-        <SimpleGrid columns={{ base: 1 }} minH="100vh">
+        <SimpleGrid columns={{ base: 1 }} minH="90vh">
             <Box
                 display="flex"
                 justifyContent="center"
@@ -104,7 +162,7 @@ const ProfilePage = () => {
                                     <Field.Label>
                                         {t('profile.firstName')}
                                     </Field.Label>
-                                    <Input size="lg" value={userData?.firstName} disabled />
+                                    <Input size="lg" value={userData?.firstName || ''} disabled />
                                 </Field.Root>
                             </Box>
                             <Box flex={1}>
@@ -112,7 +170,7 @@ const ProfilePage = () => {
                                     <Field.Label>
                                         {t('profile.lastName')}
                                     </Field.Label>
-                                    <Input size="lg" value={userData?.lastName} disabled />
+                                    <Input size="lg" value={userData?.lastName || ''} disabled />
                                 </Field.Root>
                             </Box>
                         </Flex>
@@ -122,7 +180,7 @@ const ProfilePage = () => {
                                 {t('profile.email')}
                             </Field.Label>
                             <InputGroup startElement={<LuMail />}>
-                                <Input size="lg" value={userData?.email} disabled />
+                                <Input size="lg" value={userData?.email || ''} disabled />
                             </InputGroup>
                         </Field.Root>
 
@@ -143,11 +201,8 @@ const ProfilePage = () => {
                                     type="number"
                                     size="lg"
                                     placeholder={t('profile.phonePlaceholder')}
-                                    value={userData?.mobile}
-                                    onChange={e => setUserData({
-                                        ...userData,
-                                        mobile: e.target.value
-                                    })}
+                                    value={userData?.mobile || ''}
+                                    onChange={e => handleFieldChange('mobile', e.target.value)}
                                 />
                             </InputGroup>
                         </Field.Root>
@@ -160,11 +215,8 @@ const ProfilePage = () => {
                                 <Input
                                     size="lg"
                                     placeholder={t('profile.cityPlaceholder')}
-                                    value={userData?.city}
-                                    onChange={e => setUserData({
-                                        ...userData,
-                                        city: e.target.value
-                                    })}
+                                    value={userData?.city || ''}
+                                    onChange={e => handleFieldChange('city', e.target.value)}
                                 />
                             </InputGroup>
                         </Field.Root>
@@ -176,15 +228,19 @@ const ProfilePage = () => {
                             <Textarea
                                 size="lg"
                                 placeholder={t('profile.addressPlaceholder')}
-                                value={userData?.address}
-                                onChange={e => setUserData({
-                                    ...userData,
-                                    address: e.target.value
-                                })}
+                                value={userData?.address || ''}
+                                onChange={e => handleFieldChange('address', e.target.value)}
                             />
                         </Field.Root>
 
-                        <Button size="lg" mt={4} w="full" onClick={handleSave} disabled={!isDirty}>
+                        <Button
+                            size="lg"
+                            mt={4}
+                            w="full"
+                            onClick={handleSave}
+                            disabled={!isDirty || updateLoading}
+                            loading={updateLoading}
+                        >
                             {t('profile.updateButton')}
                         </Button>
                     </Stack>
@@ -192,7 +248,6 @@ const ProfilePage = () => {
             </Box>
         </SimpleGrid >
     );
-
 }
 
 export default ProfilePage;

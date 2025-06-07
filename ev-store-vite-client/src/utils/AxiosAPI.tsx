@@ -1,4 +1,5 @@
 import axios from 'axios';
+import AuthController from './AuthController';
 
 const API_BASE_URL = 'http://18.205.188.59:8080/api/v1';
 
@@ -9,7 +10,7 @@ const API = axios.create({
 
 API.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('token');
+        const token = AuthController.getAccessToken();
         if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
