@@ -122,12 +122,14 @@ const ForgotPasswordPage = () => {
                             <PinInput.Input index={1} />
                             <PinInput.Input index={2} />
                             <PinInput.Input index={3} />
+                            <PinInput.Input index={4} />
+                            <PinInput.Input index={5} />
                         </PinInput.Control>
                     </PinInput.Root>
 
                     <Button
                         colorScheme="blue"
-                        disabled={verificationPin.length < 4}
+                        disabled={verificationPin.length < 6}
                         onClick={onVerify}
                     >
                         {t('forgotPassword.verifyPin.verifyButton')}

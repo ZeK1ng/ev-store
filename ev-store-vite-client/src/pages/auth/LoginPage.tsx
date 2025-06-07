@@ -47,8 +47,8 @@ const LoginPage = () => {
                 username: data.email,
                 password: data.password,
             });
-            if (response.data?.token) {
-                localStorage.setItem('token', response.data.token);
+            if (response.data?.accessToken) {
+                localStorage.setItem('accessToken', response.data.accessToken);
             }
             if (response.data?.refreshToken) {
                 localStorage.setItem('refreshToken', response.data.refreshToken);

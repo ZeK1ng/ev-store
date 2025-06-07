@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,  } from 'react';
 import API from '@/utils/api';
 import {
     Box,
@@ -15,7 +15,7 @@ import {
     Flex,
     Alert
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
 import { LuUser, LuMail, LuPhone, LuKeyRound } from "react-icons/lu"
@@ -33,6 +33,7 @@ interface SignupFormValues {
 
 const SignupPage = () => {
     const { t } = useTranslation('auth');
+    const navigate = useNavigate();
 
     const {
         register,
@@ -64,16 +65,23 @@ const SignupPage = () => {
         setIsLoading(true);
 
         try {
-            await API.post('/auth/resend-verification', {
+            await API.post('/auth/register', {
+                firstName: data.firstName,
+                lastName: data.lastName,
                 email: data.email,
+                mobile: data.phone,
+                address: '',
+                city: '',
+                password: data.password,
             });
         } catch (err: any) {
-            setApiError(t('signup.errorSendingVerification'));
+            setApiError(err.response?.data?.errorMessage || t('signup.errorSendingVerification'));
             return;
         } finally {
             setIsLoading(false);
         }
 
+        setApiError(null);
         setStep('pin');
     };
 
@@ -82,24 +90,20 @@ const SignupPage = () => {
         setIsLoading(true);
         setApiError(null);
         try {
-            await API.post('/auth/verify', {
+            const res = await API.post('/auth/verify', {
                 email: formValues.email,
                 verificationCode: verificationPin,
             });
 
-            const res = await API.post('/auth/register', {
-                firstName: formValues.firstName,
-                lastName: formValues.lastName,
-                email: formValues.email,
-                mobile: formValues.phone,
-                address: '',
-                city: '',
-                password: formValues.password,
-            });
-
-            if (res.data && res.data.token) {
-                localStorage.setItem('token', res.data.token);
+            if (!res.data || !res.data.accessToken || !res.data.refreshToken) {
+                setApiError(t('signup.errorVerificationFailed'));
+                return;
             }
+
+            localStorage.setItem('accessToken', res.data.accessToken);
+            localStorage.setItem('refreshToken', res.data.refreshToken);
+            localStorage.setItem('isLogedIn', 'true');
+            navigate('/');
         } catch (err: any) {
             if (err.response && err.response.data) {
                 setApiError(err.response.data.message || t('signup.errorVerificationFailed'));
@@ -137,16 +141,18 @@ const SignupPage = () => {
                             <PinInput.Input index={1} />
                             <PinInput.Input index={2} />
                             <PinInput.Input index={3} />
+                            <PinInput.Input index={4} />
+                            <PinInput.Input index={5} />
                         </PinInput.Control>
                     </PinInput.Root>
 
-                    {apiError && <Alert.Root status="error">
+                    {apiError && <Alert.Root status="error" mb={4}>
                         <Alert.Indicator />
                         <Alert.Title>{apiError}</Alert.Title>
                     </Alert.Root>}
                     <Button
                         colorScheme="blue"
-                        disabled={verificationPin.length < 4 || isLoading}
+                        disabled={verificationPin.length < 6 || isLoading}
                         loading={isLoading}
                         onClick={onVerify}
                     >
