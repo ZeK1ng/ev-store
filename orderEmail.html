@@ -7,103 +7,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #F7F7F7;
       margin: 0;
       padding: 0;
+      background-color: #F7F7F7;
+      font-family: Arial, sans-serif;
       color: #333;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+
     .container {
       max-width: 800px;
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
       margin-left: 40px;
       margin-right: auto;
       margin-top: 20px;
       margin-bottom: 0;
-      background-color: #FFFFFF;
-      border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
-    .header {
-      background-color: #0052CC;
-      color: #FFFFFF;
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 600;
-    }
-    .order-id {
-      background-color: #FFFFFF;
-      color: #0052CC;
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 9999px;
-      font-size: 14px;
-      margin-top: 10px;
-      margin-left: 0;
-    }
+
     .section-title {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 12px;
-      display: flex;
-      align-items: center;
       color: #222;
     }
-    .content {
-      padding: 24px;
-    }
-    .customer-info {
-      background-color: #F5F7FF;
-      border-radius: 6px;
-      padding: 20px;
-      margin-bottom: 24px;
-    }
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-      gap: 32px;
-    }
-    .info-left,
-    .info-right {
-      flex: 1;
-    }
-    .info-left p,
-    .info-right p {
-      margin: 4px 0;
-      line-height: 1.5;
-    }
-    .info-left .label,
-    .info-right .label {
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      color: #444;
-    }
-    .info-left .value,
-    .info-right .value {
-      font-size: 16px;
-      color: #111;
-    }
-    .city {
-      font-size: 14px;
-      color: #666;
-      margin-top: 2px;
-    }
+
     .instructions {
       background-color: #FFF8E1;
       border-left: 4px solid #FFD700;
@@ -113,52 +43,7 @@
       font-size: 15px;
       color: #333;
     }
-    .order-details {
-      margin-bottom: 32px;
-    }
-    .order-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      table-layout: fixed;
-    }
-    .order-table th,
-    .order-table td {
-      border: 1px solid #E0E0E0;
-      padding: 12px;
-      text-align: left;
-      font-size: 15px;
-    }
-    .order-table th {
-      background-color: #F0F0F0;
-      color: #333;
-      font-weight: 500;
-    }
-    .order-table td .badge {
-      display: inline-block;
-      background-color: #F3F4F6;
-      color: #555;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .total-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 16px;
-    }
-    .total-box {
-      background-color: #E7F3FF;
-      border: 1px solid #A8D0FF;
-      padding: 12px 16px;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #0052CC;
-      display: flex;
-      align-items: center;
-    }
+
     .footer {
       background-color: #F0F0F0;
       padding: 16px 24px;
@@ -166,203 +51,198 @@
       color: #777;
       text-align: center;
     }
-    @media (max-width: 900px) {
-      .order-table, .order-table thead, .order-table tbody, .order-table th, .order-table td, .order-table tr {
-        display: block;
-        width: 100%;
+
+    @media only screen and (max-width: 700px) {
+      .container {
+        margin: 24px auto 0 auto !important;
+        max-width: 98% !important;
       }
+
+      .footer {
+        padding: 12px 8px !important;
+        font-size: 12px !important;
+      }
+    }
+
+    @media only screen and (max-width: 500px) {
+      .container {
+        margin: 8px auto 0 auto !important;
+        max-width: 100% !important;
+        border-radius: 0 !important;
+      }
+
+      .footer {
+        padding: 10px 4px !important;
+        font-size: 11px !important;
+      }
+    }
+
+    @media only screen and (max-width: 700px) {
+
+      .order-table,
+      .order-table thead,
+      .order-table tbody,
+      .order-table tr,
+      .order-table th,
+      .order-table td {
+        display: block !important;
+        width: 100% !important;
+      }
+
       .order-table thead {
-        display: none;
+        display: none !important;
       }
+
       .order-table tr {
-        margin-bottom: 20px;
-        border: 1px solid #E0E0E0;
-        border-radius: 6px;
-        background: #f9f9f9;
-        padding: 10px 0;
+        margin-bottom: 20px !important;
+        border: 1px solid #E0E0E0 !important;
+        border-radius: 6px !important;
+        background: #f9f9f9 !important;
+        padding: 10px 0 !important;
       }
+
       .order-table td {
-        border: none;
-        position: relative;
-        padding: 8px 12px 8px 180px;
-        min-height: 36px;
-        box-sizing: border-box;
-        font-size: 15px;
-        background: transparent;
+        border: none !important;
+        position: relative !important;
+        padding: 8px 12px 8px 110px !important;
+        min-height: 36px !important;
+        box-sizing: border-box !important;
+        font-size: 15px !important;
+        background: transparent !important;
       }
+
       .order-table td:before {
-        position: absolute;
-        left: 12px;
-        top: 8px;
-        width: 150px;
-        padding-right: 8px;
-        font-weight: bold;
-        color: #444;
-        font-size: 13px;
-        white-space: nowrap;
-        content: attr(data-label);
-      }
-      .order-table td .badge {
-        font-size: 13px;
-      }
-    }
-    @media (max-width: 700px) {
-      .container {
-        max-width: 100%;
-        margin: 24px auto 0 auto;
-      }
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 16px 12px;
-        gap: 10px;
-      }
-      .header h1 {
-        font-size: 20px;
-      }
-      .order-id {
-        font-size: 13px;
-        margin-top: 8px;
-        margin-left: 0;
-      }
-      .content {
-        padding: 12px;
-      }
-      .section-title {
-        font-size: 16px;
-      }
-      .customer-info {
-        padding: 10px;
-      }
-      .info-row {
-        flex-direction: column;
-        gap: 0;
-      }
-      .info-left,
-      .info-right {
-        width: 100%;
-      }
-      .total-box {
-        font-size: 15px;
-        padding: 10px 12px;
-      }
-      .footer {
-        padding: 12px 10px;
-        font-size: 12px;
-      }
-      .order-table td {
-        padding: 8px 12px 8px 120px;
-      }
-      .order-table td:before {
-        width: 100px;
-        left: 12px;
-        top: 8px;
-        font-size: 12px;
-      }
-    }
-    @media (max-width: 500px) {
-      .container {
-        margin: 8px auto 0 auto;
-        border-radius: 0;
-        box-shadow: none;
-        max-width: 100%;
-      }
-      .header {
-        padding: 12px 6px;
-      }
-      .content {
-        padding: 8px 8px;
-      }
-      .customer-info {
-        padding: 8px 8px;
-      }
-      .total-box {
-        font-size: 13px;
-        padding: 8px 6px;
-      }
-      .footer {
-        padding: 10px 8px;
-        font-size: 11px;
-      }
-      .order-table td {
-        padding: 8px 8px 8px 78px;
-      }
-      .order-table td:before {
-        width: 60px;
-        left: 8px;
-        top: 8px;
-        font-size: 11px;
+        position: absolute !important;
+        left: 12px !important;
+        top: 8px !important;
+        width: 90px !important;
+        padding-right: 8px !important;
+        font-weight: bold !important;
+        color: #444 !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        content: attr(data-label) !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>New Order Received</h1>
-      <div class="order-id">{{ORDER_ID}}</div>
-    </div>
-
-    <div class="content">
-      <div class="section-title">
-        Customer Information
-      </div>
-      <div class="customer-info">
-        <div class="info-row">
-          <div class="info-left">
-            <p class="label">Customer Name</p>
-            <p class="value">{{NAME}}</p>
-            <p class="label" style="margin-top:12px;">Delivery Address</p>
-            <p class="value">{{ADDRESS}}</p>
-            <p class="city">City: {{CITY}}</p>
-          </div>
-          <div class="info-right">
-            <p class="label">Phone</p>
-            <p class="value">{{PHONE}}</p>
-            <p class="label" style="margin-top:12px;">Email</p>
-            <p class="value">{{EMAIL}}</p>
-          </div>
-        </div>
-        <p class="label" style="margin-bottom:4px;">Special Instructions</p>
-        <div class="instructions">
-          {{NOTE}}
-        </div>
-      </div>
-
-      <div class="section-title">Order Details</div>
-      <table class="order-table">
-        <thead>
+  <table width="100%" bgcolor="#F7F7F7" cellpadding="0" cellspacing="0" border="0"
+    style="width:100%;background:#F7F7F7;">
+    <tr>
+      <td>
+        <table class="container" width="800" cellpadding="0" cellspacing="0" border="0" align="left"
+          style="max-width:800px;width:100%;background:#fff;border-radius:8px;margin-left:40px;margin-top:20px;margin-bottom:0;box-shadow:0 2px 8px rgba(0,0,0,0.1);overflow:hidden;">
           <tr>
-            <th>Product ID</th>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Total</th>
+            <td colspan="2" style="padding:0;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0052CC"
+                style="background-color:#0052CC;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <span style="font-size:24px;font-weight:600;line-height:28px;vertical-align:middle;color:#fff;">New
+                      Order Received</span>
+                  </td>
+                  <td align="right" style="padding:20px 24px;">
+                    <span
+                      style="background:#fff;color:#0052CC;font-weight:bold;padding:6px 12px;border-radius:9999px;font-size:14px;">{{ORDER_ID}}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
           </tr>
-        </thead>
-        <tbody>
           <tr>
-            <td data-label="Product ID"><span class="badge">{{PRODUCT_ID}}</span></td>
-            <td data-label="Product Name">{{PRODUCT_NAME}}</td>
-            <td data-label="Quantity"><span class="badge">{{PRODUCT_QUANTITY}}</span></td>
-            <td data-label="Unit Price">{{PRODUCT_PRICE}}</td>
-            <td data-label="Total">{{PRODUCT_TOTAL_PRICE}}</td>
+            <td colspan="2" style="padding:24px;">
+              <div class="section-title">Customer Information</div>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F5F7FF"
+                style="background-color:#F5F7FF;border-radius:6px;margin-bottom:24px;">
+                <tr>
+                  <td width="50%" style="padding:20px 12px 20px 20px;vertical-align:top;">
+                    <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Customer Name</div>
+                    <div style="font-size:16px;color:#111;margin-bottom:12px;">{{NAME}}</div>
+                    <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Delivery Address</div>
+                    <div style="font-size:16px;color:#111;margin-bottom:4px;">{{ADDRESS}}</div>
+                    <div style="font-size:14px;color:#666;">City: {{CITY}}</div>
+                  </td>
+                  <td width="50%" style="padding:20px 20px 20px 12px;vertical-align:top;">
+                    <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Phone</div>
+                    <div style="font-size:16px;color:#111;margin-bottom:12px;">{{PHONE}}</div>
+                    <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Email</div>
+                    <div style="font-size:16px;color:#111;">{{EMAIL}}</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding:12px 20px 0 20px;">
+                    <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Special Instructions
+                    </div>
+                    <div class="instructions">
+                      {{NOTE}}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <div class="section-title">Order Details</div>
+              <table class="order-table" width="100%" cellpadding="0" cellspacing="0" border="0"
+                style="border-collapse:collapse;margin-top:12px;">
+                <thead>
+                  <tr>
+                    <th align="left"
+                      style="border:1px solid #E0E0E0;padding:12px 8px 12px 12px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                      Product ID</th>
+                    <th align="left"
+                      style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                      Product Name</th>
+                    <th align="left"
+                      style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                      Quantity</th>
+                    <th align="left"
+                      style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                      Unit Price</th>
+                    <th align="left"
+                      style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                      Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Product ID" style="border:1px solid #E0E0E0;padding:12px;">
+                      <span
+                        style="display:inline-block;background-color:#F3F4F6;color:#555;padding:2px 8px;border-radius:4px;font-size:13px;font-weight:500;">{{PRODUCT_ID}}</span>
+                    </td>
+                    <td data-label="Product Name" style="border:1px solid #E0E0E0;padding:12px;">{{PRODUCT_NAME}}</td>
+                    <td data-label="Quantity" style="border:1px solid #E0E0E0;padding:12px;">
+                      <span
+                        style="display:inline-block;background-color:#F3F4F6;color:#555;padding:2px 8px;border-radius:4px;font-size:13px;font-weight:500;">{{PRODUCT_QUANTITY}}</span>
+                    </td>
+                    <td data-label="Unit Price" style="border:1px solid #E0E0E0;padding:12px;">{{PRODUCT_PRICE}}</td>
+                    <td data-label="Total" style="border:1px solid #E0E0E0;padding:12px;">{{PRODUCT_TOTAL_PRICE}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+                <tr>
+                  <td align="right">
+                    <div
+                      style="display:inline-block;background-color:#E7F3FF;border:1px solid #A8D0FF;padding:12px 16px;border-radius:6px;font-size:16px;font-weight:bold;color:#0052CC;">
+                      Total Amount &nbsp;<span style="font-size:18px;color:#003F9D;">{{GRAND_TOTAL}}</span>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
           </tr>
-        </tbody>
-      </table>
-
-      <div class="total-container">
-        <div class="total-box">
-          Total Amount &nbsp;<span style="font-size:18px; color:#003F9D;">{{GRAND_TOTAL}}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">
-      This order was placed on {{ORDER_DATE}}<br>
-      Please process this order and contact the customer if you have any questions.
-    </div>
-  </div>
+          <tr>
+            <td colspan="2" class="footer"
+              style="background-color:#F0F0F0;padding:16px 24px;font-size:13px;color:#777;text-align:center;">
+              This order was placed on {{ORDER_DATE}}<br>
+              Please process this order and contact the customer if you have any questions.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
+
 </html>
