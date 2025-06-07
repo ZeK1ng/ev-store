@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import API from '@/utils/api';
 import {
     Box,
     Button,
@@ -11,7 +12,8 @@ import {
     Text,
     Field,
     PinInput,
-    Flex
+    Flex,
+    Alert
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -53,13 +55,61 @@ const SignupPage = () => {
 
     const passwordValue = watch("password");
 
-    const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
-        console.log('Signup data:', data);
+    const [formValues, setFormValues] = useState<SignupFormValues | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const onSubmit: SubmitHandler<SignupFormValues> = async (data) => {
+        setFormValues(data);
+        setIsLoading(true);
+
+        try {
+            await API.post('/auth/resend-verification', {
+                email: data.email,
+            });
+        } catch (err: any) {
+            setApiError(t('signup.errorSendingVerification'));
+            return;
+        } finally {
+            setIsLoading(false);
+        }
+
         setStep('pin');
     };
 
-    const onVerify = () => {
-        console.log('Entered PIN:', verificationPin);
+    const onVerify = async () => {
+        if (!formValues) return;
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            await API.post('/auth/verify', {
+                email: formValues.email,
+                verificationCode: verificationPin,
+            });
+
+            const res = await API.post('/auth/register', {
+                firstName: formValues.firstName,
+                lastName: formValues.lastName,
+                email: formValues.email,
+                mobile: formValues.phone,
+                address: '',
+                city: '',
+                password: formValues.password,
+            });
+
+            if (res.data && res.data.token) {
+                localStorage.setItem('token', res.data.token);
+            }
+        } catch (err: any) {
+            if (err.response && err.response.data) {
+                setApiError(err.response.data.message || t('signup.errorVerificationFailed'));
+            } else {
+                setApiError(t('signup.errorVerificationFailed'));
+            }
+            return;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (step === 'pin') {
@@ -90,9 +140,14 @@ const SignupPage = () => {
                         </PinInput.Control>
                     </PinInput.Root>
 
+                    {apiError && <Alert.Root status="error">
+                        <Alert.Indicator />
+                        <Alert.Title>{apiError}</Alert.Title>
+                    </Alert.Root>}
                     <Button
                         colorScheme="blue"
-                        disabled={verificationPin.length < 4}
+                        disabled={verificationPin.length < 4 || isLoading}
+                        loading={isLoading}
                         onClick={onVerify}
                     >
                         {t('signup.verify.verifyButton')}
@@ -202,6 +257,7 @@ const SignupPage = () => {
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
                                             size="lg"
+                                            placeholder={t('signup.passwordPlaceholder')}
                                             {...register("password", {
                                                 required: t('signup.passwordRequired'),
                                                 minLength: { value: 8, message: t('signup.passwordMinLength') },
@@ -217,6 +273,7 @@ const SignupPage = () => {
                                     </Field.Label>
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
+                                            placeholder={t('signup.confirmPasswordPlaceholder')}
                                             size="lg"
                                             {...register("confirmPassword", {
                                                 required: t('signup.confirmPasswordRequired'),
@@ -227,11 +284,12 @@ const SignupPage = () => {
                                     {errors.confirmPassword && <Field.ErrorText>{errors.confirmPassword.message}</Field.ErrorText>}
                                 </Field.Root>
 
-                                <Button type="submit" width="full" size="lg">
-                                    {step === 'form' ?
-                                        t('signup.submitButton') :
-                                        t('signup.verifyButton')
-                                    }
+                                {apiError && <Alert.Root status="error">
+                                    <Alert.Indicator />
+                                    <Alert.Title>{apiError}</Alert.Title>
+                                </Alert.Root>}
+                                <Button type="submit" width="full" size="lg" loading={isLoading}>
+                                    {t('signup.submitButton')}
                                 </Button>
 
                                 <Box textAlign="center">

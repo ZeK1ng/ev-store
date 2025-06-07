@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import API from '@/utils/api';
 import {
     Box,
     Button,
@@ -12,6 +13,7 @@ import {
     Text,
     Field,
     PinInput,
+    Alert
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { LuMail, LuKeyRound } from "react-icons/lu"
@@ -56,20 +58,43 @@ const ForgotPasswordPage = () => {
     const [verificationPin, setVerificationPin] = useState('');
     const passwordValue = watch("newPassword");
 
-    const onSubmit: SubmitHandler<ForgotPasswordFormValues> = (data) => {
-        console.log('Forgot password request:', data);
-        // TODO: send reset link & trigger PIN step
-        setStep('pin');
+    const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const onSubmit: SubmitHandler<ForgotPasswordFormValues> = async (data) => {
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            await API.post('/auth/resend-verification', { email: data.email });
+            setEmail(data.email);
+            setStep('pin');
+        } catch (err: any) {
+            setApiError('Failed to send verification code');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const onVerify = () => {
-        console.log('Entered PIN for reset:', verificationPin);
-        // TODO: verify PIN and redirect to reset-password form
         setStep('new-password');
     };
 
-    const onNewPwdSubmit: SubmitHandler<SetNewPasswordFormValues> = (data) => {
-        console.log('New password submitted:', data);
+    const onNewPwdSubmit: SubmitHandler<SetNewPasswordFormValues> = async (data) => {
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            await API.post('/auth/reset-password', {
+                email,
+                verificationCode: verificationPin,
+                newPassword: data.newPassword,
+            });
+            window.location.href = '/login';
+        } catch (err: any) {
+            setApiError('Failed to reset password');
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     if (step === 'pin') {
@@ -166,11 +191,16 @@ const ForgotPasswordPage = () => {
                                 {errorsNewPassword.confirmPassword && <Field.ErrorText>{errorsNewPassword.confirmPassword.message}</Field.ErrorText>}
                             </Field.Root>
 
+                            {apiError && <Alert.Root status="error">
+                                <Alert.Indicator />
+                                <Alert.Title>{apiError}</Alert.Title>
+                            </Alert.Root>}
                             <Button
                                 type="submit"
                                 colorScheme="blue"
                                 width="full"
                                 size="lg"
+                                loading={isLoading}
                             >
                                 {t('forgotPassword.newPassword.submitButton')}
                             </Button>
@@ -220,12 +250,17 @@ const ForgotPasswordPage = () => {
                                     {errors.email && <Field.ErrorText>{errors.email.message}</Field.ErrorText>}
                                 </Field.Root>
 
+                                {apiError && <Alert.Root status="error">
+                                    <Alert.Indicator />
+                                    <Alert.Title>{apiError}</Alert.Title>
+                                </Alert.Root>}
+
                                 <Button
                                     type="submit"
                                     colorScheme="blue"
                                     width="full"
                                     size="lg"
-                                    mt={3}
+                                    loading={isLoading}
                                 >
                                     {t('forgotPassword.submitButton')}
                                 </Button>
