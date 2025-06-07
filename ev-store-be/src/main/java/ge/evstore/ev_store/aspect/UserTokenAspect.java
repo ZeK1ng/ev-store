@@ -9,7 +9,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
@@ -49,13 +48,12 @@ public class UserTokenAspect {
             throw new AccessDeniedException("User is not Admin");
         }
         // Rotate both tokens if only the access token is expired
-        if(!authService.validateToken(accessToken, TokenType.ACCESS_TOKEN)){
+        if (!authService.validateToken(accessToken, TokenType.ACCESS_TOKEN)) {
             log.error("Access denied. Tokens not valid");
             throw new AccessDeniedException("Tokens not valid");
         }
         return pjp.proceed(args);
     }
-
 
 
     //TODO
@@ -74,12 +72,8 @@ public class UserTokenAspect {
         }
 
         final List<String> roles = jwtUtils.extractRoles(accessToken);
-        if (roles.isEmpty() || !roles.contains(Role.ADMIN.name())) {
-            log.error("Access denied. User is not Admin");
-            throw new AccessDeniedException("User is not Admin");
-        }
         // Rotate both tokens if only the access token is expired
-        if(!authService.validateToken(accessToken, TokenType.ACCESS_TOKEN)){
+        if (!authService.validateToken(accessToken, TokenType.ACCESS_TOKEN)) {
             log.error("Access denied. Tokens not valid");
             throw new AccessDeniedException("Tokens not valid");
         }

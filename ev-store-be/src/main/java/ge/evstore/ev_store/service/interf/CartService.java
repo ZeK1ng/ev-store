@@ -6,7 +6,7 @@ import ge.evstore.ev_store.response.CartResponse;
 public interface CartService {
     CartResponse getCartForUser(String token);
 
-    CartResponse addProductToCart(Long productId, int quantity, String token);
+    CartResponse addProductToCart(Long productId, Integer quantity, String token);
 
     void clearCart(String token);
 

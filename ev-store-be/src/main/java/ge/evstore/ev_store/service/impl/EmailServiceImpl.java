@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static ge.evstore.ev_store.constants.EmailTemplates.*;
+import static ge.evstore.ev_store.utils.OrderUtils.generateOrderNumber;
 
 @Service
 @Slf4j
@@ -29,8 +31,9 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
     @Value("${verification.code.expiration.duration.minutes}")
     private String verifyCodeExpirationDuration;
-    @Value("${store.email.address}")
-    private String emailToStore;
+
+    @Value("${email.sender.username}")
+    private String storeMail;
 
     public EmailServiceImpl(final JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -46,13 +49,15 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendReservationMailForUnauthorizedUser(final UnauthenticatedUserReservationRequest request) throws MessagingException {
-        sendHtmlEmail(emailToStore, getHtmlForReservation(new ReservationRequestEntity(request)), RESERVATION_EMAIL_SUBJECT);
+        //TODO CHANGE DESTINATION TO BE STORE
+        sendHtmlEmail(request.getEmail(), getHtmlForReservation(new ReservationRequestEntity(request)), RESERVATION_EMAIL_SUBJECT);
     }
 
     @Override
-    public void sendReservationMailForUser(final User user, final CartResponse cartForUser) throws MessagingException {
-        final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(user, cartForUser);
-        sendHtmlEmail(emailToStore, getHtmlForReservation(reservationRequestEntity), RESERVATION_EMAIL_SUBJECT);
+    public void sendReservationMailForUser(final User user, final CartResponse cartForUser, final String orderNumber, final LocalDateTime orderDate) throws MessagingException {
+        //TODO CHANGE DESTINATION TO BE STORE
+        final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(user, cartForUser, orderNumber, orderDate);
+        sendHtmlEmail(user.getEmail(), getHtmlForReservation(reservationRequestEntity), RESERVATION_EMAIL_SUBJECT);
     }
 
     private String getHtmlForReservation(final ReservationRequestEntity reservationRequestEntity) {
@@ -61,13 +66,17 @@ public class EmailServiceImpl implements EmailService {
                 .sum();
         final BigDecimal bd = new BigDecimal(totalPrice);
         final BigDecimal roundedBd = bd.setScale(2, RoundingMode.HALF_UP);
-        return replaceClientInfo(reservationRequestEntity) + buildCartDetailsHtml(reservationRequestEntity.getCartItems()) + BASE_HTML_RESERVATION_TEMPLATE_END.replace(GRAND_TOTAL, roundedBd.toString());
+        return replaceClientInfo(reservationRequestEntity) + buildCartDetailsHtml(reservationRequestEntity.getCartItems()) + BASE_HTML_RESERVATION_TEMPLATE_END.replace(GRAND_TOTAL, roundedBd.toString()).replace(ORDER_DATE, reservationRequestEntity.getOrderDate().toString());
     }
 
     private String replaceClientInfo(final ReservationRequestEntity reservationRequestEntity) {
+        String specialInstructions = reservationRequestEntity.getSpecialInstructions();
+        if (specialInstructions == null || specialInstructions.isEmpty()) {
+            specialInstructions = "No special instructions available";
+        }
         return ge.evstore.ev_store.constants.EmailTemplates.BASE_HTML_RESERVATION_TEMPLATE_START.replace(PHONE, reservationRequestEntity.phone).replace(NAME, reservationRequestEntity.name)
-                .replace(CITY, reservationRequestEntity.city).replace(ADDRESS, reservationRequestEntity.address).replace(NOTE, reservationRequestEntity.specialInstructions)
-                .replace(EMAIL, reservationRequestEntity.getEmail());
+                .replace(CITY, reservationRequestEntity.city).replace(ADDRESS, reservationRequestEntity.address).replace(NOTE, specialInstructions)
+                .replace(EMAIL, reservationRequestEntity.getEmail()).replace(ORDER_ID, reservationRequestEntity.getOrderId());
     }
 
 
@@ -98,19 +107,28 @@ public class EmailServiceImpl implements EmailService {
         for (final CartItemReservationRequest item : cartItems) {
             final double totalPrice = item.getProductPrice() * item.getQuantity();
             builder.append("<tr>")
-                    .append("<td><span class=\"badge\">")
+                    .append("<td data-label=\"Product ID\" style=\"border:1px solid #E0E0E0;padding:12px;\">\n" +
+                            "<span class=\"resp-title\">Product ID</span>\n" +
+                            "<span\n" +
+                            "style=\"display:inline-block;background-color:#F3F4F6;color:#555;padding:2px 8px;border-radius:4px;font-size:13px;font-weight:500;\">")
                     .append(item.getProductId())
                     .append("</span></td>")
-                    .append("<td>")
+                    .append("<td data-label=\"Product Name\" style=\"border:1px solid #E0E0E0;padding:12px;\">\n" +
+                            "<span class=\"resp-title\">Product Name</span>")
                     .append(item.getProductName())
                     .append("</td>")
-                    .append("<td><span class=\"badge\">")
+                    .append(" <td data-label=\"Quantity\" style=\"border:1px solid #E0E0E0;padding:12px;\">\n" +
+                            "                      <span class=\"resp-title\">Quantity</span>\n" +
+                            "                      <span\n" +
+                            "                        style=\"display:inline-block;background-color:#F3F4F6;color:#555;padding:2px 8px;border-radius:4px;font-size:13px;font-weight:500;\">")
                     .append(item.getQuantity())
                     .append("</span></td>")
-                    .append("<td>")
+                    .append(" <td data-label=\"Unit Price\" style=\"border:1px solid #E0E0E0;padding:12px;\">\n" +
+                            "                      <span class=\"resp-title\">Unit Price</span>")
                     .append(item.getProductPrice())
                     .append("</td>")
-                    .append("<td>")
+                    .append("   <td data-label=\"Total\" style=\"border:1px solid #E0E0E0;padding:12px;\">\n" +
+                            "                      <span class=\"resp-title\">Total</span>")
                     .append(NumberFormatUtil.roundDouble(totalPrice))
                     .append("</td>")
                     .append("</tr>");
@@ -127,6 +145,8 @@ public class EmailServiceImpl implements EmailService {
         private final String email;
         private final List<CartItemReservationRequest> cartItems;
         private final String specialInstructions;
+        private final String orderId;
+        private final LocalDateTime orderDate;
 
         public ReservationRequestEntity(final UnauthenticatedUserReservationRequest request) {
             this.name = request.getName();
@@ -136,16 +156,20 @@ public class EmailServiceImpl implements EmailService {
             this.cartItems = request.getCartItems();
             this.specialInstructions = request.getSpecialInstructions();
             this.email = request.getEmail();
+            this.orderId = generateOrderNumber();
+            this.orderDate = request.getOrderDate();
         }
 
-        public ReservationRequestEntity(final User user, final CartResponse cartForUser) {
+        public ReservationRequestEntity(final User user, final CartResponse cartForUser, final String orderId, final LocalDateTime orderDate) {
             this.name = user.getFirstName() + " " + user.getLastName();
             this.address = user.getAddress();
             this.city = user.getCity();
             this.phone = user.getMobile();
+            this.orderId = orderId;
             this.specialInstructions = "";
             this.cartItems = new ArrayList<>();
             this.email = user.getEmail();
+            this.orderDate = orderDate;
             cartForUser.getItems().forEach(item -> {
                 this.cartItems.add(new CartItemReservationRequest(item.getQuantity(), item.getProductId(), item.getProductNameENG(), item.getPrice()));
             });

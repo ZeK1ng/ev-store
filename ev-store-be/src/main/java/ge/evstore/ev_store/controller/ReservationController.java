@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/api/v1/reservation")
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class ReservationController {
     @PostMapping("/create-guest")
     public ResponseEntity<String> createGuestReservation(@RequestBody final UnauthenticatedUserReservationRequest request) throws MessagingException {
         reservationService.createGuestReservation(request);
+        request.setOrderDate(LocalDateTime.now());
         return ResponseEntity.ok("Reservation received and email sent.");
     }
 

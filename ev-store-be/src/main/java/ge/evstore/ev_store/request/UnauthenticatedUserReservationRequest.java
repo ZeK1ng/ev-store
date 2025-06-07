@@ -2,6 +2,7 @@ package ge.evstore.ev_store.request;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -13,4 +14,5 @@ public class UnauthenticatedUserReservationRequest {
     private List<CartItemReservationRequest> cartItems;
     private String email;
     private String specialInstructions;
+    private LocalDateTime orderDate;
 }

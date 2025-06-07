@@ -11,341 +11,482 @@ public class EmailTemplates {
     public static final String VERIFICATION_CODE_STR = "{{VERIFICATION_CODE}}";
     public static final String CODE_EXPIRATION_DURATION_STR = "{{CODE_EXPIRATION_DURATION}}";
     public static final String GRAND_TOTAL = "{{GRAND_TOTAL}}";
+    public static final String ORDER_ID = "{{ORDER_ID}}";
     public static final String NAME = "{{NAME}}";
     public static final String PHONE = "{{PHONE}}";
     public static final String ADDRESS = "{{ADDRESS}}";
     public static final String CITY = "{{CITY}}";
     public static final String EMAIL = "{{EMAIL}}";
     public static final String NOTE = "{{NOTE}}";
+    public static final String ORDER_DATE = "{{ORDER_DATE}}";
     public static final String BASE_HTML_EMAIL_VERIFICATION_TEMPLATE = """
             <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Email Verification</title>
-                <style>
-                    body { font-family: Arial, sans-serif; background-color: #f7f9fb; padding: 20px; color: #333; }
-                    .container { background-color: #ffffff; border-radius: 8px; max-width: 600px; margin: auto;
-                                 padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-                    .code { font-size: 24px; font-weight: bold; background-color: #e7f3ff; padding: 12px 24px;
-                            display: inline-block; border-radius: 6px; color: #0056b3; margin-top: 20px; }
-                    .footer { margin-top: 30px; font-size: 12px; color: #777; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h2>Email Verification</h2>
-                    <p>Hello,</p>
-                    <p>To verify your email address, please use the code below:</p>
-                    <div class="code">{{VERIFICATION_CODE}}</div>
-                    <p>This code will expire in {{CODE_EXPIRATION_DURATION}} minutes. If you did not request this, please ignore this message.</p>
-                    <div class="footer">&copy; 2025 EV Store. All rights reserved.</div>
-                </div>
-            </body>
-            </html>
+                            <html lang="en">
+                            <head>
+                                <meta charset="UTF-8">
+                                <title>Email Verification</title>
+                                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                                <style>
+                                    body {
+                                        font-family: Arial, sans-serif;
+                                        background-color: #F7F7F7;
+                                        margin: 0;
+                                        padding: 0;
+                                        color: #333;
+                                    }
+                                    .container {
+                                        background-color: #FFFFFF;
+                                        border-radius: 8px;
+                                        max-width: 420px;
+                                        margin-left: 40px;
+                                        margin-right: auto;
+                                        margin-top: 40px;
+                                        margin-bottom: 0;
+                                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                                        overflow: hidden;
+                                        padding: 32px 32px 28px 32px;
+                                    }
+                                    .header {
+                                        background-color: #0052CC;
+                                        color: #fff;
+                                        padding: 18px 24px 12px 24px;
+                                        border-top-left-radius: 8px;
+                                        border-top-right-radius: 8px;
+                                        font-size: 22px;
+                                        font-weight: 600;
+                                        margin-top: -32px;
+                                        margin-left: -32px;
+                                        margin-right: -32px;
+                                        margin-bottom: 16px;
+                                    }
+                                    .message {
+                                        font-size: 16px;
+                                        margin-bottom: 18px;
+                                    }
+                                    .code-box {
+                                        font-size: 26px;
+                                        font-weight: bold;
+                                        background-color: #E7F3FF;
+                                        color: #0052CC;
+                                        padding: 18px 0;
+                                        text-align: center;
+                                        border-radius: 7px;
+                                        letter-spacing: 4px;
+                                        margin-bottom: 18px;
+                                        margin-top: 8px;
+                                    }
+                                    .expiration {
+                                        font-size: 15px;
+                                        color: #333;
+                                        margin-bottom: 12px;
+                                        text-align: center;
+                                    }
+                                    .footer {
+                                        background-color: #F0F0F0;
+                                        padding: 12px 18px;
+                                        font-size: 12px;
+                                        color: #777;
+                                        text-align: center;
+                                        border-radius: 0 0 8px 8px;
+                                        margin-top: 20px;
+                                        margin-left: -32px;
+                                        margin-right: -32px;
+                                        margin-bottom: -28px;
+                                    }
+                                    @media (max-width: 700px) {
+                                        .container {
+                                            max-width: 100%;
+                                            margin: 24px auto 0 auto;
+                                            padding: 18px 10px 12px 10px;
+                                        }
+                                        .header {
+                                            font-size: 18px;
+                                            padding: 14px 10px 10px 10px;
+                                            margin-top: -18px;
+                                            margin-left: -10px;
+                                            margin-right: -10px;
+                                            margin-bottom: 12px;
+                                        }
+                                        .footer {
+                                            padding: 10px 10px;
+                                            margin-top: 18px;
+                                            margin-left: -10px;
+                                            margin-right: -10px;
+                                            margin-bottom: -12px;
+                                            font-size: 11px;
+                                        }
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class="container">
+                                    <div class="header">Email Verification</div>
+                                    <div class="message">
+                                        Hello,<br>
+                                        To verify your email address, please use the code below:
+                                    </div>
+                                    <div class="code-box">{{VERIFICATION_CODE}}</div>
+                                    <div class="expiration">
+                                        This code will expire in {{CODE_EXPIRATION_DURATION}} minutes.<br>
+                                        If you did not request this, please ignore this message.
+                                    </div>
+                                    <div class="footer">
+                                        &copy; 2025 EV Store. All rights reserved.
+                                    </div>
+                                </div>
+                            </body>
+                            </html>
             """;
     public static final String BASE_HTML_PWD_RESET_TEMPLATE = """
             <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <title>Password Reset Code</title>
-                <style>
-                    body { font-family: Arial, sans-serif; background-color: #f7f9fb; padding: 20px; color: #333; }
-                    .container { background-color: #ffffff; border-radius: 8px; max-width: 600px; margin: auto;
-                                 padding: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
-                    .code { font-size: 24px; font-weight: bold; background-color: #e7f3ff; padding: 12px 24px;
-                            display: inline-block; border-radius: 6px; color: #0056b3; margin-top: 20px; }
-                    .footer { margin-top: 30px; font-size: 12px; color: #777; }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h2>Password Reset</h2>
-                    <p>Hello,</p>
-                    <p>To reset your password, please use the code below:</p>
-                    <div class="code">{{VERIFICATION_CODE}}</div>
-                    <p>This code will expire in {{CODE_EXPIRATION_DURATION}} minutes. If you did not request this, please ignore this message.</p>
-                    <div class="footer">&copy; 2025 EV Store. All rights reserved.</div>
-                </div>
-            </body>
-            </html>
+                          <html lang="en">
+                          <head>
+                              <meta charset="UTF-8">
+                              <title>Email Verification</title>
+                              <meta name="viewport" content="width=device-width, initial-scale=1" />
+                              <style>
+                                  body {
+                                      font-family: Arial, sans-serif;
+                                      background-color: #F7F7F7;
+                                      margin: 0;
+                                      padding: 0;
+                                      color: #333;
+                                  }
+                                  .container {
+                                      background-color: #FFFFFF;
+                                      border-radius: 8px;
+                                      max-width: 420px;
+                                      margin-left: 40px;
+                                      margin-right: auto;
+                                      margin-top: 40px;
+                                      margin-bottom: 0;
+                                      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                                      overflow: hidden;
+                                      padding: 32px 32px 28px 32px;
+                                  }
+                                  .header {
+                                      background-color: #0052CC;
+                                      color: #fff;
+                                      padding: 18px 24px 12px 24px;
+                                      border-top-left-radius: 8px;
+                                      border-top-right-radius: 8px;
+                                      font-size: 22px;
+                                      font-weight: 600;
+                                      margin-top: -32px;
+                                      margin-left: -32px;
+                                      margin-right: -32px;
+                                      margin-bottom: 16px;
+                                  }
+                                  .message {
+                                      font-size: 16px;
+                                      margin-bottom: 18px;
+                                  }
+                                  .code-box {
+                                      font-size: 26px;
+                                      font-weight: bold;
+                                      background-color: #E7F3FF;
+                                      color: #0052CC;
+                                      padding: 18px 0;
+                                      text-align: center;
+                                      border-radius: 7px;
+                                      letter-spacing: 4px;
+                                      margin-bottom: 18px;
+                                      margin-top: 8px;
+                                  }
+                                  .expiration {
+                                      font-size: 15px;
+                                      color: #333;
+                                      margin-bottom: 12px;
+                                      text-align: center;
+                                  }
+                                  .footer {
+                                      background-color: #F0F0F0;
+                                      padding: 12px 18px;
+                                      font-size: 12px;
+                                      color: #777;
+                                      text-align: center;
+                                      border-radius: 0 0 8px 8px;
+                                      margin-top: 20px;
+                                      margin-left: -32px;
+                                      margin-right: -32px;
+                                      margin-bottom: -28px;
+                                  }
+                                  @media (max-width: 700px) {
+                                      .container {
+                                          max-width: 100%;
+                                          margin: 24px auto 0 auto;
+                                          padding: 18px 10px 12px 10px;
+                                      }
+                                      .header {
+                                          font-size: 18px;
+                                          padding: 14px 10px 10px 10px;
+                                          margin-top: -18px;
+                                          margin-left: -10px;
+                                          margin-right: -10px;
+                                          margin-bottom: 12px;
+                                      }
+                                      .footer {
+                                          padding: 10px 10px;
+                                          margin-top: 18px;
+                                          margin-left: -10px;
+                                          margin-right: -10px;
+                                          margin-bottom: -12px;
+                                          font-size: 11px;
+                                      }
+                                  }
+                              </style>
+                          </head>
+                          <body>
+                              <div class="container">
+                                  <div class="header">Password Reset</div>
+                                  <div class="message">
+                                      Hello,<br>
+                                      To reset your password please use the code below:
+                                  </div>
+                                  <div class="code-box">{{VERIFICATION_CODE}}</div>
+                                  <div class="expiration">
+                                      This code will expire in {{CODE_EXPIRATION_DURATION}} minutes.<br>
+                                      If you did not request this, please ignore this message.
+                                  </div>
+                                  <div class="footer">
+                                      &copy; 2025 EV Store. All rights reserved.
+                                  </div>
+                              </div>
+                          </body>
+                          </html>
             """;
 
-    public static final String BASE_HTML_RESERVATION_TEMPLATE_START= """
+    public static final String BASE_HTML_RESERVATION_TEMPLATE_START = """
             <!DOCTYPE html>
-            <html lang="en">
-            <head>
-              <meta charset="UTF-8" />
-              <title>New Order Received</title>
-              <style>
-                body {
-                  font-family: Arial, sans-serif;
-                  background-color: #F7F7F7;
-                  margin: 0;
-                  padding: 0;
-                  color: #333;
-                }
-                a {
-                  color: inherit;
-                  text-decoration: none;
-                }
+                                   <html lang="en">
             
-                .container {
-                  max-width: 800px;
-                  margin: 20px auto;
-                  background-color: #FFFFFF;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                  overflow: hidden;
-                }
+                                   <head>
+                                     <meta charset="UTF-8" />
+                                     <title>New Order Received</title>
+                                     <meta name="viewport" content="width=device-width, initial-scale=1" />
+                                     <style>
+                                       body {
+                                         margin: 0;
+                                         padding: 0;
+                                         background-color: #F7F7F7;
+                                         font-family: Arial, sans-serif;
+                                         color: #333;
+                                       }
             
-                .header {
-                  background-color: #0052CC;
-                  color: #FFFFFF;
-                  padding: 20px 24px;
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: center;
-                }
-                .header h1 {
-                  margin: 0;
-                  font-size: 24px;
-                  font-weight: 600;
-                }
-                .order-id {
-                  background-color: #FFFFFF;
-                  color: #0052CC;
-                  font-weight: bold;
-                  padding: 6px 12px;
-                  border-radius: 9999px;
-                  font-size: 14px;
-                }
+                                       .container {
+                                         max-width: 800px;
+                                         width: 100%;
+                                         background: #fff;
+                                         border-radius: 8px;
+                                         margin-left: 40px;
+                                         margin-right: auto;
+                                         margin-top: 20px;
+                                         margin-bottom: 0;
+                                         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                                         overflow: hidden;
+                                       }
             
-                .section-title {
-                  font-size: 18px;
-                  font-weight: 600;
-                  margin-bottom: 12px;
-                  display: flex;
-                  align-items: center;
-                  color: #222;
-                }
+                                       .section-title {
+                                         font-size: 18px;
+                                         font-weight: 600;
+                                         margin-bottom: 12px;
+                                         color: #222;
+                                       }
             
-                .content {
-                  padding: 24px;
-                }
+                                       .instructions {
+                                         background-color: #FFF8E1;
+                                         border-left: 4px solid #FFD700;
+                                         padding: 12px;
+                                         border-radius: 4px;
+                                         margin-top: 8px;
+                                         font-size: 15px;
+                                         color: #333;
+                                       }
             
-                .customer-info {
-                  background-color: #F5F7FF;
-                  border-radius: 6px;
-                  padding: 20px;
-                  margin-bottom: 24px;
-                }
-                .info-row {
-                  display: flex;
-                  justify-content: space-between;
-                  align-items: flex-start;
-                  margin-bottom: 16px;
-                }
-                .info-left,
-                .info-right {
-                  flex: 1;
-                }
-                .info-left p,
-                .info-right p {
-                  margin: 4px 0;
-                  line-height: 1.5;
-                }
-                .info-left .label,
-                .info-right .label {
-                  font-weight: bold;
-                  font-size: 14px;
-                  margin-bottom: 4px;
-                  display: flex;
-                  align-items: center;
-                  color: #444;
-                }
+                                       .footer {
+                                         background-color: #F0F0F0;
+                                         padding: 16px 24px;
+                                         font-size: 13px;
+                                         color: #777;
+                                         text-align: center;
+                                       }
             
-                .info-left .value,
-                .info-right .value {
-                  font-size: 16px;
-                  color: #111;
-                }
+                                       .resp-title {
+                                         display: none !important;
+                                       }
             
-                .city {
-                  font-size: 14px;
-                  color: #666;
-                  margin-top: 2px;
-                }
+                                       @media only screen and (max-width: 700px) {
+                                         .container {
+                                           margin: 24px auto 0 auto !important;
+                                           max-width: 98% !important;
+                                         }
             
-                .instructions {
-                  background-color: #FFF8E1;
-                  border-left: 4px solid #FFD700;
-                  padding: 12px;
-                  border-radius: 4px;
-                  margin-top: 8px;
-                  font-size: 15px;
-                  color: #333;
-                }
+                                         .footer {
+                                           padding: 12px 8px !important;
+                                           font-size: 12px !important;
+                                         }
+                                       }
             
-                .order-details {
-                  margin-bottom: 32px;
-                }
-                .order-table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 12px;
-                }
-                .order-table th,
-                .order-table td {
-                  border: 1px solid #E0E0E0;
-                  padding: 12px;
-                  text-align: left;
-                  font-size: 15px;
-                }
-                .order-table th {
-                  background-color: #F0F0F0;
-                  color: #333;
-                  font-weight: 500;
-                }
-                .order-table td .badge {
-                  display: inline-block;
-                  background-color: #F3F4F6;
-                  color: #555;
-                  padding: 2px 8px;
-                  border-radius: 4px;
-                  font-size: 13px;
-                  font-weight: 500;
-                }
+                                       @media only screen and (max-width: 500px) {
+                                         .container {
+                                           margin: 8px auto 0 auto !important;
+                                           max-width: 100% !important;
+                                           border-radius: 0 !important;
+                                         }
             
-                /* Total Amount */
-                .total-container {
-                  display: flex;
-                  justify-content: flex-end;
-                  margin-top: 16px;
-                }
-                .total-box {
-                  background-color: #E7F3FF;
-                  border: 1px solid #A8D0FF;
-                  padding: 12px 16px;
-                  border-radius: 6px;
-                  font-size: 16px;
-                  font-weight: bold;
-                  color: #0052CC;
-                  display: flex;
-                  align-items: center;
-                }
+                                         .footer {
+                                           padding: 10px 4px !important;
+                                           font-size: 11px !important;
+                                         }
+                                       }
             
+                                       @media only screen and (max-width: 700px) {
             
-                .footer {
-                  background-color: #F0F0F0;
-                  padding: 16px 24px;
-                  font-size: 13px;
-                  color: #777;
-                  text-align: center;
-                }
+                                         .order-table,
+                                         .order-table thead,
+                                         .order-table tbody,
+                                         .order-table tr,
+                                         .order-table th,
+                                         .order-table td {
+                                           display: block !important;
+                                           width: 100% !important;
+                                         }
             
-                @media (max-width: 600px) {
-                  .info-row {
-                    flex-direction: column;
-                  }
-                  .info-left,
-                  .info-right {
-                    width: 100%;
-                  }
-                  .order-table th,
-                  .order-table td {
-                    font-size: 14px;
-                    padding: 8px;
-                  }
-                  .section-title {
-                    font-size: 16px;
-                  }
-                  .total-box {
-                    font-size: 15px;
-                  }
-                }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">
-                  <h1>New Order Received</h1>
-                  <div class="order-id">{{OrderId}}</div>
-                </div>
+                                         .order-table thead {
+                                           display: none !important;
+                                         }
             
-                <div class="content">
-                  <div class="section-title">
-                    Customer Information
-                  </div>
-                  <div class="customer-info">
-                    <div class="info-row">
-                      <div class="info-left">
-                        <p class="label">
-                          Customer Name
-                        </p>
-                        <p class="value">{{NAME}}</p>
+                                         .order-table tr {
+                                           margin-bottom: 20px !important;
+                                           border: 1px solid #E0E0E0 !important;
+                                           border-radius: 6px !important;
+                                           background: #f9f9f9 !important;
+                                           padding: 10px 0 !important;
+                                         }
             
-                        <p class="label" style="margin-top:12px;">
-                          Delivery Address
-                        </p>
-                        <p class="value">{{ADDRESS}}</p>
-                        <p class="city">City: {{CITY}}</p>
-                      </div>
-                      <div class="info-right">
-                        <p class="label">
-                          Phone
-                        </p>
-                        <p class="value">{{PHONE}}</p>
+                                         .order-table td {
+                                           border: none !important;
+                                           position: relative !important;
+                                           min-height: 36px !important;
+                                           box-sizing: border-box !important;
+                                           font-size: 15px !important;
+                                           background: transparent !important;
+                                         }
             
-                        <p class="label" style="margin-top:12px;">
-                          Email
-                        </p>
-                        <p class="value">{{EMAIL}}</p>
-                      </div>
-                    </div>
+                                         .resp-title {
+                                           display: block !important;
+                                         }
+                                       }
+                                     </style>
+                                   </head>
             
-                    <p class="label" style="margin-bottom:4px;">
-                      Special Instructions
-                    </p>
-                    <div class="instructions">
-                      {{NOTE}}
-                    </div>
-                  </div>
+                                   <body>
+                                     <table width="100%" bgcolor="#F7F7F7" cellpadding="0" cellspacing="0" border="0"
+                                       style="width:100%;background:#F7F7F7;">
+                                       <tr>
+                                         <td>
+                                           <table class="container" width="800" cellpadding="0" cellspacing="0" border="0" align="left"
+                                             style="max-width:800px;width:100%;background:#fff;border-radius:8px;margin-left:40px;margin-top:20px;margin-bottom:0;box-shadow:0 2px 8px rgba(0,0,0,0.1);overflow:hidden;">
+                                             <tr>
+                                               <td colspan="2" style="padding:0;">
+                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0052CC"
+                                                   style="background-color:#0052CC;">
+                                                   <tr>
+                                                     <td style="padding:20px 12px;">
+                                                       <span style="font-size:24px;font-weight:600;line-height:28px;vertical-align:middle;color:#fff;">New
+                                                         Order</span>
+                                                     </td>
+                                                     <td align="right" style="padding:20px 12px;">
+                                                       <span
+                                                         style="background:#fff;color:#0052CC;font-weight:bold;padding:6px 12px;border-radius:9999px;font-size:14px;">{{ORDER_ID}}</span>
+                                                     </td>
+                                                   </tr>
+                                                 </table>
+                                               </td>
+                                             </tr>
+                                             <tr>
+                                               <td colspan="2" style="padding:24px;">
+                                                 <div class="section-title">Customer Information</div>
+                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F5F7FF"
+                                                   style="background-color:#F5F7FF;border-radius:6px;margin-bottom:24px;">
+                                                   <tr>
+                                                     <td width="50%" style="padding:20px 12px 20px 20px;vertical-align:top;">
+                                                       <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Customer Name</div>
+                                                       <div style="font-size:16px;color:#111;margin-bottom:12px;">{{NAME}}</div>
+                                                       <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Delivery Address</div>
+                                                       <div style="font-size:16px;color:#111;margin-bottom:4px;">{{ADDRESS}}</div>
+                                                       <div style="font-size:14px;color:#666;">City: {{CITY}}</div>
+                                                     </td>
+                                                     <td width="50%" style="padding:20px 20px 20px 12px;vertical-align:top;">
+                                                       <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Phone</div>
+                                                       <div style="font-size:16px;color:#111;margin-bottom:12px;">{{PHONE}}</div>
+                                                       <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Email</div>
+                                                       <div style="font-size:16px;color:#111;">{{EMAIL}}</div>
+                                                     </td>
+                                                   </tr>
+                                                   <tr>
+                                                     <td colspan="2" style="padding:12px 20px 12px 20px;">
+                                                       <div style="font-weight:bold;font-size:14px;color:#444;margin-bottom:4px;">Special Instructions
+                                                       </div>
+                                                       <div class="instructions">
+                                                         {{NOTE}}
+                                                       </div>
+                                                     </td>
+                                                   </tr>
+                                                 </table>
             
-                  <!-- Order Details Section -->
-                  <div class="section-title">
-                    Order Details
-                  </div>
-                  <table class="order-table">
-                    <thead>
-                      <tr>
-                        <th>Product ID</th>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                                                 <div class="section-title">Order Details</div>
+                                                 <table class="order-table" width="100%" cellpadding="0" cellspacing="0" border="0"
+                                                   style="border-collapse:collapse;margin-top:12px;">
+                                                   <thead>
+                                                     <tr>
+                                                       <th align="left"
+                                                         style="border:1px solid #E0E0E0;padding:12px 8px 12px 12px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                                                         Product ID</th>
+                                                       <th align="left"
+                                                         style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                                                         Product Name</th>
+                                                       <th align="left"
+                                                         style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                                                         Quantity</th>
+                                                       <th align="left"
+                                                         style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                                                         Unit Price</th>
+                                                       <th align="left"
+                                                         style="border:1px solid #E0E0E0;padding:12px 8px 12px 8px;font-size:15px;background:#F0F0F0;color:#333;font-weight:500;">
+                                                         Total</th>
+                                                     </tr>
+                                                   </thead>
+                                                   <tbody>
             """;
     public static final String BASE_HTML_RESERVATION_TEMPLATE_END = """
-              </tbody>
-                  </table>
+             </tbody>
+                                 </table>
+                                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+                                   <tr>
+                                     <td align="right">
+                                       <div
+                                         style="display:inline-block;background-color:#E7F3FF;border:1px solid #A8D0FF;padding:12px 16px;border-radius:6px;font-size:16px;font-weight:bold;color:#0052CC;">
+                                         Total Amount &nbsp;<span style="font-size:18px;color:#003F9D;">{{GRAND_TOTAL}}</span>
+                                       </div>
+                                     </td>
+                                   </tr>
+                                 </table>
+                               </td>
+                             </tr>
+                             <tr>
+                               <td colspan="2" class="footer"
+                                 style="background-color:#F0F0F0;padding:16px 24px;font-size:13px;color:#777;text-align:center;">
+                                 This order was placed on {{ORDER_DATE}}<br>
+                                 Please process this order and contact the customer if you have any questions.
+                               </td>
+                             </tr>
+                           </table>
+                         </td>
+                       </tr>
+                     </table>
+                   </body>
             
-                  <div class="total-container">
-                    <div class="total-box">
-                      Total Amount &nbsp;<span style="font-size:18px; color:#003F9D;">{{GRAND_TOTAL}}</span>
-                    </div>
-                  </div>
-                </div>
-            
-                <div class="footer">
-                  This order was placed on {{OrderDate}}<br>
-                  Please process this order and contact the customer if you have any questions.
-                </div>
-              </div>
-            </body>
-            </html>
+                   </html>
             """;
 }

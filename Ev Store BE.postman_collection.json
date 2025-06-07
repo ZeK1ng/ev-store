@@ -1,0 +1,753 @@
+{
+	"info": {
+		"_postman_id": "11f5f83a-e370-49ef-b9f0-afc5838bf6f0",
+		"name": "Ev Store BE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11329340"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Davit\",\n  \"lastName\": \"Goginashvili\",\n  \"email\": \"dgogi17@freeuni.edu.ge\",\n  \"mobile\": \"+99555555555\",\n  \"address\": \"Dig\",\n  \"city\": \"Tbilisi\",\n  \"personalIdCode\": \"01017012345\",\n  \"password\": \"StrongP@ssw0rd\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(pm.response.text());\r",
+									"pm.environment.set(\"token\", jsonData[\"accessToken\"]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ0eXBlIjoiUkVGUkVTSF9UT0tFTiIsInVzZXJuYW1lIjoiZGdvZ2kxN0BmcmVldW5pLmVkdS5nZSIsInN1YiI6ImRnb2dpMTdAZnJlZXVuaS5lZHUuZ2UiLCJpYXQiOjE3NDkyMjEwNTksImV4cCI6MTc0OTMwNzQ1OX0.LhlCkI5ysY1uo7ZEDNUVd0ZmQzinh2Y-cTEp6tBO58c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Dima\",\n  \"lastName\": \"Beradze\",\n  \"email\": \"dbera17@freeuni.edu.ge\",\n  \"mobile\": \"+99555555555\",\n  \"address\": \"Sanzona\",\n  \"city\": \"Tbilisi\",\n  \"personalIdCode\": \"01017012345\",\n  \"password\": \"StrongP@ssw0rd\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/auth/refresh",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(pm.response.text());\r",
+									"pm.environment.set(\"token\", jsonData[\"accessToken\"]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"email\" : \"dbera17@freeuni.edu.ge\",\n          \"verificationCode\" : \"703696\"\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/verify",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(pm.response.text());\r",
+									"pm.environment.set(\"token\", jsonData[\"accessToken\"]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n          \"username\" : \"dgogi17@freeuni.edu.ge\",\n          \"password\" : \"pass1\"\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log out",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"dgoginashvili1121@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/auth/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend verification",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"dbera17@freeuni.edu.ge\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/auth/resend-verification",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"resend-verification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"dgoginashvili1121@gmail.com\",\r\n    \"verificationCode\":\"460605\",\r\n    \"newPassword\":\"pass1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/auth/reset-password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"dgoginashvili1121@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/auth/forgot-password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Add product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3ODU0MTIxfQ.bHkV_hsH-7bNxHHgaCaAh9GwEFFwIaFxPNXsMKYIAXE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Refresh-token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3OTMzMzIxfQ.uq7lLCKBkJa8ExOPbctiNSQLOIDuw5qcHYezgNJTcUk",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nameGE\": \"ელექტრო მანქანა123\",\n  \"nameENG\": \"Electric Car\",\n  \"nameRUS\": \"Электромобиль\",\n  \"descriptionGE\": \"ელეგანტური და ეკოლოგიური მანქანა\",\n  \"descriptionENG\": \"Elegant and eco-friendly car\",\n  \"descriptionRUS\": \"Элегантный и экологичный автомобиль\",\n  \"price\": 25999.99,\n  \"stockAmount\": 20,\n  \"quantity\": 5,\n  \"categoryId\": 1,\n  \"imageName\":\"image\",\n  \"imageFilePath\":\"tesPath\"\n}\n"
+						},
+						"url": {
+							"raw": "localhost:8080/api/v1/admin/products",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3ODU0MTIxfQ.bHkV_hsH-7bNxHHgaCaAh9GwEFFwIaFxPNXsMKYIAXE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Refresh-token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3OTMzMzIxfQ.uq7lLCKBkJa8ExOPbctiNSQLOIDuw5qcHYezgNJTcUk",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8080/api/v1/admin/products",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product quanity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3ODU0MTIxfQ.bHkV_hsH-7bNxHHgaCaAh9GwEFFwIaFxPNXsMKYIAXE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Refresh-token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3OTMzMzIxfQ.uq7lLCKBkJa8ExOPbctiNSQLOIDuw5qcHYezgNJTcUk",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/admin/products/{{id}}/stock?quantity=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"products",
+								"{{id}}",
+								"stock"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3ODU0MTIxfQ.bHkV_hsH-7bNxHHgaCaAh9GwEFFwIaFxPNXsMKYIAXE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Refresh-token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ1c2VybmFtZSI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsInN1YiI6ImRnb2dpbmFzaHZpbGkxMTIxQGdtYWlsLmNvbSIsImlhdCI6MTc0Nzg0NjkyMSwiZXhwIjoxNzQ3OTMzMzIxfQ.uq7lLCKBkJa8ExOPbctiNSQLOIDuw5qcHYezgNJTcUk",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/admin/products/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"products",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User details",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}user/order-history",
+							"host": [
+								"{{url}}user"
+							],
+							"path": [
+								"order-history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get all products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/product?name=Electric Car 1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"product"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Electric Car 1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "max price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/product/max-price",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"product",
+								"max-price"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products bulk",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[1,2,3]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/product/bulk",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"product",
+								"bulk"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[1,2,3]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/v1/product/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": []
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Add To Cart",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "User cart",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservation",
+			"item": [
+				{
+					"name": "Create reservation for user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwidXNlcm5hbWUiOiJkZ29naTE3QGZyZWV1bmkuZWR1LmdlIiwic3ViIjoiZGdvZ2kxN0BmcmVldW5pLmVkdS5nZSIsImlhdCI6MTc0OTIyMTk3OSwiZXhwIjoxNzQ5MjI5MTc5fQ.5PUR9umlngZ5d1Tptz9AvrtjrTFSYOBwe9nKZ7ElI-I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/reservation/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservation",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create reservation for guest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJBRE1JTiJdLCJ0eXBlIjoiQUNDRVNTX1RPS0VOIiwidXNlcm5hbWUiOiJkZ29naTE3QGZyZWV1bmkuZWR1LmdlIiwic3ViIjoiZGdvZ2kxN0BmcmVldW5pLmVkdS5nZSIsImlhdCI6MTc0OTIyMTk3OSwiZXhwIjoxNzQ5MjI5MTc5fQ.5PUR9umlngZ5d1Tptz9AvrtjrTFSYOBwe9nKZ7ElI-I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v1/reservation/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservation",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
