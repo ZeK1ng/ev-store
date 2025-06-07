@@ -5,6 +5,9 @@ target/
 !**/src/test/**/target/
 .env
 
+### package-lock ###
+package-lock.json
+
 ### STS ###
 .apt_generated
 .classpath

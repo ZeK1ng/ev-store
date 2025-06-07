@@ -89,8 +89,7 @@ const OrderHistoryPage = () => {
                         ) : (
                             historyItems.map((item, index) => (
                                 <Box key={index} p={4} borderWidth="1px" borderRadius="md">
-                                    {/* Render history item details here */}
-                                    <Text>{item}</Text>
+                                    <Text>{item.date}</Text>
                                 </Box>
                             ))
                         )}

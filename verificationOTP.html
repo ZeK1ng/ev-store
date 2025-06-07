@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F7F7F7;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            max-width: 420px;
+            margin-left: 40px;
+            margin-right: auto;
+            margin-top: 40px;
+            margin-bottom: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 32px 32px 28px 32px;
+        }
+        .header {
+            background-color: #0052CC;
+            color: #fff;
+            padding: 18px 24px 12px 24px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: -32px;
+            margin-left: -32px;
+            margin-right: -32px;
+            margin-bottom: 16px;
+        }
+        .message {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+        .code-box {
+            font-size: 26px;
+            font-weight: bold;
+            background-color: #E7F3FF;
+            color: #0052CC;
+            padding: 18px 0;
+            text-align: center;
+            border-radius: 7px;
+            letter-spacing: 4px;
+            margin-bottom: 18px;
+            margin-top: 8px;
+        }
+        .expiration {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .footer {
+            background-color: #F0F0F0;
+            padding: 12px 18px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+            margin-top: 20px;
+            margin-left: -32px;
+            margin-right: -32px;
+            margin-bottom: -28px;
+        }
+        @media (max-width: 700px) {
+            .container {
+                max-width: 100%;
+                margin: 24px auto 0 auto;
+                padding: 18px 10px 12px 10px;
+            }
+            .header {
+                font-size: 18px;
+                padding: 14px 10px 10px 10px;
+                margin-top: -18px;
+                margin-left: -10px;
+                margin-right: -10px;
+                margin-bottom: 12px;
+            }
+            .footer {
+                padding: 10px 10px;
+                margin-top: 18px;
+                margin-left: -10px;
+                margin-right: -10px;
+                margin-bottom: -12px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Email Verification</div>
+        <div class="message">
+            Hello,<br>
+            To verify your email address, please use the code below:
+        </div>
+        <div class="code-box">{{VERIFICATION_CODE}}</div>
+        <div class="expiration">
+            This code will expire in {{CODE_EXPIRATION_DURATION}} minutes.<br>
+            If you did not request this, please ignore this message.
+        </div>
+        <div class="footer">
+            &copy; 2025 EV Store. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

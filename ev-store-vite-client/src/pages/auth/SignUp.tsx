@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState,  } from 'react';
+import API from '@/utils/api';
 import {
     Box,
     Button,
@@ -11,9 +12,10 @@ import {
     Text,
     Field,
     PinInput,
-    Flex
+    Flex,
+    Alert
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
 import { LuUser, LuMail, LuPhone, LuKeyRound } from "react-icons/lu"
@@ -31,6 +33,7 @@ interface SignupFormValues {
 
 const SignupPage = () => {
     const { t } = useTranslation('auth');
+    const navigate = useNavigate();
 
     const {
         register,
@@ -53,13 +56,64 @@ const SignupPage = () => {
 
     const passwordValue = watch("password");
 
-    const onSubmit: SubmitHandler<SignupFormValues> = (data) => {
-        console.log('Signup data:', data);
+    const [formValues, setFormValues] = useState<SignupFormValues | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    const onSubmit: SubmitHandler<SignupFormValues> = async (data) => {
+        setFormValues(data);
+        setIsLoading(true);
+
+        try {
+            await API.post('/auth/register', {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                mobile: data.phone,
+                address: '',
+                city: '',
+                password: data.password,
+            });
+        } catch (err: any) {
+            setApiError(err.response?.data?.errorMessage || t('signup.errorSendingVerification'));
+            return;
+        } finally {
+            setIsLoading(false);
+        }
+
+        setApiError(null);
         setStep('pin');
     };
 
-    const onVerify = () => {
-        console.log('Entered PIN:', verificationPin);
+    const onVerify = async () => {
+        if (!formValues) return;
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            const res = await API.post('/auth/verify', {
+                email: formValues.email,
+                verificationCode: verificationPin,
+            });
+
+            if (!res.data || !res.data.accessToken || !res.data.refreshToken) {
+                setApiError(t('signup.errorVerificationFailed'));
+                return;
+            }
+
+            localStorage.setItem('accessToken', res.data.accessToken);
+            localStorage.setItem('refreshToken', res.data.refreshToken);
+            localStorage.setItem('isLogedIn', 'true');
+            navigate('/');
+        } catch (err: any) {
+            if (err.response && err.response.data) {
+                setApiError(err.response.data.message || t('signup.errorVerificationFailed'));
+            } else {
+                setApiError(t('signup.errorVerificationFailed'));
+            }
+            return;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (step === 'pin') {
@@ -87,12 +141,19 @@ const SignupPage = () => {
                             <PinInput.Input index={1} />
                             <PinInput.Input index={2} />
                             <PinInput.Input index={3} />
+                            <PinInput.Input index={4} />
+                            <PinInput.Input index={5} />
                         </PinInput.Control>
                     </PinInput.Root>
 
+                    {apiError && <Alert.Root status="error" mb={4}>
+                        <Alert.Indicator />
+                        <Alert.Title>{apiError}</Alert.Title>
+                    </Alert.Root>}
                     <Button
                         colorScheme="blue"
-                        disabled={verificationPin.length < 4}
+                        disabled={verificationPin.length < 6 || isLoading}
+                        loading={isLoading}
                         onClick={onVerify}
                     >
                         {t('signup.verify.verifyButton')}
@@ -202,6 +263,7 @@ const SignupPage = () => {
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
                                             size="lg"
+                                            placeholder={t('signup.passwordPlaceholder')}
                                             {...register("password", {
                                                 required: t('signup.passwordRequired'),
                                                 minLength: { value: 8, message: t('signup.passwordMinLength') },
@@ -217,6 +279,7 @@ const SignupPage = () => {
                                     </Field.Label>
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
+                                            placeholder={t('signup.confirmPasswordPlaceholder')}
                                             size="lg"
                                             {...register("confirmPassword", {
                                                 required: t('signup.confirmPasswordRequired'),
@@ -227,11 +290,12 @@ const SignupPage = () => {
                                     {errors.confirmPassword && <Field.ErrorText>{errors.confirmPassword.message}</Field.ErrorText>}
                                 </Field.Root>
 
-                                <Button type="submit" width="full" size="lg">
-                                    {step === 'form' ?
-                                        t('signup.submitButton') :
-                                        t('signup.verifyButton')
-                                    }
+                                {apiError && <Alert.Root status="error">
+                                    <Alert.Indicator />
+                                    <Alert.Title>{apiError}</Alert.Title>
+                                </Alert.Root>}
+                                <Button type="submit" width="full" size="lg" loading={isLoading}>
+                                    {t('signup.submitButton')}
                                 </Button>
 
                                 <Box textAlign="center">
