@@ -10,5 +10,5 @@ public interface EmailService {
     void sendPasswordResetCode(final String email, final String code) throws MessagingException;
     void sendReservationMailForUnauthorizedUser(UnauthenticatedUserReservationRequest request) throws MessagingException;
 
-    void sendReservationMailForUser(User user, CartResponse cartForUser) throws MessagingException;
+    void sendReservationMailForUser(User user, CartResponse cartForUser, String orderNumber) throws MessagingException;
 }

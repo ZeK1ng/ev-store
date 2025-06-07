@@ -19,7 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static ge.evstore.ev_store.utils.OrderUtils.generateOrderNumber;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,7 +34,7 @@ public class UserServiceImpl implements UserService {
     private final OrderRepository orderRepository;
     @Value("${verification.code.expiration.duration.minutes}")
     private int verifyCodeExpirationDuration;
-    private static final int SUFFIX_RANDOM_LENGTH = 6;
+
 
     public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JwtUtils jwtUtils, final ProductService productService, final OrderRepository orderRepository) {
         this.userRepository = userRepository;
@@ -133,10 +137,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveOrderHistory(final User user, final CartResponse cartForUser) {
+    public Order saveOrderHistory(final User user, final CartResponse cartForUser) {
         final Order order = new Order();
 
-        order.setOrderNumber("#ORD-" + getOrderDateSuffix());
+        order.setOrderNumber(generateOrderNumber());
         order.setUser(user);
         order.setStatus(OrderStatus.PENDING);
 
@@ -161,6 +165,7 @@ public class UserServiceImpl implements UserService {
         order.setItems(orderItems);
         order.setUser(user);
         orderRepository.save(order);
+        return order;
     }
 
     @Override
@@ -194,32 +199,6 @@ public class UserServiceImpl implements UserService {
         }
         orderHistoryResponse.setItems(orderItemResponses);
         return orderHistoryResponse;
-    }
-
-    private String getOrderDateSuffix() {
-        final Calendar calendar = Calendar.getInstance();
-        final int i = calendar.get(Calendar.YEAR);
-        final int i1 = calendar.get(Calendar.MONTH);
-        final int i2 = calendar.get(Calendar.DATE);
-
-        return i + "-" + i1 + "-" + i2 + generateRandomString(SUFFIX_RANDOM_LENGTH);
-    }
-
-
-    public static String generateRandomString(final int length) {
-        final Random random = new Random();
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            final int randomCharType = random.nextInt(3); // 0: digit, 1: lowercase, 2: uppercase
-            final char randomChar = switch (randomCharType) {
-                case 0 -> (char) (random.nextInt(10) + '0');
-                case 1 -> (char) (random.nextInt(26) + 'a');
-                case 2 -> (char) (random.nextInt(26) + 'A');
-                default -> ' '; // Should not happen, added for safety
-            };
-            sb.append(randomChar);
-        }
-        return sb.toString();
     }
 
 }

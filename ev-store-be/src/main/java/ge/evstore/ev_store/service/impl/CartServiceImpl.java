@@ -48,14 +48,16 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     @UserTokenAspectMarker
-    public CartResponse addProductToCart(final Long productId, final int quantity, final String token) {
+    public CartResponse addProductToCart(final Long productId, Integer quantity, final String token) {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> userOptional = userService.findUser(username);
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("User not found for username:" + username);
         }
         final Product productById = productService.getProductById(productId);
-
+        if (quantity == null) {
+            quantity = 1;
+        }
         //potential quantity check.
         final Cart cart = userOptional.get().getCart();
         final Optional<CartItem> existingItem = cart.getItems().stream()
@@ -72,7 +74,7 @@ public class CartServiceImpl implements CartService {
             }
             item.setQuantity(item.getQuantity() + quantity);
         } else {
-            final Integer stockAmount = existingItem.get().getProduct().getStockAmount();
+            final Integer stockAmount = productById.getStockAmount();
             if (stockAmount < quantity) {
                 throw new AmountExceededException("Amount exceeded for product" + "Max amount is:" + stockAmount);
             }

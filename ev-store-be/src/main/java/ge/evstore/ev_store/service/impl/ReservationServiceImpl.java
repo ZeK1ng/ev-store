@@ -1,6 +1,7 @@
 package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.annotation.UserTokenAspectMarker;
+import ge.evstore.ev_store.entity.Order;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.CartNotFoundException;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
@@ -47,8 +48,8 @@ public class ReservationServiceImpl implements ReservationService {
             }
             final User user = userOptional.get();
             final CartResponse cartForUser = cartService.getCartForUser(bearer);
-            emailService.sendReservationMailForUser(user, cartForUser);
-            userService.saveOrderHistory(user, cartForUser);
+            final Order order = userService.saveOrderHistory(user, cartForUser);
+            emailService.sendReservationMailForUser(user, cartForUser, order.getOrderNumber());
             cartService.clearCartForUser(user);
         } catch (final MessagingException e) {
             throw new MessagingException("Messaging Exception during reservation" + e.getMessage());
