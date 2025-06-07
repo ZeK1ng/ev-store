@@ -4,13 +4,12 @@ import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.repository.CategoryRepository;
 import ge.evstore.ev_store.response.CategoryFullTreeResponse;
 import ge.evstore.ev_store.service.interf.CategoryService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,5 +48,25 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getCategoryById(final Long id) {
         return categoryRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Recursively collects the IDs of the given category and all its descendants.
+     */
+    @Override
+    public Set<Long> getDescendantCategoryIds(final Long categoryId) {
+        final Category rootCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+
+        final Set<Long> result = new HashSet<>();
+        collectCategoryIds(rootCategory, result);
+        return result;
+    }
+
+    private void collectCategoryIds(final Category category, final Set<Long> result) {
+        result.add(category.getId());
+        for (final Category child : category.getChildren()) {
+            collectCategoryIds(child, result);
+        }
     }
 }

@@ -4,6 +4,7 @@ import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.response.CategoryFullTreeResponse;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CategoryService {
     List<CategoryFullTreeResponse> getAllCategories();
@@ -11,4 +12,6 @@ public interface CategoryService {
     String getFullCategoryPath(Long categoryId);
 
     Category getCategoryById(Long id);
+
+    Set<Long> getDescendantCategoryIds(final Long categoryId);
 }

@@ -6,8 +6,9 @@ import ge.evstore.ev_store.exception.ProductNotFoundException;
 import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
 import ge.evstore.ev_store.response.MaxPriceResponse;
+import ge.evstore.ev_store.service.interf.CategoryService;
 import ge.evstore.ev_store.service.interf.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,17 +18,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final MaxPriceSaverRepository maxPriceSaverRepository;
-
-    @Autowired
-    public ProductServiceImpl(final ProductRepository productRepository, final MaxPriceSaverRepository maxPriceSaverRepository) {
-        this.productRepository = productRepository;
-        this.maxPriceSaverRepository = maxPriceSaverRepository;
-    }
+    private final CategoryService categoryService;
 
     @Override
     public Product getProductById(final Long productId) {
@@ -39,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     public MaxPriceResponse getOverAllMaxPrice() {
         final List<MaxPriceEasySaver> all = maxPriceSaverRepository.findAll();
         if (all.isEmpty()) {
-           return new MaxPriceResponse(0.0);
+            return new MaxPriceResponse(0.0);
         }
         final Double maxPrice = all.get(0).getMaxPrice();
         return new MaxPriceResponse(Math.ceil(maxPrice));
@@ -67,8 +65,9 @@ public class ProductServiceImpl implements ProductService {
         }
 
         if (categoryId != null) {
+            final Set<Long> categoryIds = categoryService.getDescendantCategoryIds(categoryId);
             spec = spec.and((root, query, cb) ->
-                    cb.equal(root.get("category").get("id"), categoryId));
+                    root.get("category").get("id").in(categoryIds));
         }
 
         if (minPrice != null) {
