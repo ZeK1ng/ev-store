@@ -49,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
             final User user = userOptional.get();
             final CartResponse cartForUser = cartService.getCartForUser(bearer);
             final Order order = userService.saveOrderHistory(user, cartForUser);
-            emailService.sendReservationMailForUser(user, cartForUser, order.getOrderNumber());
+            emailService.sendReservationMailForUser(user, cartForUser, order.getOrderNumber(), order.getOrderDate());
             cartService.clearCartForUser(user);
         } catch (final MessagingException e) {
             throw new MessagingException("Messaging Exception during reservation" + e.getMessage());
