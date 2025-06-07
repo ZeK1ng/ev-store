@@ -50,8 +50,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User registerUserWithoutVerification(final UserRegisterRequest request, final String verificationCode) throws UserAlreadyRegisteredException {
-        if (findUser(request.getEmail()).isPresent()) {
+        final Optional<User> user1 = findUser(request.getEmail());
+        if (user1.isPresent() && user1.get().getVerified()) {
             throw new UserAlreadyRegisteredException(request);
+        } else {
+            user1.ifPresent(userRepository::delete);
         }
         final User user = new User();
         user.setFirstName(request.getFirstName());
