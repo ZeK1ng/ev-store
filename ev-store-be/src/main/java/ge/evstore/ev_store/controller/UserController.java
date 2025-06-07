@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<UserResponse> updateUser(@RequestParam final String city, @RequestParam final String address, @RequestParam final String phone, final HttpServletRequest request) {
+    public ResponseEntity<UserResponse> updateUser(@RequestParam(required = false) final String city, @RequestParam(required = false) final String address, @RequestParam(required = false) final String phone, final HttpServletRequest request) {
         final String token = HeaderUtils.extractBearer(request);
         return ResponseEntity.ok(userService.updateUser(token, city, address, phone));
     }

@@ -120,20 +120,25 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found for name: " + username);
         }
+        boolean changed = false;
         final User user1 = user.get();
         if (StringUtils.hasText(city)) {
             user1.setCity(city);
+            changed = true;
         }
 
         if (StringUtils.hasText(address)) {
             user1.setAddress(address);
+            changed = true;
         }
 
         if (StringUtils.hasText(phone)) {
             user1.setMobile(phone);
+            changed = true;
         }
-
-        userRepository.save(user1);
+        if (changed) {
+            userRepository.save(user1);
+        }
         final UserResponse userResponse = new UserResponse();
         userResponse.fromUser(user1);
         return userResponse;
