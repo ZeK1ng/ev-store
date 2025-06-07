@@ -98,7 +98,7 @@ public class AdminController {
     public ResponseEntity<Category> createCategory(
             @RequestParam final String name,
             @RequestBody final String description,
-            @RequestParam final Long parentCategoryId,
+            @RequestParam(required = false) final Long parentCategoryId,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
