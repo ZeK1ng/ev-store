@@ -7,10 +7,7 @@ import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.exception.VerificationCodeExpiredException;
 import ge.evstore.ev_store.exception.VerificationFailedException;
 import ge.evstore.ev_store.repository.AuthTokenRepository;
-import ge.evstore.ev_store.request.AuthRequest;
-import ge.evstore.ev_store.request.ResetPasswordRequest;
-import ge.evstore.ev_store.request.UserRegisterRequest;
-import ge.evstore.ev_store.request.VerifyUserRequest;
+import ge.evstore.ev_store.request.*;
 import ge.evstore.ev_store.response.AccessTokenResponse;
 import ge.evstore.ev_store.response.AuthResponse;
 import ge.evstore.ev_store.service.interf.AuthService;
@@ -111,6 +108,16 @@ public class AuthServiceImpl implements AuthService {
             log.error(e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public boolean verifyOtp(final OtpVerificationRequest otpVerificationRequest) {
+        final Optional<User> user = userService.findUser(otpVerificationRequest.getEmail());
+        if (user.isEmpty()) {
+            return false;
+        }
+        final User user1 = user.get();
+        return user1.getVerificationCode().equals(otpVerificationRequest.getOtp());
     }
 
 

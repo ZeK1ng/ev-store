@@ -2,10 +2,7 @@ package ge.evstore.ev_store.service.interf;
 
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
-import ge.evstore.ev_store.request.AuthRequest;
-import ge.evstore.ev_store.request.ResetPasswordRequest;
-import ge.evstore.ev_store.request.UserRegisterRequest;
-import ge.evstore.ev_store.request.VerifyUserRequest;
+import ge.evstore.ev_store.request.*;
 import ge.evstore.ev_store.response.AccessTokenResponse;
 import ge.evstore.ev_store.response.AuthResponse;
 import ge.evstore.ev_store.utils.TokenType;
@@ -38,4 +35,6 @@ public interface AuthService {
     void handleLogout(String token);
 
     boolean validateToken(final String token , final TokenType tokenType);
+
+    boolean verifyOtp(OtpVerificationRequest otpVerificationRequest);
 }

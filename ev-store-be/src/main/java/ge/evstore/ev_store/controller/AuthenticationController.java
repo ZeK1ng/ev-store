@@ -12,10 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/auth")
 @RestController
@@ -66,6 +63,11 @@ public class AuthenticationController {
         log.info("Setting new password for email:{}", request.getEmail());
         authService.resetPassword(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<Boolean> verifyOtp(@RequestBody final OtpVerificationRequest otpVerificationRequest){
+        return ResponseEntity.ok(authService.verifyOtp(otpVerificationRequest));
     }
 
     @PostMapping("/logout")
