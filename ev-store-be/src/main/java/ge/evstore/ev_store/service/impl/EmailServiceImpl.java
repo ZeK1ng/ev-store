@@ -78,7 +78,7 @@ public class EmailServiceImpl implements EmailService {
         if (specialInstructions == null || specialInstructions.isEmpty()) {
             specialInstructions = "No special instructions available";
         }
-        return ge.evstore.ev_store.constants.EmailTemplates.BASE_HTML_RESERVATION_TEMPLATE_START.replace(PHONE, reservationRequestEntity.phone).replace(NAME, reservationRequestEntity.name)
+        return ge.evstore.ev_store.constants.EmailTemplates.BASE_HTML_RESERVATION_TEMPLATE_START.replace(MOBILE, reservationRequestEntity.mobile).replace(NAME, reservationRequestEntity.name)
                 .replace(CITY, reservationRequestEntity.city).replace(ADDRESS, reservationRequestEntity.address).replace(NOTE, specialInstructions)
                 .replace(EMAIL, reservationRequestEntity.getEmail()).replace(ORDER_ID, reservationRequestEntity.getOrderId());
     }
@@ -143,7 +143,7 @@ public class EmailServiceImpl implements EmailService {
     @Getter
     private static class ReservationRequestEntity {
         private final String name;
-        private final String phone;
+        private final String mobile;
         private final String city;
         private final String address;
         private final String email;
@@ -154,7 +154,7 @@ public class EmailServiceImpl implements EmailService {
 
         public ReservationRequestEntity(final UnauthenticatedUserReservationRequest request) {
             this.name = request.getName();
-            this.phone = request.getPhone();
+            this.mobile = request.getMobile();
             this.city = request.getCity();
             this.address = request.getAddress();
             this.cartItems = request.getCartItems();
@@ -168,7 +168,7 @@ public class EmailServiceImpl implements EmailService {
             this.name = user.getFirstName() + " " + user.getLastName();
             this.address = (reservationRequest.getAddress() == null || reservationRequest.getAddress().isBlank()) ? user.getAddress() : reservationRequest.getAddress();
             this.city = user.getCity();
-            this.phone = (reservationRequest.getMobile() == null || reservationRequest.getMobile().isBlank()) ? user.getMobile() : reservationRequest.getMobile();
+            this.mobile = (reservationRequest.getMobile() == null || reservationRequest.getMobile().isBlank()) ? user.getMobile() : reservationRequest.getMobile();
             this.orderId = orderId;
             this.specialInstructions = reservationRequest.getSpecialInstructions();
             this.cartItems = new ArrayList<>();

@@ -13,7 +13,7 @@ public class EmailTemplates {
     public static final String GRAND_TOTAL = "{{GRAND_TOTAL}}";
     public static final String ORDER_ID = "{{ORDER_ID}}";
     public static final String NAME = "{{NAME}}";
-    public static final String PHONE = "{{PHONE}}";
+    public static final String MOBILE = "{{PHONE}}";
     public static final String ADDRESS = "{{ADDRESS}}";
     public static final String CITY = "{{CITY}}";
     public static final String EMAIL = "{{EMAIL}}";

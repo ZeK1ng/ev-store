@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @UserTokenAspectMarker
-    public UserResponse updateUser(final String city, final String address, final String phone, final String token) {
+    public UserResponse updateUser(final String city, final String address, final String mobile, final String token) {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> user = userRepository.findByEmail(username);
         if (user.isEmpty()) {
@@ -132,8 +132,8 @@ public class UserServiceImpl implements UserService {
             changed = true;
         }
 
-        if (StringUtils.hasText(phone)) {
-            user1.setMobile(phone);
+        if (StringUtils.hasText(mobile)) {
+            user1.setMobile(mobile);
             changed = true;
         }
         if (changed) {

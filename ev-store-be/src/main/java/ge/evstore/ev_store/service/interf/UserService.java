@@ -25,7 +25,7 @@ public interface UserService {
 
     UserResponse getUserDetails(final String accessToken);
 
-    UserResponse updateUser(String token, String city, String address, String phone);
+    UserResponse updateUser(String token, String city, String address, String mobile);
 
     Order saveOrderHistory(User user, CartResponse cartForUser);
 
