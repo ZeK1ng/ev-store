@@ -117,6 +117,9 @@ public class AuthServiceImpl implements AuthService {
             return false;
         }
         final User user1 = user.get();
+        if (user1.getOtpVerificationExpiration() == null || user1.getOtpVerificationExpiration().isBefore(LocalDateTime.now())) {
+            throw new VerificationCodeExpiredException("Verification code expired");
+        }
         return user1.getVerificationCode().equals(otpVerificationRequest.getOtp());
     }
 
@@ -200,14 +203,6 @@ public class AuthServiceImpl implements AuthService {
         if (userOtp.isEmpty()) throw new UsernameNotFoundException("User not found");
 
         final User user = userOtp.get();
-
-        if (user.getOtpVerificationExpiration() == null || user.getOtpVerificationExpiration().isBefore(LocalDateTime.now())) {
-            throw new VerificationCodeExpiredException("Verification code expired");
-        }
-
-        if (!request.getVerificationCode().equals(user.getVerificationCode())) {
-            throw new VerificationFailedException("Incorrect verification code");
-        }
 
         userService.updatePassword(user, request.getNewPassword());
         log.info("Password updated for : {}", user.getEmail());
