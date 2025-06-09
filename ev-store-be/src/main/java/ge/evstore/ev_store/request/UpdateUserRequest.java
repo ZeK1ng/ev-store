@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class UpdateUserRequest {
     private String city;
+
     private String address;
     private String mobile;
 }
