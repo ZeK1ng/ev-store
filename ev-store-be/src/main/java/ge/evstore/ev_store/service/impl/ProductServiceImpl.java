@@ -1,18 +1,17 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.converter.JsonListConverter;
 import ge.evstore.ev_store.entity.MaxPriceEasySaver;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.exception.ProductNotFoundException;
 import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
 import ge.evstore.ev_store.response.MaxPriceResponse;
+import ge.evstore.ev_store.response.ProductResponse;
 import ge.evstore.ev_store.service.interf.CategoryService;
 import ge.evstore.ev_store.service.interf.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final MaxPriceSaverRepository maxPriceSaverRepository;
     private final CategoryService categoryService;
+    private final JsonListConverter jsonListConverter;
 
     @Override
     public Product getProductById(final Long productId) {
@@ -44,12 +44,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsByIds(final List<Long> productIds) {
-        return productRepository.findAllById(productIds);
+    public List<ProductResponse> getProductsByIds(final List<Long> productIds) {
+        final List<Product> allById = productRepository.findAllById(productIds);
+        return allById.stream().map(product -> {
+            final List<Long> imageIds = jsonListConverter.convertToEntityAttribute(product.getImageIds());
+            return ProductResponse.from(product, imageIds);
+        }).toList();
     }
 
     @Override
-    public Page<Product> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular) {
+    public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular) {
         final Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         final Pageable pageable = PageRequest.of(page, size, sort);
 
@@ -89,7 +93,13 @@ public class ProductServiceImpl implements ProductService {
                     cb.equal(root.get("isPopular"), true));
         }
 
-        return productRepository.findAll(spec, pageable);
+        final Page<Product> all = productRepository.findAll(spec, pageable);
+        final List<Product> content = all.getContent();
+        final List<ProductResponse> productResponses = content.stream().map(product -> {
+            final List<Long> imageIds = jsonListConverter.convertToEntityAttribute(product.getImageIds());
+            return ProductResponse.from(product, imageIds);
+        }).toList();
+        return new PageImpl<>(productResponses, all.getPageable(), all.getTotalElements());
     }
 
 }

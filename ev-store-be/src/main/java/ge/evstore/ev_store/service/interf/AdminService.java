@@ -17,11 +17,9 @@ public interface AdminService {
 
     Product getProductById(Long id, String accessToken);
 
-    Product updateProduct(Long id, Product product, String accessToken);
+    Product updateProduct(Long id, ProductRequest product, String accessToken);
 
     void deleteProduct(Long id, String accessToken);
-
-    List<Product> getAllProducts(String accessToken);
 
     Product updateProductStock(Long id, int stockAmount, String accessToken);
 

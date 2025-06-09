@@ -33,10 +33,6 @@ public class AdminController {
         this.dictionaryService = dictionaryService;
     }
 
-    private String extractRefreshToken(final HttpServletRequest request) {
-        return request.getHeader("Refresh-Token");
-    }
-
     // ----- PRODUCT ENDPOINTS -----
 
     @PostMapping("/products")
@@ -46,14 +42,6 @@ public class AdminController {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
                 adminService.addProduct(productRequest, accessToken)
-        );
-    }
-
-    @GetMapping("/products")
-    public ResponseEntity<List<Product>> listProducts(final HttpServletRequest request) {
-        final String accessToken = extractBearer(request);
-        return ResponseEntity.ok(
-                adminService.getAllProducts(accessToken)
         );
     }
 
@@ -70,11 +58,11 @@ public class AdminController {
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(
             @PathVariable final Long id,
-            @RequestBody final Product product,
+            @RequestBody final ProductRequest productRequest,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.updateProduct(id, product, accessToken)
+                adminService.updateProduct(id, productRequest, accessToken)
         );
     }
 

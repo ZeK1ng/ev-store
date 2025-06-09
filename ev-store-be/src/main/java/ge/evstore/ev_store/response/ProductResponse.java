@@ -1,0 +1,50 @@
+package ge.evstore.ev_store.response;
+
+import ge.evstore.ev_store.entity.Product;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ProductResponse {
+    private String nameGE;
+    private String nameENG;
+    private String nameRUS;
+
+    private String descriptionGE;
+    private String descriptionENG;
+    private String descriptionRUS;
+
+    private Double price;
+
+    private Integer stockAmount;
+
+    private String categoryName;
+
+    private Long mainImageId;
+
+    private List<Long> imageIds;
+
+    private Boolean isPopular;
+
+    public static ProductResponse from(final Product product, final List<Long> imageIds) {
+        return ProductResponse.builder()
+                .nameGE(product.getNameGE())
+                .nameENG(product.getNameENG())
+                .nameRUS(product.getNameRUS())
+                .descriptionGE(product.getDescriptionGE())
+                .descriptionENG(product.getDescriptionENG())
+                .descriptionRUS(product.getDescriptionRUS())
+                .price(product.getPrice())
+                .stockAmount(product.getStockAmount())
+                .categoryName(product.getCategory().getName())
+                .mainImageId(product.getMainImageId())
+                .build();
+    }
+}

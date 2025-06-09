@@ -70,10 +70,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public Product updateProduct(final Long id, final Product product, final String accessToken) {
+    public Product updateProduct(final Long id, final ProductRequest productRequest, final String accessToken) {
         return productRepository.findById(id)
                 .map(existingProduct -> {
-                    existingProduct.update(product);
+                    final Product updatedProduct = Product.fromProductRequest(productRequest);
+                    updatedProduct.setImageIds(jsonListConverter.convertToDatabaseColumn(productRequest.getImageIds()));
+                    existingProduct.update(updatedProduct);
                     return productRepository.save(existingProduct);
                 })
                 .orElse(null);
@@ -83,11 +85,6 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public void deleteProduct(final Long id, final String accessToken) {
         productRepository.deleteById(id);
-    }
-
-    @Override
-    public List<Product> getAllProducts(final String accessToken) {
-        return productRepository.findAll();
     }
 
     @Override

@@ -2,6 +2,7 @@ package ge.evstore.ev_store.controller;
 
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.response.MaxPriceResponse;
+import ge.evstore.ev_store.response.ProductResponse;
 import ge.evstore.ev_store.service.interf.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,13 +31,13 @@ public class ProductController {
     }
 
     @PostMapping("/bulk")
-    public ResponseEntity<List<Product>> getProductsBulk(@RequestBody final List<Long> productIds) {
-        final List<Product> products = productService.getProductsByIds(productIds);
+    public ResponseEntity<List<ProductResponse>> getProductsBulk(@RequestBody final List<Long> productIds) {
+        final List<ProductResponse> products = productService.getProductsByIds(productIds);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping
-    public ResponseEntity<Page<Product>> getAllProducts(
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(
             @RequestParam(required = false, defaultValue = "0") final int page,
             @RequestParam(required = false, defaultValue = "10") final int size,
             @RequestParam(required = false,defaultValue = "id") final String sortBy,
@@ -48,7 +49,7 @@ public class ProductController {
             @RequestParam(required = false) final Boolean inStock,
             @RequestParam(required = false) final Boolean isPopular
     ) {
-        final Page<Product> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
+        final Page<ProductResponse> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
         return ResponseEntity.ok(products);
     }
 }
