@@ -5,41 +5,56 @@ import {
     Stack,
     Input,
     Textarea,
-    IconButton,
     NumberInput,
     Button,
     Image,
     SimpleGrid,
     Field,
-    HStack,
     FileUpload,
     Float,
     useFileUploadContext,
+    Select,
+    Portal,
+    Center,
+    Spinner,
+    Alert,
+    createListCollection,
+    Checkbox,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { useParams, useNavigate } from 'react-router-dom'
-import { LuPlus, LuMinus, LuFileImage, LuX } from 'react-icons/lu'
+import { LuFileImage, LuX } from 'react-icons/lu'
 import { HiUpload } from 'react-icons/hi'
+import API from '@/utils/AxiosAPI';
+import { toaster } from "@/components/ui/toaster";
 
-// Form values interface
-interface ItemFormValues {
-    nameEn: string
-    nameGe: string
-    nameRu: string
-    descriptionEn: string
-    descriptionGe: string
-    descriptionRu: string
-    quantity: number
-    price: number
-    mainImageFile: FileList
-    imagesFiles: FileList
+interface Category {
+    id: string;
+    name: string;
+    description: string;
+    parentCategoryId?: string;
 }
 
-// Item type extends form values with URLs
+interface ItemFormValues {
+    nameENG: string;
+    nameGE: string;
+    nameRUS: string;
+    descriptionENG: string;
+    descriptionGE: string;
+    descriptionRUS: string;
+    stockAmount: number;
+    price: number;
+    categoryId: string;
+    mainImageFile: FileList;
+    imagesFiles: FileList;
+    isPopular: boolean;
+}
+
 interface Item extends Omit<ItemFormValues, 'mainImageFile' | 'imagesFiles'> {
-    id: string
-    mainImage: string
-    images: string[]
+    id: string;
+    mainImage: string;
+    images: string[];
+    category: Category;
 }
 
 const FileUploadList: React.FC = () => {
@@ -63,108 +78,135 @@ const FileUploadList: React.FC = () => {
 }
 
 const ItemsManagementAdminPage: React.FC = () => {
-    const { id } = useParams<'id'>()
-    const navigate = useNavigate()
-    const isCreate = id === 'create'
+    const { id } = useParams<'id'>();
+    const navigate = useNavigate();
+    const isCreate = id === 'create';
 
-    const [items, setItems] = useState<Item[]>([
-        {
-            id: '1',
-            nameEn: 'Fast Charger',
-            descriptionEn: 'High-speed EV charger for home use.',
-            quantity: 10,
-            price: 299,
-            mainImage: 'https://placehold.co/300x200',
-            images: [
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-            ],
-            nameGe: 'სწრაფი დამტენი',
-            nameRu: 'Быстрое зарядное устройство',
-            descriptionGe: 'საუკეთესო სწრაფი დამტენი სახლში გამოსაყენებლად.',
-            descriptionRu: 'Высокоскоростное зарядное устройство для дома.'
-        },
-        {
-            id: '2',
-            nameEn: 'OBD-II Scanner',
-            descriptionEn: 'Diagnostic tool for EV maintenance.',
-            quantity: 5,
-            price: 149,
-            mainImage: 'https://placehold.co/300x200',
-            images: [
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-            ],
-            nameGe: 'OBD-II სკანერი',
-            nameRu: 'OBD-II сканер',
-            descriptionGe: 'დიაგნოსტიკური ხელსაწყო EV-ის მომსახურებისთვის.',
-            descriptionRu: 'Диагностический инструмент для обслуживания электромобилей.'
-        },
-        {
-            id: '3',
-            nameEn: 'Portable Charger',
-            descriptionEn: 'Compact charger for on-the-go charging.',
-            quantity: 20,
-            price: 99,
-            mainImage: 'https://placehold.co/300x200',
-            images: [
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200'
-            ],
-            nameGe: 'პორტატული დამტენი',
-            nameRu: 'Портативное зарядное устройство',
-            descriptionGe: 'კომპაქტური დამტენი გზაზე დატენვისთვის.',
-            descriptionRu: 'Компактное зарядное устройство для зарядки в пути.'
-        }
-    ])
-
-    const [existingItem, setExistingItem] = useState<Item | null>(null)
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [existingItem, setExistingItem] = useState<Item | null>(null);
 
     const {
         register,
         handleSubmit,
         reset,
-        formState: { errors, isSubmitting }
-    } = useForm<ItemFormValues>()
+        setValue,
+        formState: { errors },
+        control
+    } = useForm<ItemFormValues>();
+
+    const fetchCategories = async () => {
+        try {
+            const response = await API.get('/category/all');
+            setCategories(response.data);
+        } catch (error) {
+            toaster.error({
+                title: 'Error',
+                description: 'Failed to fetch categories'
+            });
+        }
+    };
+
+    const fetchItem = async (itemId: string) => {
+        try {
+            setIsLoading(true);
+            setApiError(null);
+            const response = await API.get(`/admin/products/${itemId}`);
+            const item = response.data;
+            setExistingItem(item);
+            reset({
+                nameENG: item.nameENG,
+                nameGE: item.nameGE,
+                nameRUS: item.nameRUS,
+                descriptionENG: item.descriptionENG,
+                descriptionGE: item.descriptionGE,
+                descriptionRUS: item.descriptionRUS,
+                stockAmount: item.stockAmount,
+                price: item.price,
+                categoryId: item.category.id,
+                isPopular: item.isPopular
+            });
+        } catch (error) {
+            setApiError('Error fetching item');
+            toaster.error({
+                title: 'Error',
+                description: 'Failed to fetch item details'
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
+        fetchCategories();
         if (!isCreate && id) {
-            const item = items.find(it => it.id === id)
-            if (item) {
-                setExistingItem(item)
-                reset({
-                    nameEn: item.nameEn,
-                    descriptionEn: item.descriptionEn,
-                    quantity: item.quantity,
-                    price: item.price,
-                    nameGe: item.nameGe,
-                    nameRu: item.nameRu,
-                    descriptionGe: item.descriptionGe,
-                    descriptionRu: item.descriptionRu
-                })
+            fetchItem(id);
+        }
+    }, [id, isCreate]);
+
+    const onSubmit = async (data: ItemFormValues) => {
+        try {
+            setIsSubmitting(true);
+            setApiError(null);
+
+            const formData = {
+                nameGE: data.nameGE,
+                nameENG: data.nameENG,
+                nameRUS: data.nameRUS,
+                descriptionGE: data.descriptionGE,
+                descriptionENG: data.descriptionENG,
+                descriptionRUS: data.descriptionRUS,
+                price: data.price,
+                stockAmount: data.stockAmount,
+                category: {
+                    id: data.categoryId
+                },
+                isPopular: data.isPopular
+            };
+
+            if (isCreate) {
+                await API.post('/admin/products', formData);
+                toaster.success({
+                    title: 'Success',
+                    description: 'Item created successfully'
+                });
+            } else if (id) {
+                await API.put(`/admin/products/${id}`, formData);
+                toaster.success({
+                    title: 'Success',
+                    description: 'Item updated successfully'
+                });
             }
-        }
-    }, [id, isCreate, items, reset])
 
-    const onSubmit = (data: ItemFormValues) => {
-        const mainImage = URL.createObjectURL(data.mainImageFile[0])
-        const images = Array.from(data.imagesFiles || []).map(f => URL.createObjectURL(f))
-
-        if (isCreate) {
-            const newItem: Item = { id: Date.now().toString(), ...data, mainImage, images }
-            console.log('New Item:', newItem);
-            // submit newItem
-        } else if (existingItem) {
-            // update existing item
+            navigate('/cms-admin/items');
+        } catch (error) {
+            setApiError(isCreate ? 'Error creating item' : 'Error updating item');
+            toaster.error({
+                title: 'Error',
+                description: isCreate ? 'Failed to create item' : 'Failed to update item'
+            });
+        } finally {
+            setIsSubmitting(false);
         }
-        navigate('/cms-admin/items')
+    };
+
+    const existingCategories = createListCollection({
+        items: categories.map(cat => ({
+            id: cat.id,
+            value: cat.name,
+            description: cat.description,
+            parentId: cat.parentCategoryId || ''
+        }))
+    });
+
+    if (isLoading) {
+        return (
+            <Center minH="90vh">
+                <Spinner size="xl" borderWidth="4px" />
+            </Center>
+        );
     }
 
     if (!isCreate && id && existingItem === null) {
@@ -178,11 +220,17 @@ const ItemsManagementAdminPage: React.FC = () => {
                     </a>
                 </Button>
             </Box>
-        )
+        );
     }
 
     return (
         <Box p={8} maxW="800px" mx="auto">
+            {apiError && (
+                <Alert.Root status="error" mb={4}>
+                    <Alert.Indicator />
+                    <Alert.Title>{apiError}</Alert.Title>
+                </Alert.Root>
+            )}
             <Heading mb={6} textAlign="center">
                 {isCreate ? 'Create New Item' : 'Edit Item'}
             </Heading>
@@ -190,100 +238,135 @@ const ItemsManagementAdminPage: React.FC = () => {
             <Box as="form" onSubmit={handleSubmit(onSubmit)}>
                 <Stack gap={6}>
                     <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
-                        <Field.Root id="nameEn" invalid={!!errors.nameEn} >
+                        <Field.Root id="nameENG" invalid={!!errors.nameENG}>
                             <Field.Label>Name (EN)</Field.Label>
                             <Input
                                 placeholder="English name"
-                                {...register('nameEn', { required: 'English Name is Required' })}
+                                {...register('nameENG', { required: 'English Name is Required' })}
                             />
-                            {errors.nameEn && <Field.ErrorText>{errors.nameEn.message}</Field.ErrorText>}
+                            {errors.nameENG && <Field.ErrorText>{errors.nameENG.message}</Field.ErrorText>}
                         </Field.Root>
 
-                        <Field.Root id="nameGe" invalid={!!errors.nameGe}>
+                        <Field.Root id="nameGE" invalid={!!errors.nameGE}>
                             <Field.Label>Name (GE)</Field.Label>
                             <Input
                                 placeholder="Georgian name"
-                                {...register('nameGe', { required: 'Georigan Name is Required' })}
+                                {...register('nameGE', { required: 'Georgian Name is Required' })}
                             />
-                            {errors.nameGe && <Field.ErrorText>{errors.nameGe.message}</Field.ErrorText>}
+                            {errors.nameGE && <Field.ErrorText>{errors.nameGE.message}</Field.ErrorText>}
                         </Field.Root>
 
-                        <Field.Root id="nameRu" invalid={!!errors.nameRu}>
+                        <Field.Root id="nameRUS" invalid={!!errors.nameRUS}>
                             <Field.Label>Name (RU)</Field.Label>
                             <Input
                                 placeholder="Russian name"
-                                {...register('nameRu', { required: 'Russian Name is Required' })}
+                                {...register('nameRUS', { required: 'Russian Name is Required' })}
                             />
-                            {errors.nameRu && <Field.ErrorText>{errors.nameRu.message}</Field.ErrorText>}
+                            {errors.nameRUS && <Field.ErrorText>{errors.nameRUS.message}</Field.ErrorText>}
                         </Field.Root>
                     </SimpleGrid>
 
                     <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
-                        <Field.Root id="descriptionEn" invalid={!!errors.descriptionEn}>
+                        <Field.Root id="descriptionENG" invalid={!!errors.descriptionENG}>
                             <Field.Label>Description (EN)</Field.Label>
                             <Textarea
                                 placeholder="English description"
-                                {...register('descriptionEn', { required: 'English Description is Required' })}
+                                {...register('descriptionENG', { required: 'English Description is Required' })}
                             />
-                            {errors.descriptionEn && <Field.ErrorText>{errors.descriptionEn.message}</Field.ErrorText>}
+                            {errors.descriptionENG && <Field.ErrorText>{errors.descriptionENG.message}</Field.ErrorText>}
                         </Field.Root>
 
-                        <Field.Root id="descriptionGe" invalid={!!errors.descriptionGe}>
+                        <Field.Root id="descriptionGE" invalid={!!errors.descriptionGE}>
                             <Field.Label>Description (GE)</Field.Label>
                             <Textarea
                                 placeholder="Georgian description"
-                                {...register('descriptionGe', { required: 'Georgian Description is Required' })}
+                                {...register('descriptionGE', { required: 'Georgian Description is Required' })}
                             />
-                            {errors.descriptionGe && <Field.ErrorText>{errors.descriptionGe.message}</Field.ErrorText>}
+                            {errors.descriptionGE && <Field.ErrorText>{errors.descriptionGE.message}</Field.ErrorText>}
                         </Field.Root>
 
-                        <Field.Root id="descriptionRu" invalid={!!errors.descriptionRu}>
+                        <Field.Root id="descriptionRUS" invalid={!!errors.descriptionRUS}>
                             <Field.Label>Description (RU)</Field.Label>
                             <Textarea
                                 placeholder="Russian description"
-                                {...register('descriptionRu', { required: 'Russian Description is Required' })}
+                                {...register('descriptionRUS', { required: 'Russian Description is Required' })}
                             />
-                            {errors.descriptionRu && <Field.ErrorText>{errors.descriptionRu.message}</Field.ErrorText>}
+                            {errors.descriptionRUS && <Field.ErrorText>{errors.descriptionRUS.message}</Field.ErrorText>}
                         </Field.Root>
                     </SimpleGrid>
 
-                    <Field.Root id="quantity" invalid={!!errors.quantity}>
-                        <Field.Label>Quantity</Field.Label>
-                        <NumberInput.Root unstyled defaultValue="1" spinOnPress={false} min={1} max={1000}>
-                            <HStack gap="2">
-                                <NumberInput.DecrementTrigger asChild>
-                                    <IconButton variant="outline" size="sm">
-                                        <LuMinus />
-                                    </IconButton>
-                                </NumberInput.DecrementTrigger >
-                                <NumberInput.Input
-                                    textAlign="center"
-                                    fontSize="lg"
-                                    maxW="3ch"
-                                    {...register('quantity')}
-                                />
-                                <NumberInput.IncrementTrigger asChild >
-                                    <IconButton variant="outline" size="sm">
-                                        <LuPlus />
-                                    </IconButton>
-                                </NumberInput.IncrementTrigger>
-                            </HStack>
-                        </NumberInput.Root>
+                    <Field.Root id="categoryId" invalid={!!errors.categoryId}>
+                        <Field.Label>Category</Field.Label>
+                        <Select.Root
+                            collection={existingCategories}
+                            width="100%"
+                            onValueChange={e => setValue('categoryId', e.items[0]?.id)}
+                        >
+                            <Select.HiddenSelect />
+                            <Select.Control>
+                                <Select.Trigger>
+                                    <Select.ValueText placeholder="Select category" />
+                                </Select.Trigger>
+                                <Select.IndicatorGroup>
+                                    <Select.Indicator />
+                                </Select.IndicatorGroup>
+                            </Select.Control>
+                            <Portal>
+                                <Select.Positioner>
+                                    <Select.Content>
+                                        {existingCategories.items.map((opt) => (
+                                            <Select.Item item={opt} key={opt.id}>
+                                                {opt.value}
+                                                <Select.ItemIndicator />
+                                            </Select.Item>
+                                        ))}
+                                    </Select.Content>
+                                </Select.Positioner>
+                            </Portal>
+                        </Select.Root>
+                        {errors.categoryId && <Field.ErrorText>{errors.categoryId.message}</Field.ErrorText>}
                     </Field.Root>
 
                     <Field.Root id="price" invalid={!!errors.price}>
                         <Field.Label>Price</Field.Label>
-                        <NumberInput.Root defaultValue="50" min={1}>
+                        <NumberInput.Root
+                            defaultValue={String(existingItem?.price || 0)}
+                            onValueChange={e => setValue('price', Number(e.value))}
+                        >
                             <NumberInput.Control />
-                            <NumberInput.Input {...register('price')} />
+                            <NumberInput.Input />
                         </NumberInput.Root>
+                        {errors.price && <Field.ErrorText>{errors.price.message}</Field.ErrorText>}
+                    </Field.Root>
+
+                    <Field.Root id="stockAmount" invalid={!!errors.stockAmount}>
+                        <Field.Label>Stock Amount</Field.Label>
+                        <NumberInput.Root
+                            defaultValue={String(existingItem?.stockAmount || 0)}
+                            onValueChange={e => setValue('stockAmount', Number(e.value))}
+                        >
+                            <NumberInput.Control />
+                            <NumberInput.Input />
+                        </NumberInput.Root>
+                        {errors.stockAmount && <Field.ErrorText>{errors.stockAmount.message}</Field.ErrorText>}
+                    </Field.Root>
+
+                    <Field.Root id="isPopular">
+                        <Checkbox.Root
+                            defaultChecked={existingItem?.isPopular}
+                            onCheckedChange={(details) => setValue('isPopular', Boolean(details.checked))}
+                        >
+                            <Checkbox.HiddenInput {...register('isPopular')} />
+                            <Checkbox.Control />
+                            <Checkbox.Label>Mark as Popular</Checkbox.Label>
+                        </Checkbox.Root>
                     </Field.Root>
 
                     {/* Main Image Upload */}
                     <Field.Root id="mainImageFile">
                         <Field.Label>Main Image</Field.Label>
                         <FileUpload.Root accept="image/*" maxFiles={1}>
-                            <FileUpload.HiddenInput {...register('mainImageFile')}/>
+                            <FileUpload.HiddenInput {...register('mainImageFile')} />
                             <FileUpload.Trigger asChild>
                                 <Button variant="outline" size="sm">
                                     <HiUpload /> Upload Main Image
@@ -302,7 +385,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                     <Field.Root id="imagesFiles">
                         <Field.Label>Additional Images</Field.Label>
                         <FileUpload.Root accept="image/*" maxFiles={15}>
-                            <FileUpload.HiddenInput />
+                            <FileUpload.HiddenInput {...register('imagesFiles')} />
                             <FileUpload.Trigger asChild>
                                 <Button variant="outline" size="sm">
                                     <LuFileImage /> Upload Images
@@ -326,13 +409,22 @@ const ItemsManagementAdminPage: React.FC = () => {
                         )}
                     </Field.Root>
 
-                    <Button type="submit" colorScheme="blue" size="lg" loading={isSubmitting}>
-                        {isCreate ? 'Create Item' : 'Save Changes'}
+                    <Button
+                        type="submit"
+                        colorScheme="blue"
+                        size="lg"
+                        loading={isSubmitting}
+                        disabled={isSubmitting}
+                        loadingText={isCreate ? 'Creating...' : 'Saving...'}
+                    >
+                        {
+                            isCreate ? 'Create Item' : 'Save Changes'
+                        }
                     </Button>
                 </Stack>
             </Box>
         </Box>
-    )
-}
+    );
+};
 
-export default ItemsManagementAdminPage
+export default ItemsManagementAdminPage;

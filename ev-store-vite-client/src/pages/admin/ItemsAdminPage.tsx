@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
     Box,
     Flex,
@@ -19,12 +19,18 @@ import {
     Field,
     Input,
     EmptyState,
-    List
+    List,
+    Center,
+    Spinner,
+    Alert
 } from '@chakra-ui/react'
 import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft, FaSearch } from "react-icons/fa";
+import { LuPackageSearch } from "react-icons/lu";
+import API from '@/utils/AxiosAPI';
+import { toaster } from "@/components/ui/toaster";
+import { debounce } from "lodash";
 
 
-// Define your item type
 interface Item {
     id: string
     nameEn: string
@@ -40,100 +46,125 @@ interface Item {
 }
 
 const ItemsAdminPage = () => {
-    const [items, setItems] = useState<Item[]>([
-        {
-            id: '1',
-            nameEn: 'Fast Charger',
-            descriptionEn: 'High-speed EV charger for home use.',
-            quantity: 10,
-            price: 299,
-            mainImage: 'https://placehold.co/300x200',
-            images: [
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-            ],
-            nameGe: 'სწრაფი დამტენი',
-            nameRu: 'Быстрое зарядное устройство',
-            descriptionGe: 'საუკეთესო სწრაფი დამტენი სახლში გამოსაყენებლად.',
-            descriptionRu: 'Высокоскоростное зарядное устройство для дома.'
-        },
-        {
-            id: '2',
-            nameEn: 'OBD-II Scanner',
-            descriptionEn: 'Diagnostic tool for EV maintenance.',
-            quantity: 5,
-            price: 149,
-            mainImage: 'https://placehold.co/300x200',
-            images: [
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-            ],
-            nameGe: 'OBD-II სკანერი',
-            nameRu: 'OBD-II сканер',
-            descriptionGe: 'დიაგნოსტიკური ხელსაწყო EV-ის მომსახურებისთვის.',
-            descriptionRu: 'Диагностический инструмент для обслуживания электромобилей.'
-        },
-        {
-            id: '3',
-            nameEn: 'Portable Charger',
-            descriptionEn: 'Compact charger for on-the-go charging.',
-            quantity: 20,
-            price: 99,
-            mainImage: 'https://placehold.co/300x200',
-            images: [
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200',
-                'https://placehold.co/300x200'
-            ],
-            nameGe: 'პორტატული დამტენი',
-            nameRu: 'Портативное зарядное устройство',
-            descriptionGe: 'კომპაქტური დამტენი გზაზე დატენვისთვის.',
-            descriptionRu: 'Компактное зарядное устройство для зарядки в пути.'
+    const [items, setItems] = useState<Item[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isDeleting, setIsDeleting] = useState<string | null>(null);
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [searchName, setSearchName] = useState<string>('');
+    const [searchId, setSearchId] = useState<string>('');
+
+    const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+
+    const fetchItems = async (name: string = '', productId: string = '') => {
+        try {
+            setIsLoading(true);
+            setApiError(null);
+            const params = new URLSearchParams({
+                page: '0',
+                size: '1000',
+                sortBy: 'id',
+                direction: 'asc',
+                ...(name && { name }),
+                ...(productId && { productId })
+            });
+
+            const response = await API.get(`/product?${params.toString()}`);
+            setItems(response.data.content || []);
+            setFilteredItems(response.data.content || []);
+        } catch (error) {
+            setApiError('Error fetching items');
+            toaster.error({
+                title: 'Error',
+                description: 'Failed to fetch items'
+            });
+        } finally {
+            setIsLoading(false);
         }
-    ])
+    };
 
+    const debouncedSearch = useCallback(
+        debounce((name: string, productId: string) => {
+            fetchItems(name, productId);
+        }, 500),
+        []
+    );
 
-    const [searchName, setSearchName] = useState<string>('')
-    const [searchId, setSearchId] = useState<string>('')
+    const handleNameSearch = (value: string) => {
+        setSearchName(value);
+        debouncedSearch(value, searchId);
+    };
 
-    const [filteredItems, setFilteredItems] = useState<Item[]>(items)
+    const handleIdSearch = (value: string) => {
+        setSearchId(value);
+        debouncedSearch(searchName, value);
+    };
 
     useEffect(() => {
-        let updated = items
+        fetchItems();
+    }, []);
+
+    useEffect(() => {
+        let updated = items;
 
         if (searchName.trim() !== '') {
-            const lowerName = searchName.toLowerCase()
-            updated = updated.filter((item) => item.nameEn.toLowerCase().includes(lowerName))
+            const lowerName = searchName.toLowerCase();
+            updated = updated.filter((item) => item.nameEn.toLowerCase().includes(lowerName));
         }
 
         if (searchId.trim() !== '') {
-            updated = updated.filter((item) => item.id.includes(searchId.trim()))
+            updated = updated.filter((item) => item.id.includes(searchId.trim()));
         }
 
-        setFilteredItems(updated)
-    }, [searchName, searchId, items])
+        setFilteredItems(updated);
+    }, [searchName, searchId, items]);
 
-    const handleDelete = (id: string) => {
-        setItems(prev => prev.filter(item => item.id !== id))
+    const handleDelete = async (id: string) => {
+        try {
+            setIsDeleting(id);
+            setApiError(null);
+            await API.delete(`/admin/products/${id}`);
+            
+            toaster.success({
+                title: 'Success',
+                description: 'Item deleted successfully'
+            });
+            
+            fetchItems();
+        } catch (error) {
+            setApiError('Error deleting item');
+            toaster.error({
+                title: 'Error',
+                description: 'Failed to delete item'
+            });
+        } finally {
+            setIsDeleting(null);
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <Center minH="90vh">
+                <Spinner size="xl" borderWidth="4px" />
+            </Center>
+        );
     }
 
     return (
         <Box p={8} maxW="800px" mx="auto" h="100dvh">
+            {apiError && (
+                <Alert.Root status="error" mb={4}>
+                    <Alert.Indicator />
+                    <Alert.Title>{apiError}</Alert.Title>
+                </Alert.Root>
+            )}
             <Button size="xs" asChild variant='outline'>
                 <a href="/cms-admin">
                     <FaArrowLeft />
                     Back to Admin Dashboard
                 </a>
             </Button>
-            {/* Header with Create Button */}
             <Flex justify="space-between" align="center" mt={6} mb={6}>
-                <Heading >
+                <Heading>
                     <HStack>
                         <FaLayerGroup />Items
                     </HStack>
@@ -141,18 +172,18 @@ const ItemsAdminPage = () => {
                 <HStack gap={2}>
                     <Field.Root flex="1">
                         <Input
-                            placeholder="Enter Name"
+                            placeholder="Search by name"
                             size="md"
                             value={searchName}
-                            onChange={(e) => setSearchName(e.target.value)}
+                            onChange={(e) => handleNameSearch(e.target.value)}
                         />
                     </Field.Root>
                     <Field.Root flex="1">
                         <Input
-                            placeholder="Enter ID"
+                            placeholder="Search by ID"
                             size="md"
                             value={searchId}
-                            onChange={(e) => setSearchId(e.target.value)}
+                            onChange={(e) => handleIdSearch(e.target.value)}
                         />
                     </Field.Root>
                     <Button asChild>
@@ -163,7 +194,25 @@ const ItemsAdminPage = () => {
                 </HStack>
             </Flex>
 
-            {filteredItems.length === 0 ?
+            {items.length === 0 ? (
+                <EmptyState.Root>
+                    <EmptyState.Content>
+                        <EmptyState.Indicator>
+                            <LuPackageSearch size={48} />
+                        </EmptyState.Indicator>
+                        <VStack textAlign="center">
+                            <EmptyState.Title>
+                                No Items Found
+                            </EmptyState.Title>
+                            <EmptyState.Description>
+                                {searchName || searchId 
+                                    ? 'No items match your search criteria'
+                                    : 'Start by creating your first item to add to your catalog'}
+                            </EmptyState.Description>
+                        </VStack>
+                    </EmptyState.Content>
+                </EmptyState.Root>
+            ) : filteredItems.length === 0 ? (
                 <EmptyState.Root>
                     <EmptyState.Content>
                         <EmptyState.Indicator>
@@ -181,7 +230,7 @@ const ItemsAdminPage = () => {
                         </List.Root>
                     </EmptyState.Content>
                 </EmptyState.Root>
-                :
+            ) : (
                 <Stack gap={5}>
                     {filteredItems.map(item => (
                         <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
@@ -203,11 +252,15 @@ const ItemsAdminPage = () => {
                                         <Badge>quantity: {item.quantity}</Badge>
                                     </HStack>
                                 </Card.Body>
-                                <Card.Footer>
-
+                                <Card.Footer justifyContent="flex-end">
                                     <Dialog.Root scrollBehavior="inside" size="lg">
                                         <Dialog.Trigger asChild>
-                                            <Button size="sm" variant="outline" mr={2}>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                mr={2}
+                                                disabled={isDeleting === item.id}
+                                            >
                                                 <FaEye />
                                                 <Box display={{ base: 'none', md: 'inline' }}>
                                                     View
@@ -292,6 +345,7 @@ const ItemsAdminPage = () => {
                                         variant="outline"
                                         mr={2}
                                         asChild
+                                        disabled={isDeleting === item.id}
                                     >
                                         <a href={`/cms-admin/items/${item.id}`}>
                                             <FaEdit />
@@ -303,11 +357,26 @@ const ItemsAdminPage = () => {
 
                                     <Dialog.Root>
                                         <Dialog.Trigger asChild>
-                                            <Button size="sm" colorPalette="red">
-                                                <FaTrashAlt />
-                                                <Box display={{ base: 'none', md: 'inline' }}>
-                                                    Delete
-                                                </Box>
+                                            <Button 
+                                                size="sm" 
+                                                colorPalette="red"
+                                                disabled={isDeleting === item.id}
+                                            >
+                                                {isDeleting === item.id ? (
+                                                    <HStack>
+                                                        <Spinner size="sm" />
+                                                        <Box display={{ base: 'none', md: 'inline' }}>
+                                                            Deleting...
+                                                        </Box>
+                                                    </HStack>
+                                                ) : (
+                                                    <>
+                                                        <FaTrashAlt />
+                                                        <Box display={{ base: 'none', md: 'inline' }}>
+                                                            Delete
+                                                        </Box>
+                                                    </>
+                                                )}
                                             </Button>
                                         </Dialog.Trigger>
                                         <Portal>
@@ -321,17 +390,20 @@ const ItemsAdminPage = () => {
                                                         </Dialog.CloseTrigger>
                                                     </Dialog.Header>
                                                     <Dialog.Body>
-                                                        Are you sure you want to delete “{item.nameEn}”?
+                                                        Are you sure you want to delete "{item.nameEn}"?
                                                     </Dialog.Body>
                                                     <Dialog.Footer>
-                                                        <Dialog.ActionTrigger>
-                                                            <Button variant="outline">Cancel</Button>
+                                                        <Dialog.ActionTrigger asChild>
+                                                            <Button variant="outline" disabled={isDeleting === item.id}>
+                                                                Cancel
+                                                            </Button>
                                                         </Dialog.ActionTrigger>
                                                         <Button
                                                             colorPalette="red"
                                                             onClick={() => handleDelete(item.id)}
+                                                            disabled={isDeleting === item.id}
                                                         >
-                                                            Delete
+                                                            {isDeleting === item.id ? 'Deleting...' : 'Delete'}
                                                         </Button>
                                                     </Dialog.Footer>
                                                 </Dialog.Content>
@@ -343,7 +415,7 @@ const ItemsAdminPage = () => {
                         </Card.Root>
                     ))}
                 </Stack>
-            }
+            )}
         </Box>
     )
 }

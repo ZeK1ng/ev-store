@@ -56,7 +56,7 @@ const ProfilePage = () => {
             setUserData(response.data);
             setOriginalData(response.data);
         } catch (err: any) {
-            setError(t('profile.loadError') || 'Failed to fetch user data');
+            setError(t('profile.loadError'));
         } finally {
             setLoading(false);
         }
@@ -106,7 +106,6 @@ const ProfilePage = () => {
         }
     };
 
-    // UI - Loading
     if (loading) {
         return (
             <Center minH="90vh">
@@ -115,7 +114,6 @@ const ProfilePage = () => {
         );
     }
 
-    // UI - Error with retry
     if (error) {
         return (
             <Center minH="90vh">
@@ -143,7 +141,6 @@ const ProfilePage = () => {
         );
     }
 
-    // Main Profile UI
     return (
         <SimpleGrid columns={{ base: 1 }} minH="90vh">
             <Box

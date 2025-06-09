@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AuthController from '@/utils/AuthController';
+import API from '@/utils/AxiosAPI';
 import {
     Box,
     Flex,
@@ -17,16 +19,25 @@ import {
     EmptyState,
     VStack,
     ButtonGroup,
-    Show
+    Show,
+    Spinner,
+    Center,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
-import { LuMinus, LuPlus } from 'react-icons/lu';
+import { LuMinus, LuPlus, LuWifiOff } from 'react-icons/lu';
 import { useTranslation } from "react-i18next";
 import { LuShoppingCart } from "react-icons/lu"
 import { Link as RouterLink } from 'react-router-dom'
 
-
+interface UserDetails {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobile: string;
+    city: string;
+    address: string;
+}
 
 interface CartItem {
     id: string;
@@ -47,7 +58,31 @@ interface ReservationFormValues {
 
 const CartPage = () => {
     const { t } = useTranslation('cart');
-    const isAuthenticated = false;
+    const [userData, setUserData] = useState<UserDetails | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchUserData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await API.get('/user/details');
+            setUserData(response.data);
+        } catch (err: any) {
+            setError(t('profile.loadError'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (AuthController.isLoggedIn()) {
+            fetchUserData();
+        } else {
+            setLoading(false);
+        }
+    }, []);
+
     const [cartItems, setCartItems] = useState<CartItem[]>([
         {
             id: '1',
@@ -122,6 +157,41 @@ const CartPage = () => {
         console.log('Cart Items:', cartItems);
         // TODO: send reservation data to API
     };
+
+    if (loading) {
+        return (
+            <Center minH="90vh">
+                <Spinner size="xl" borderWidth="4px" />
+            </Center>
+        );
+    }
+
+    if (error) {
+        return (
+            <Center minH="90vh">
+                <Stack gap={8} maxW="lg" w="full">
+                    <EmptyState.Root>
+                        <EmptyState.Content>
+                            <EmptyState.Indicator>
+                                <LuWifiOff />
+                            </EmptyState.Indicator>
+                            <VStack textAlign="center">
+                                <EmptyState.Title>
+                                    {t('emptyTitle')}
+                                </EmptyState.Title>
+                                <EmptyState.Description>
+                                    {t('emptyDescription')}
+                                </EmptyState.Description>
+                            </VStack>
+                            <ButtonGroup>
+                                <Button onClick={fetchUserData}>{t('tryAgain')}</Button>
+                            </ButtonGroup>
+                        </EmptyState.Content>
+                    </EmptyState.Root>
+                </Stack>
+            </Center>
+        );
+    }
 
     return (
         <Box minH="100vh" px={{ base: 4, md: 8 }} py={8}>
@@ -243,7 +313,7 @@ const CartPage = () => {
 
                     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
                         <Stack gap={4}>
-                            <Show when={!isAuthenticated}>
+                            <Show when={!AuthController.isLoggedIn()}>
                                 <Field.Root id="fullName" invalid={!!errors.fullName}>
                                     <Field.Label>
                                         {t('reservation.fullName')} *
@@ -258,7 +328,7 @@ const CartPage = () => {
                                 </Field.Root>
                             </Show>
 
-                            <Show when={!isAuthenticated}>
+                            <Show when={!AuthController.isLoggedIn()}>
                                 <Field.Root id="email" invalid={!!errors.email}>
                                     <Field.Label>
                                         {t('reservation.email')} *
@@ -281,6 +351,7 @@ const CartPage = () => {
                                     {t('reservation.phone')} *
                                 </Field.Label>
                                 <Input
+                                    value={userData?.mobile || ''}
                                     placeholder={t('reservation.phonePlaceholder')}
                                     {...register('phone', { required: t('reservation.phoneError') })}
                                 />
@@ -294,6 +365,7 @@ const CartPage = () => {
                                     {t('reservation.address')} *
                                 </Field.Label>
                                 <Input
+                                    value={userData?.address || ''}
                                     placeholder={t('reservation.addressPlaceholder')}
                                     {...register('address', { required: t('reservation.addressError') })}
                                 />
