@@ -163,7 +163,6 @@ const ItemsAdminPage = () => {
                     Back to Admin Dashboard
                 </a>
             </Button>
-            {/* Header with Create Button */}
             <Flex justify="space-between" align="center" mt={6} mb={6}>
                 <Heading>
                     <HStack>

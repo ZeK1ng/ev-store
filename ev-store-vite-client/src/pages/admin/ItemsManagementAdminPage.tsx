@@ -21,7 +21,7 @@ import {
     createListCollection,
     Checkbox,
 } from '@chakra-ui/react'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useParams, useNavigate } from 'react-router-dom'
 import { LuFileImage, LuX } from 'react-icons/lu'
 import { HiUpload } from 'react-icons/hi'

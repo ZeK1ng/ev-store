@@ -177,14 +177,14 @@ const CartPage = () => {
                             </EmptyState.Indicator>
                             <VStack textAlign="center">
                                 <EmptyState.Title>
-                                    {t('profile.emptyTitle')}
+                                    {t('emptyTitle')}
                                 </EmptyState.Title>
                                 <EmptyState.Description>
-                                    {t('profile.emptyDescription')}
+                                    {t('emptyDescription')}
                                 </EmptyState.Description>
                             </VStack>
                             <ButtonGroup>
-                                <Button onClick={fetchUserData}>{t('profile.tryAgain')}</Button>
+                                <Button onClick={fetchUserData}>{t('tryAgain')}</Button>
                             </ButtonGroup>
                         </EmptyState.Content>
                     </EmptyState.Root>
