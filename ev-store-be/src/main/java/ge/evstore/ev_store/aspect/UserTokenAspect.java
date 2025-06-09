@@ -56,7 +56,6 @@ public class UserTokenAspect {
     }
 
 
-    //TODO
     @Around("@annotation(ge.evstore.ev_store.annotation.UserTokenAspectMarker)")
     public Object aroundMethodsForAccessTokenForUser(final ProceedingJoinPoint pjp) throws Throwable {
         final Object[] args = pjp.getArgs();

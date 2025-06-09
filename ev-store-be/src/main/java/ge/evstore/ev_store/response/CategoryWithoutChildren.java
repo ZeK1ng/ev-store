@@ -20,5 +20,5 @@ public class CategoryWithoutChildren {
 
     private String description;
 
-    private Category parentCategory;
+    private String parentCategoryName;
 }

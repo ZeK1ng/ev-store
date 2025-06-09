@@ -77,9 +77,9 @@ public class JwtUtils {
 
     private Instant getTokenExpiryInstant(final TokenType tokenType) {
         return switch (tokenType) {
-            case REFRESH_TOKEN ->
-                    Instant.now().plus(Duration.ofMinutes(tokenConfigEntityRepository.findById(1L).get().getAccessTokenLifeSpanMinutes()));
             case ACCESS_TOKEN ->
+                    Instant.now().plus(Duration.ofMinutes(tokenConfigEntityRepository.findById(1L).get().getAccessTokenLifeSpanMinutes()));
+            case REFRESH_TOKEN ->
                     Instant.now().plus(Duration.ofMinutes(tokenConfigEntityRepository.findById(2L).get().getRefreshTokenLifeSpanMinutes()));
         };
     }

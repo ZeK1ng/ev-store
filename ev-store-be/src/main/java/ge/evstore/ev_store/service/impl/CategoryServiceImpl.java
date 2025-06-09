@@ -71,7 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
         for (final Category category : categoryList) {
             response.add(CategoryWithoutChildren.builder().name(category.getName())
                     .description(category.getDescription())
-                    .id(category.getId()).parentCategory(category.getParentCategory()).build());
+                    .id(category.getId()).parentCategoryName(category.getParentCategory() == null ? null : category.getParentCategory().getName()).build());
         }
         return response;
     }

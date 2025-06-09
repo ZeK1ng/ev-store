@@ -1,5 +1,6 @@
 package ge.evstore.ev_store.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,8 +23,9 @@ public class Category {
     // If this is a root category, parentCategory is null
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
+    @JsonBackReference
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentCategory", orphanRemoval = true)
     private List<Category> children = new ArrayList<>();
 }

@@ -109,6 +109,7 @@ public class AdminServiceImpl implements AdminService {
                 child.setParentCategory(parent);
                 parent.getChildren().add(child);
                 categoryRepository.save(parent); // cascading will persist the new child
+                categoryRepository.save(child);
                 result.set(child);
             });
         }
