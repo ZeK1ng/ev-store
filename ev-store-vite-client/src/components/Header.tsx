@@ -73,8 +73,9 @@ const Header = () => {
                 w="100%"
                 borderBottomWidth="1px">
                 <Flex align="center">
-                    <Image src="/vite.svg" alt="Logo" boxSize="40px" mr={2} />
-                    <Heading size="md">My App</Heading>
+                    <Image src={
+                        colorMode === 'dark' ? 'logos/header-logo-dark.svg' : 'logos/header-logo-light.svg'
+                    } alt="Logo" h="40px" mr={2} />
                 </Flex>
 
                 <HStack gap={4} display={{ base: 'none', md: 'flex' }}>

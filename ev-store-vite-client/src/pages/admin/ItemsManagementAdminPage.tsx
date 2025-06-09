@@ -94,7 +94,6 @@ const ItemsManagementAdminPage: React.FC = () => {
         reset,
         setValue,
         formState: { errors },
-        control
     } = useForm<ItemFormValues>();
 
     const fetchCategories = async () => {

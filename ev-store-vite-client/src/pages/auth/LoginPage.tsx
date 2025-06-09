@@ -57,12 +57,12 @@ const LoginPage = () => {
                 setApiError(t('login.errors.somethingWentWrong'));
                 return;
             }
-           
+
             AuthController.login({
                 accessToken: response.data.accessToken,
                 refreshToken: response.data.refreshToken,
             });
-            
+
             navigate('/');
         } catch (err: any) {
             setApiError(t('login.errors.loginFailed'));
@@ -138,6 +138,8 @@ const LoginPage = () => {
                                     type="submit"
                                     width="full"
                                     size="lg"
+                                    bg="#9CE94F"
+                                    color="gray.950"
                                     loading={isLoading}
                                 >
                                     {t('login.submit')}

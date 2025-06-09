@@ -398,6 +398,8 @@ const CartPage = () => {
                             <Button
                                 type="submit"
                                 size="lg"
+                                bg="#9CE94F"
+                                color="gray.950"
                                 loading={isSubmitting}
                             >
                                 {t('reservation.submit')}
