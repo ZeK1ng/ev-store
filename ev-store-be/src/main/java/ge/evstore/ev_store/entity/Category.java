@@ -16,6 +16,7 @@ public class Category {
     private Long id;
 
     private String name;
+
     private String description;
 
     // If this is a root category, parentCategory is null

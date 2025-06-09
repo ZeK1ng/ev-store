@@ -120,8 +120,12 @@ public class AdminServiceImpl implements AdminService {
     public Category updateCategory(final Long id, final String name, final String description, final String accessToken) {
         return categoryRepository.findById(id)
                 .map(category1 -> {
-                    category1.setName(name);
-                    category1.setDescription(description);
+                    if(name != null && !name.isEmpty()) {
+                        category1.setName(name);
+                    }
+                    if(description != null && !description.isEmpty()) {
+                        category1.setDescription(description);
+                    }
                     return categoryRepository.save(category1);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Category with ID " + id + " not found"));

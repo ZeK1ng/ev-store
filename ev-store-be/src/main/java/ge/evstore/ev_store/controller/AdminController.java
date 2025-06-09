@@ -112,12 +112,11 @@ public class AdminController {
     @PutMapping("/categories/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable final Long id,
-            @RequestParam final String name,
-            @RequestParam final String description,
+            @RequestBody final CreateCategoryRequest categoryRequest,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.updateCategory(id, name, description, accessToken)
+                adminService.updateCategory(id, categoryRequest.getName(), categoryRequest.getDescription(), accessToken)
         );
     }
 

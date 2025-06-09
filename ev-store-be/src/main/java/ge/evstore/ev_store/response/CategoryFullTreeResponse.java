@@ -11,6 +11,7 @@ public class CategoryFullTreeResponse {
 
     private Long id;
     private String name;                // use “value” for category name
+    private String description;
     private List<CategoryFullTreeResponse> children;
 
     /**
@@ -20,7 +21,7 @@ public class CategoryFullTreeResponse {
         final CategoryFullTreeResponse resp = new CategoryFullTreeResponse();
         resp.setId(category.getId());
         resp.setName(category.getName());
-
+        resp.setDescription(category.getDescription());
         // Map each child Category → CategoryResponse (recursive)
         if (category.getChildren() != null && !category.getChildren().isEmpty()) {
             final List<CategoryFullTreeResponse> childDtos = category.getChildren().stream()

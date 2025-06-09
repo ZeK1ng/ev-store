@@ -3,6 +3,7 @@ package ge.evstore.ev_store.service.impl;
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.repository.CategoryRepository;
 import ge.evstore.ev_store.response.CategoryFullTreeResponse;
+import ge.evstore.ev_store.response.CategoryWithoutChildren;
 import ge.evstore.ev_store.service.interf.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -61,6 +62,18 @@ public class CategoryServiceImpl implements CategoryService {
         final Set<Long> result = new HashSet<>();
         collectCategoryIds(rootCategory, result);
         return result;
+    }
+
+    @Override
+    public List<CategoryWithoutChildren> flatListAllCategories() {
+        final List<CategoryWithoutChildren> response = new ArrayList<>();
+        final List<Category> categoryList = categoryRepository.findAll();
+        for (final Category category : categoryList) {
+            response.add(CategoryWithoutChildren.builder().name(category.getName())
+                    .description(category.getDescription())
+                    .id(category.getId()).parentCategory(category.getParentCategory()).build());
+        }
+        return response;
     }
 
     private void collectCategoryIds(final Category category, final Set<Long> result) {
