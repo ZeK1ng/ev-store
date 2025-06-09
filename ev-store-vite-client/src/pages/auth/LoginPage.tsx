@@ -66,7 +66,6 @@ const LoginPage = () => {
             navigate('/');
         } catch (err: any) {
             setApiError(t('login.errors.loginFailed'));
-        } finally {
             setIsLoading(false);
         }
     });
