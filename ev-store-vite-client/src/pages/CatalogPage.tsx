@@ -224,6 +224,7 @@ const CatalogPage = () => {
                         <Accordion.ItemContent>
                             <Accordion.ItemBody px="4" py="3">
                                 <Slider.Root width="200px"
+                                
                                     max={sliderRange[1]} min={sliderRange[0]} step={1}
                                     defaultValue={selRange} onValueChangeEnd={(e) => setSelRange(e.value)}>
                                     <Slider.ValueText>
@@ -234,7 +235,7 @@ const CatalogPage = () => {
                                     </Slider.ValueText>
                                     <Slider.Control>
                                         <Slider.Track>
-                                            <Slider.Range />
+                                            <Slider.Range bg="#9CE94F"/>
                                         </Slider.Track>
                                         <Slider.Thumbs />
                                     </Slider.Control>
@@ -353,7 +354,7 @@ const CatalogPage = () => {
                         <>
                             <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
                                 {paged.map((product, idx) => (
-                                    <Card.Root overflow="hidden" key={idx} w="100%">
+                                    <Card.Root overflow="hidden" key={idx} w="100%" bg="whiteAlpha.100">
                                         <Image
                                             src={product.image}
                                             alt={product.name}
@@ -362,7 +363,7 @@ const CatalogPage = () => {
                                             objectFit="cover"
                                         />
 
-                                        <Card.Body gap="2">
+                                        <Card.Body gap="2" >
                                             <Card.Title>{product.name}</Card.Title>
                                             <Card.Description>{product.description}</Card.Description>
                                             <Text textStyle="2xl" fontWeight="medium">
@@ -371,7 +372,11 @@ const CatalogPage = () => {
                                         </Card.Body>
 
                                         <Card.Footer gap="2">
-                                            <Button variant="solid">
+                                            <Button
+                                                variant="solid"
+                                                bg="#9CE94F"
+                                                color="gray.950"
+                                            >
                                                 <LuShoppingCart />
                                                 {t('addToCart')}
                                             </Button>

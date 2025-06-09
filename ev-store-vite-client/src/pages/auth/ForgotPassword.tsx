@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import API from '@/utils/AxiosAPI';
 import AuthController from '@/utils/AuthController';
@@ -82,8 +81,26 @@ const ForgotPasswordPage = () => {
         }
     };
 
-    const onVerify = () => {
-        setStep('new-password');
+    const onVerify = async () => {
+        setIsLoading(true);
+        setApiError(null);
+        try {
+            const response = await API.post('/auth/verify-otp', {
+                email,
+                otp: verificationPin,
+            });
+
+            if (response.status === 200 && response.data) {
+                console.log(response.data);
+                setStep('new-password');
+            } else {
+                setApiError(t('forgotPassword.errors.invalidOTP'));
+            }
+        } catch (err: any) {
+            setApiError(t('forgotPassword.errors.invalidOTP'));
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const onNewPwdSubmit: SubmitHandler<SetNewPasswordFormValues> = async (data) => {
@@ -92,7 +109,6 @@ const ForgotPasswordPage = () => {
         try {
             await API.post('/auth/reset-password', {
                 email,
-                verificationCode: verificationPin,
                 newPassword: data.newPassword,
             });
             navigate('/login')
@@ -132,6 +148,13 @@ const ForgotPasswordPage = () => {
                             <PinInput.Input index={5} />
                         </PinInput.Control>
                     </PinInput.Root>
+
+                    {
+                        apiError && <Alert.Root status="error" mb={4}>
+                            <Alert.Indicator />
+                            <Alert.Title>{apiError}</Alert.Title>
+                        </Alert.Root>
+                    }
 
                     <Button
                         colorScheme="blue"

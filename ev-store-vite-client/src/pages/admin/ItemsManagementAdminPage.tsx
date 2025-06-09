@@ -24,6 +24,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { useParams, useNavigate } from 'react-router-dom'
 import { LuFileImage, LuX } from 'react-icons/lu'
+import { FaArrowLeft } from 'react-icons/fa'
 import { HiUpload } from 'react-icons/hi'
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
@@ -87,6 +88,10 @@ const ItemsManagementAdminPage: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
     const [existingItem, setExistingItem] = useState<Item | null>(null);
+    const [mainImageId, setMainImageId] = useState<string | null>(null);
+    const [mainImageUploading, setMainImageUploading] = useState(false);
+    const [additionalImageIds, setAdditionalImageIds] = useState<string[]>([]);
+    const [additionalImagesUploading, setAdditionalImagesUploading] = useState(false);
 
     const {
         register,
@@ -115,6 +120,8 @@ const ItemsManagementAdminPage: React.FC = () => {
             const response = await API.get(`/admin/products/${itemId}`);
             const item = response.data;
             setExistingItem(item);
+            setMainImageId(item.mainImageId || null);
+            setAdditionalImageIds(item.imagesIds || []);
             reset({
                 nameENG: item.nameENG,
                 nameGE: item.nameGE,
@@ -135,6 +142,44 @@ const ItemsManagementAdminPage: React.FC = () => {
             });
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleMainImageUpload = async (file: File) => {
+        if (!file) return;
+        setMainImageUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+            const response = await API.post('admin/image/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (response.data && response.data.length > 0) {
+                setMainImageId(response.data[0].imageId);
+            }
+        } catch (error) {
+            toaster.error({ title: 'Error', description: 'Failed to upload image' });
+        } finally {
+            setMainImageUploading(false);
+        }
+    };
+
+    const handleAdditionalImagesUpload = async (files: File[]) => {
+        if (!files || files.length === 0) return;
+        setAdditionalImagesUploading(true);
+        try {
+            const formData = new FormData();
+            files.forEach(file => formData.append('image', file));
+            const response = await API.post('admin/image/upload', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (response.data && response.data.length > 0) {
+                setAdditionalImageIds(response.data.map((img: any) => img.imageId));
+            }
+        } catch (error) {
+            toaster.error({ title: 'Error', description: 'Failed to upload images' });
+        } finally {
+            setAdditionalImagesUploading(false);
         }
     };
 
@@ -162,7 +207,9 @@ const ItemsManagementAdminPage: React.FC = () => {
                 category: {
                     id: data.categoryId
                 },
-                isPopular: data.isPopular
+                isPopular: data.isPopular,
+                mainImageId: mainImageId,
+                imagesIds: additionalImageIds
             };
 
             if (isCreate) {
@@ -223,7 +270,14 @@ const ItemsManagementAdminPage: React.FC = () => {
     }
 
     return (
+
         <Box p={8} maxW="800px" mx="auto">
+            <Button size="xs" asChild variant='outline'>
+                <a href="/cms-admin/items">
+                    <FaArrowLeft />
+                    Back to Admin Dashboard
+                </a>
+            </Button>
             {apiError && (
                 <Alert.Root status="error" mb={4}>
                     <Alert.Indicator />
@@ -361,13 +415,18 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </Checkbox.Root>
                     </Field.Root>
 
-                    {/* Main Image Upload */}
                     <Field.Root id="mainImageFile">
                         <Field.Label>Main Image</Field.Label>
-                        <FileUpload.Root accept="image/*" maxFiles={1}>
+                        <FileUpload.Root
+                            accept="image/*"
+                            maxFiles={1}
+                            onFileAccept={async (files) => {
+                                await handleMainImageUpload(files.files[0]);
+                            }}
+                        >
                             <FileUpload.HiddenInput {...register('mainImageFile')} />
                             <FileUpload.Trigger asChild>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" loading={mainImageUploading}>
                                     <HiUpload /> Upload Main Image
                                 </Button>
                             </FileUpload.Trigger>
@@ -380,13 +439,18 @@ const ItemsManagementAdminPage: React.FC = () => {
                         )}
                     </Field.Root>
 
-                    {/* Additional Images Upload */}
                     <Field.Root id="imagesFiles">
                         <Field.Label>Additional Images</Field.Label>
-                        <FileUpload.Root accept="image/*" maxFiles={15}>
+                        <FileUpload.Root
+                            accept="image/*"
+                            maxFiles={15}
+                            onFileAccept={async (files) => {
+                                await handleAdditionalImagesUpload(files.files);
+                            }}
+                        >
                             <FileUpload.HiddenInput {...register('imagesFiles')} />
                             <FileUpload.Trigger asChild>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" loading={additionalImagesUploading}>
                                     <LuFileImage /> Upload Images
                                 </Button>
                             </FileUpload.Trigger>

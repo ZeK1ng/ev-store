@@ -61,7 +61,7 @@ const CategoriesAdminPage: React.FC = () => {
         try {
             setIsLoading(true);
             setApiError(null);
-            const response = await API.get('/category/all');
+            const response = await API.get('/category/list-all');
             setCategories(response.data);
         } catch (error) {
             setApiError('Error fetching categories');
