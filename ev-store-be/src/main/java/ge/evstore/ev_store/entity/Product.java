@@ -1,13 +1,13 @@
 package ge.evstore.ev_store.entity;
 
 
+import ge.evstore.ev_store.utils.JsonListConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,15 +33,14 @@ public class Product {
     @ManyToOne
     private Category category;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private ImageEntity mainImage;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "product_id")
-    private List<ImageEntity> otherImages = new ArrayList<>();
+    private Long mainImageId;
+
+    @Column(columnDefinition = "jsonb")
+    @Convert(converter = JsonListConverter.class)
+    private List<Long> imageIds;
 
     private Boolean isPopular;
-//    private byte[] image; //
-
+    
     public void update(final Product product) {
         final ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());

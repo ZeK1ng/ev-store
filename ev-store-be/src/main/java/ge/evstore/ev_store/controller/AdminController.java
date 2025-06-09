@@ -3,12 +3,16 @@ package ge.evstore.ev_store.controller;
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.Dictionary;
 import ge.evstore.ev_store.entity.Product;
+import ge.evstore.ev_store.response.ImageSaveResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.DictionaryService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
@@ -153,9 +157,11 @@ public class AdminController {
         return ResponseEntity.ok(dictionaryService.findAll());
     }
 
-    //TODO List all orders, and update order endpoints and services.
-
-
-
+    @PostMapping(value = "/image/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<ImageSaveResponse>> uploadImage(final HttpServletRequest request, @RequestParam("image") final MultipartFile[] images) throws IOException {
+        final String accessToken = extractBearer(request);
+        final List<ImageSaveResponse> responses = adminService.saveImages(images, accessToken);
+        return ResponseEntity.ok(responses);
+    }
 }
 

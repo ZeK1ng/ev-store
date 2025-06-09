@@ -7,29 +7,31 @@ import ge.evstore.ev_store.exception.IsParentCategoryException;
 import ge.evstore.ev_store.repository.CategoryRepository;
 import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
+import ge.evstore.ev_store.response.ImageSaveResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
+import ge.evstore.ev_store.service.interf.ImageService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final MaxPriceSaverRepository maxPriceSaverRepository;
-
-    public AdminServiceImpl(final ProductRepository productRepository, final CategoryRepository categoryRepository, final MaxPriceSaverRepository maxPriceSaverRepository) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.maxPriceSaverRepository = maxPriceSaverRepository;
-    }
+    private final ImageService imageService;
 
     @Override
     @Transactional
@@ -138,5 +140,14 @@ public class AdminServiceImpl implements AdminService {
             throw new IsParentCategoryException(String.format("Category with given id is parent category for categories:%s. Delete child categories first", children));
         }
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ImageSaveResponse> saveImages(final MultipartFile[] images, final String accessToken) throws IOException {
+        final List<ImageSaveResponse> response = new ArrayList<>();
+        for (final MultipartFile image : images) {
+            response.add(imageService.saveImage(image));
+        }
+        return response;
     }
 }
