@@ -34,11 +34,11 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.sender.username}")
     private String storeMail;
 
-    private final String getVerifyCodeExpirationDuration;
+    private final String verifyCodeExpirationDuration;
 
     public EmailServiceImpl(final JavaMailSender mailSender, final ParametersConfigEntityRepository parametersConfigEntityRepository) {
         this.mailSender = mailSender;
-        this.getVerifyCodeExpirationDuration = parametersConfigEntityRepository.findById(3L).get().getVerificationCodeLifeSpanMinutes().toString();
+        this.verifyCodeExpirationDuration = parametersConfigEntityRepository.findById(3L).get().getVerificationCodeLifeSpanMinutes().toString();
     }
 
 
