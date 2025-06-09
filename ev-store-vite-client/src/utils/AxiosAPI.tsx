@@ -56,6 +56,8 @@ API.interceptors.response.use(
                 if (!refreshToken) {
                     throw new Error('No refresh token available');
                 }
+                console.log('Refreshing token');
+                
                 const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {}, {
                     headers: { Authorization: `Bearer ${refreshToken}` }
                 });
@@ -66,6 +68,8 @@ API.interceptors.response.use(
                 API.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
                 processQueue(null, accessToken);
                 
+                console.log('Token refreshed');
+
                 return API(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError, null);

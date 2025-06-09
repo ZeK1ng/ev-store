@@ -74,7 +74,7 @@ const Header = () => {
                 borderBottomWidth="1px">
                 <Flex align="center">
                     <Image src={
-                        colorMode === 'dark' ? 'logos/header-logo-dark.svg' : 'logos/header-logo-light.svg'
+                        colorMode === 'dark' ? '/logos/header-logo-dark.svg' : '/logos/header-logo-light.svg'
                     } alt="Logo" h="40px" mr={2} />
                 </Flex>
 
@@ -92,7 +92,7 @@ const Header = () => {
                         {t('header.contact')}
                     </RouterLink>
 
-                    <Button variant="outline" >
+                    <Button variant="outline" asChild>
                         <RouterLink to="/cart">
                             <LuShoppingCart />
                         </RouterLink>

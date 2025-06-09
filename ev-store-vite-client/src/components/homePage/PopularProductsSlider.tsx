@@ -37,7 +37,7 @@ const dummyProducts: Product[] = Array.from({ length: 10 }, (_, i) => ({
 
 const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSliderProps) => {
     console.log('PopularProductsSlider categories:', categories);
-    
+
     const sliderRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation('home')
 
@@ -56,12 +56,16 @@ const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSl
                         aria-label="Scroll left"
                         onClick={() => scroll(-400)}
                         mr={2}
+                        bg="#9CE94F"
+                        color="gray.900"
                     >
                         <FaChevronLeft />
                     </IconButton>
                     <IconButton
                         aria-label="Scroll right"
                         onClick={() => scroll(400)}
+                        bg="#9CE94F"
+                        color="gray.900"
                     >
                         <FaChevronRight />
                     </IconButton>
@@ -85,7 +89,7 @@ const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSl
                         flex={{ base: '0 0 300px', md: '0 0 27%' }}
                         scrollSnapAlign="start"
                     >
-                        <Card.Root overflow="hidden" key={index}>
+                        <Card.Root overflow="hidden" key={index} bg="whiteAlpha.100">
                             <Image
                                 src={product.imageUrl}
                                 alt={product.title}
@@ -103,11 +107,15 @@ const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSl
                             </Card.Body>
 
                             <Card.Footer gap="2">
-                                <Button variant="solid">
+                                <Button
+                                    variant="solid"
+                                    bg="#9CE94F"
+                                    color="gray.950"
+                                >
                                     <LuShoppingCart />
                                     {t('popularProducts.addToCart')}
-                                    </Button>
-                                <Button variant="ghost">
+                                </Button>
+                                <Button variant="ghost" asChild>
                                     <Link to={`/product/${product.id}`}>
                                         {t('popularProducts.learnMoreLabel')}
                                     </Link>
