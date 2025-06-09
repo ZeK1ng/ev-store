@@ -2,9 +2,12 @@ import { Flex, HStack, VStack, Image, Separator, Stack, IconButton, Heading, Tex
 import { Link } from 'react-router-dom'
 import { FaFacebook, FaInstagram, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaTwitter } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { useColorMode } from '@/components/ui/color-mode'
+
 
 const Footer = () => {
     const { t } = useTranslation('common');
+    const { colorMode } = useColorMode()
 
     const phone = t('contact.phoneNumber');
     const email = t('contact.emailAddress');
@@ -18,7 +21,7 @@ const Footer = () => {
 
                 <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" mb={8} >
                     <VStack align="flex-start" gap={4} mb={{ base: 8, md: 0 }}>
-                        <Image src="https://placehold.co/200x100" alt="EV Store logo" />
+                        <Image boxSize="144px" src="logos/footer-logo-dark.svg" alt="EV Store logo"  />
                         <HStack gap={4}>
                             <IconButton aria-label="Facebook" variant="surface" size="xs">
                                 <Link to="https://www.facebook.com/YourStoreGeo" target='_blank'>

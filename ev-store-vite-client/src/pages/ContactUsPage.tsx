@@ -7,6 +7,8 @@ import {
   Icon,
   VStack,
   Container,
+  Center,
+  Flex
 } from '@chakra-ui/react';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +36,18 @@ const ContactUsPage = () => {
           {/* Phone Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
-              <Icon as={FaPhone} boxSize={8} color="green.500" />
+              <Center mb={4}>
+                <Flex
+                  bg="#9CE94F"
+                  p={4}
+                  borderRadius="full"
+                  align="center"
+                  justify="center"
+                >
+                  <Icon as={FaPhone} boxSize={6} color="gray.950" />
+                </Flex>
+              </Center>
+
               <Heading size="md">
                 {t('contact.phone')}
               </Heading>
@@ -52,7 +65,17 @@ const ContactUsPage = () => {
           {/* Email Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
-              <Icon as={FaEnvelope} boxSize={8} color="green.500" />
+              <Center mb={4}>
+                <Flex
+                  bg="#9CE94F"
+                  p={4}
+                  borderRadius="full"
+                  align="center"
+                  justify="center"
+                >
+                  <Icon as={FaEnvelope} boxSize={6} color="gray.950" />
+                </Flex>
+              </Center>
               <Heading size="md">
                 {t('contact.email')}
               </Heading>
@@ -70,7 +93,17 @@ const ContactUsPage = () => {
           {/* Address Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
-              <Icon as={FaMapMarkerAlt} boxSize={8} color="green.500" />
+              <Center mb={4}>
+                <Flex
+                  bg="#9CE94F"
+                  p={4}
+                  borderRadius="full"
+                  align="center"
+                  justify="center"
+                >
+                  <Icon as={FaMapMarkerAlt} boxSize={6} color="gray.950" />
+                </Flex>
+              </Center>
               <Heading size="md">
                 {t('contact.address')}
               </Heading>

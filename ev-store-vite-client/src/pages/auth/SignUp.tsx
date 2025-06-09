@@ -162,7 +162,8 @@ const SignupPage = () => {
                         <Alert.Title>{apiError}</Alert.Title>
                     </Alert.Root>}
                     <Button
-                        colorScheme="blue"
+                        bg="#9CE94F"
+                        color="gray.950"
                         disabled={verificationPin.length < 6 || isLoading}
                         loading={isLoading}
                         onClick={onVerify}
@@ -355,7 +356,13 @@ const SignupPage = () => {
                                     <Alert.Indicator />
                                     <Alert.Title>{apiError}</Alert.Title>
                                 </Alert.Root>}
-                                <Button type="submit" width="full" size="lg" loading={isLoading}>
+                                <Button 
+                                    type="submit"
+                                    width="full"
+                                    size="lg"
+                                    loading={isLoading}
+                                    bg="#9CE94F"
+                                    color="gray.950">
                                     {t('signup.submitButton')}
                                 </Button>
 

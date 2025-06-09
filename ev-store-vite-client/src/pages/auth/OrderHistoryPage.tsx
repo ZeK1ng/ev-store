@@ -165,7 +165,7 @@ const OrderHistoryPage = () => {
                             orders
                                 .filter(order => order.status === 'pending' || order.status === 'delivered')
                                 .map((order) => (
-                                    <Box key={order.orderId} borderWidth="1px" borderRadius="lg" p={4} bg="white">
+                                    <Box key={order.orderId} borderWidth="1px" borderRadius="lg" p={4}>
                                         <HStack justify="space-between" align="flex-start">
                                             <Box>
                                                 <Text fontWeight="bold" fontSize="lg">
@@ -195,7 +195,7 @@ const OrderHistoryPage = () => {
                                             <Text fontWeight="semibold" mb={1}>
                                                 Items:
                                             </Text>
-                                            <Box bg="gray.50" borderRadius="md" p={2}>
+                                            <Box bg="bg.muted" borderRadius="md" p={2}>
                                                 {order.items.map((item, idx) => (
                                                     <HStack key={idx} justify="space-between" py={1}>
                                                         <Text>

@@ -69,13 +69,13 @@ const AboutUs = () => {
                     >
                         <Center mb={4}>
                             <Flex
-                                bg="green.500"
+                                bg="#9CE94F"
                                 p={4}
                                 borderRadius="full"
                                 align="center"
                                 justify="center"
                             >
-                                <Icon as={FaBolt} boxSize={6} color="white"/>
+                                <Icon as={FaBolt} boxSize={6} color="gray.950"/>
                             </Flex>
                         </Center>
                         <Heading size="md" mb={2}>

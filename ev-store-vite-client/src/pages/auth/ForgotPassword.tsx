@@ -16,7 +16,7 @@ import {
     PinInput,
     Alert
 } from '@chakra-ui/react';
-import { Link , useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LuMail, LuKeyRound } from "react-icons/lu"
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next'
@@ -137,6 +137,8 @@ const ForgotPasswordPage = () => {
                         colorScheme="blue"
                         disabled={verificationPin.length < 6}
                         onClick={onVerify}
+                        bg="#9CE94F"
+                        color="gray.950"
                     >
                         {t('forgotPassword.verifyPin.verifyButton')}
                     </Button>
@@ -205,10 +207,11 @@ const ForgotPasswordPage = () => {
                             </Alert.Root>}
                             <Button
                                 type="submit"
-                                colorScheme="blue"
                                 width="full"
                                 size="lg"
                                 loading={isLoading}
+                                bg="#9CE94F"
+                                color="gray.950"
                             >
                                 {t('forgotPassword.newPassword.submitButton')}
                             </Button>
@@ -265,10 +268,11 @@ const ForgotPasswordPage = () => {
 
                                 <Button
                                     type="submit"
-                                    colorScheme="blue"
                                     width="full"
                                     size="lg"
                                     loading={isLoading}
+                                    bg="#9CE94F"
+                                    color="gray.950"
                                 >
                                     {t('forgotPassword.submitButton')}
                                 </Button>
