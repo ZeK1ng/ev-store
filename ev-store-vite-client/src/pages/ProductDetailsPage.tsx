@@ -75,9 +75,9 @@ const ProductDetailsPage = () => {
                             msOverflowStyle: 'none',
                             scrollbarWidth: 'none',
                             '::-webkit-slider-value-text': {
-                              display: 'none', 
+                                display: 'none',
                             }
-                          }}
+                        }}
                     >
                         {allThumbnails.map((src, idx) => (
                             <IconButton
@@ -132,7 +132,10 @@ const ProductDetailsPage = () => {
                             </NumberInput.Root>
                         </Field.Root>
 
-                        <Button size="lg" colorScheme="blue" w="max-content">
+                        <Button size="lg"
+                            bg="#9CE94F"
+                            color="gray.950"
+                            w="max-content">
                             {t('details.addToCart')}
                         </Button>
                     </Stack>

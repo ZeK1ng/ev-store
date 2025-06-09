@@ -21,7 +21,7 @@ const Footer = () => {
 
                 <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" mb={8} >
                     <VStack align="flex-start" gap={4} mb={{ base: 8, md: 0 }}>
-                        <Image boxSize="144px" src="logos/footer-logo-dark.svg" alt="EV Store logo"  />
+                        <Image boxSize="144px" src="/logos/footer-logo-dark.svg" alt="EV Store logo"  />
                         <HStack gap={4}>
                             <IconButton aria-label="Facebook" variant="surface" size="xs">
                                 <Link to="https://www.facebook.com/YourStoreGeo" target='_blank'>
