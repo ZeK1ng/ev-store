@@ -12,5 +12,7 @@ public interface CartService {
 
     void clearCartForUser(User user);
 
-    void deleteProductFromCart(String productId, String quantity, String token);
+    void deleteProductFromCart(Long productId, String token);
+
+    CartResponse updateProductQuantityInCart(Long productId, Integer quantity, String token);
 }

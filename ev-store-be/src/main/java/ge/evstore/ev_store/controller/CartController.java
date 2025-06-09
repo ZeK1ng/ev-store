@@ -32,5 +32,17 @@ public class CartController {
         return ResponseEntity.ok(cartResponse);
     }
 
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteProductFromCart(final HttpServletRequest req, @RequestParam final Long productId) {
+        final String token = HeaderUtils.extractBearer(req);
+        cartService.deleteProductFromCart(productId, token);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<CartResponse> updateCart(final HttpServletRequest request, @RequestParam final Long productId, @RequestParam final Integer quantity) {
+        final String token = HeaderUtils.extractBearer(request);
+        return ResponseEntity.ok(cartService.updateProductQuantityInCart(productId, quantity, token));
+    }
 
 }

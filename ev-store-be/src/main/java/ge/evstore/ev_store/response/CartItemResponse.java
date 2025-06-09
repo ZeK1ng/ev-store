@@ -13,6 +13,7 @@ public class CartItemResponse {
     private String productNameENG;
     private int quantity;
     private double price;
+    private Long mainImageId;
 
     public static CartItemResponse fromCartItem(final CartItem item) {
         final CartItemResponse response = new CartItemResponse();
@@ -22,6 +23,7 @@ public class CartItemResponse {
         response.setProductNameRUS(item.getProduct().getNameRUS());
         response.setQuantity(item.getQuantity());
         response.setPrice(item.getProduct().getPrice());
+        response.setMainImageId(item.getProduct().getMainImageId());
         return response;
     }
 }
