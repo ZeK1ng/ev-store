@@ -4,6 +4,7 @@ import ge.evstore.ev_store.annotation.UserTokenAspectMarker;
 import ge.evstore.ev_store.entity.Order;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.CartNotFoundException;
+import ge.evstore.ev_store.request.AuthorizedReservationRequest;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.response.CartResponse;
 import ge.evstore.ev_store.service.interf.CartService;
@@ -39,7 +40,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     @UserTokenAspectMarker
-    public void createReservationForUser(final String bearer) throws CartNotFoundException, MessagingException {
+    public void createReservationForUser(final AuthorizedReservationRequest reservationRequest, final String bearer) throws CartNotFoundException, MessagingException {
         try {
             final String username = jwtUtils.extractUsername(bearer);
             final Optional<User> userOptional = userService.findUser(username);
@@ -49,7 +50,7 @@ public class ReservationServiceImpl implements ReservationService {
             final User user = userOptional.get();
             final CartResponse cartForUser = cartService.getCartForUser(bearer);
             final Order order = userService.saveOrderHistory(user, cartForUser);
-            emailService.sendReservationMailForUser(user, cartForUser, order.getOrderNumber(), order.getOrderDate());
+            emailService.sendReservationMailForUser(user, cartForUser, order.getOrderNumber(), order.getOrderDate(), reservationRequest);
             cartService.clearCartForUser(user);
         } catch (final MessagingException e) {
             throw new MessagingException("Messaging Exception during reservation" + e.getMessage());

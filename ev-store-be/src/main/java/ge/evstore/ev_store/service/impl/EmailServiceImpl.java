@@ -2,6 +2,7 @@ package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
+import ge.evstore.ev_store.request.AuthorizedReservationRequest;
 import ge.evstore.ev_store.request.CartItemReservationRequest;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.response.CartResponse;
@@ -57,9 +58,9 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendReservationMailForUser(final User user, final CartResponse cartForUser, final String orderNumber, final LocalDateTime orderDate) throws MessagingException {
+    public void sendReservationMailForUser(final User user, final CartResponse cartForUser, final String orderNumber, final LocalDateTime orderDate, final AuthorizedReservationRequest reservationRequest) throws MessagingException {
         //TODO CHANGE DESTINATION TO BE STORE
-        final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(user, cartForUser, orderNumber, orderDate);
+        final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(user, cartForUser, orderNumber, orderDate, reservationRequest);
         sendHtmlEmail(user.getEmail(), getHtmlForReservation(reservationRequestEntity), RESERVATION_EMAIL_SUBJECT);
     }
 
@@ -163,13 +164,13 @@ public class EmailServiceImpl implements EmailService {
             this.orderDate = request.getOrderDate();
         }
 
-        public ReservationRequestEntity(final User user, final CartResponse cartForUser, final String orderId, final LocalDateTime orderDate) {
+        public ReservationRequestEntity(final User user, final CartResponse cartForUser, final String orderId, final LocalDateTime orderDate, final AuthorizedReservationRequest reservationRequest) {
             this.name = user.getFirstName() + " " + user.getLastName();
-            this.address = user.getAddress();
+            this.address = (reservationRequest.getAddress() == null || reservationRequest.getAddress().isBlank()) ? user.getAddress() : reservationRequest.getAddress();
             this.city = user.getCity();
-            this.phone = user.getMobile();
+            this.phone = (reservationRequest.getMobile() == null || reservationRequest.getMobile().isBlank()) ? user.getMobile() : reservationRequest.getMobile();
             this.orderId = orderId;
-            this.specialInstructions = "";
+            this.specialInstructions = reservationRequest.getSpecialInstructions();
             this.cartItems = new ArrayList<>();
             this.email = user.getEmail();
             this.orderDate = orderDate;
