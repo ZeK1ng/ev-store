@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AuthController from '@/utils/AuthController';
 import API from '@/utils/AxiosAPI';
 import {
@@ -27,7 +27,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
 import { LuMinus, LuPlus, LuWifiOff } from 'react-icons/lu';
 import { useTranslation } from "react-i18next";
-import { LuShoppingCart } from "react-icons/lu"
+import { LuShoppingCart, LuChevronDown } from "react-icons/lu"
 import { Link as RouterLink } from 'react-router-dom'
 
 interface UserDetails {
@@ -157,6 +157,21 @@ const CartPage = () => {
         console.log('Cart Items:', cartItems);
         // TODO: send reservation data to API
     };
+
+    const reservationRef = useRef<HTMLDivElement>(null);
+    const [showStickyButton, setShowStickyButton] = useState(true);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (reservationRef.current) {
+                const rect = reservationRef.current.getBoundingClientRect();
+                setShowStickyButton(rect.top > window.innerHeight - 200);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     if (loading) {
         return (
@@ -306,7 +321,15 @@ const CartPage = () => {
                     </Stack>
                 </Box>
 
-                <Box flex={1} borderRadius="md" border="xs" borderColor="border.emphasized" p={6} h="max-content">
+                <Box
+                    ref={reservationRef}
+                    flex={1}
+                    borderRadius="md"
+                    border="xs"
+                    borderColor="border.emphasized"
+                    p={6}
+                    h="max-content"
+                >
                     <Heading size="lg" mb={4}>
                         {t('reservation.title')}
                     </Heading>
@@ -412,6 +435,37 @@ const CartPage = () => {
                     </Box>
                 </Box>
             </Flex>
+            {showStickyButton && (
+                <Box
+                    position="fixed"
+                    bottom="0"
+                    left="0"
+                    width="100vw"
+                    zIndex="sticky"
+                    display={{ base: 'block', lg: 'none' }}
+                    bg="bg.muted"
+                    shadow="xl"
+                    p={3}
+                    textAlign="center"
+                >
+                    <Button
+                        size="xl"
+                        bg="#9CE94F"
+                        color="gray.950"
+                        width="90%"
+                        onClick={() => {
+                            if (reservationRef.current) {
+                                window.scrollTo({ 
+                                    top: reservationRef.current.offsetTop - 100, 
+                                    behavior: 'smooth' 
+                                });
+                            }
+                        }}
+                    >
+                        <LuChevronDown /> {t('reservation.goToReservation')}
+                    </Button>
+                </Box>
+            )}
         </Box>
     );
 };

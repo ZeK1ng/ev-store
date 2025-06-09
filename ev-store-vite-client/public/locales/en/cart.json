@@ -30,6 +30,7 @@
         "totalAmount": "Total Amount",
         "noPayment": "No payment required for reservations.",
         "concent": "By reserving, you agree to our terms. We'll contact you within 24 hours.",
-        "submit": "Reserve Items"
+        "submit": "Reserve Items",
+        "goToReservation": "Go to Reservation"
     }
 }
