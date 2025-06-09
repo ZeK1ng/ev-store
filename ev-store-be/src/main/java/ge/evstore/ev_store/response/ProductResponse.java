@@ -34,6 +34,8 @@ public class ProductResponse {
 
     private Boolean isPopular;
 
+    private String tutorialLink;
+
     public static ProductResponse from(final Product product, final List<Long> imageIds) {
         return ProductResponse.builder()
                 .id(product.getId())
@@ -48,6 +50,7 @@ public class ProductResponse {
                 .categoryName(product.getCategory().getName())
                 .mainImageId(product.getMainImageId())
                 .isPopular(product.getIsPopular())
+                .tutorialLink(product.getTutorialLink())
                 .imageIds(imageIds)
                 .build();
     }

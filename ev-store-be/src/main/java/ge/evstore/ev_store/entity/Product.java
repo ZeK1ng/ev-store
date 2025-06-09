@@ -36,6 +36,8 @@ public class Product {
 
     private Integer stockAmount;
 
+    private String tutorialLink;
+
     @ManyToOne
     private Category category;
 
@@ -61,6 +63,7 @@ public class Product {
                 .price(productRequest.getPrice())
                 .stockAmount(productRequest.getStockAmount())
                 .isPopular(productRequest.getIsPopular())
+                .tutorialLink(productRequest.getTutorialLink())
                 .mainImageId(productRequest.getMainImageId())
                 .build();
     }

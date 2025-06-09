@@ -45,16 +45,6 @@ public class AdminController {
         );
     }
 
-    @GetMapping("/products/{id}")
-    public ResponseEntity<Product> getProduct(
-            @PathVariable final Long id,
-            final HttpServletRequest request) {
-        final String accessToken = extractBearer(request);
-        return ResponseEntity.ok(
-                adminService.getProductById(id, accessToken)
-        );
-    }
-
     @PutMapping("/products/{id}")
     public ResponseEntity<Product> updateProduct(
             @PathVariable final Long id,
