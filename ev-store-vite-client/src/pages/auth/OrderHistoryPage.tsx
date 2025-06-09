@@ -35,7 +35,7 @@ interface OrderHistoryItem {
         unitPrice: number;
         totalPrice: number;
     }>;
-    status?: 'pending' | 'delivered'; // Mocked status
+    status?: 'pending' | 'delivered';
 }
 
 const statusColor = {
@@ -46,41 +46,6 @@ const statusLabel = {
     delivered: 'Delivered',
     pending: 'Processing',
 };
-
-const mockOrders: OrderHistoryItem[] = [
-    {
-        orderId: 1,
-        orderNumber: 'ORD-2024-001',
-        orderDate: '2024-01-15T00:00:00.000Z',
-        totalPrice: 589.98,
-        status: 'delivered',
-        items: [
-            { productNameGe: '', productNameEng: 'Tesla Model 3 Home Charger', productNameRUS: '', quantity: 1, unitPrice: 499.99, totalPrice: 499.99 },
-            { productNameGe: '', productNameEng: 'Type 2 Charging Cable', productNameRUS: '', quantity: 1, unitPrice: 89.99, totalPrice: 89.99 },
-        ],
-    },
-    {
-        orderId: 2,
-        orderNumber: 'ORD-2024-002',
-        orderDate: '2024-02-03T00:00:00.000Z',
-        totalPrice: 349.97,
-        status: 'pending',
-        items: [
-            { productNameGe: '', productNameEng: 'Portable EV Charger', productNameRUS: '', quantity: 1, unitPrice: 299.99, totalPrice: 299.99 },
-            { productNameGe: '', productNameEng: 'Wall Mount Bracket', productNameRUS: '', quantity: 2, unitPrice: 24.99, totalPrice: 49.98 },
-        ],
-    },
-    {
-        orderId: 3,
-        orderNumber: 'ORD-2024-003',
-        orderDate: '2024-02-10T00:00:00.000Z',
-        totalPrice: 799.99,
-        status: 'pending',
-        items: [
-            { productNameGe: '', productNameEng: 'Smart Charging Station', productNameRUS: '', quantity: 1, unitPrice: 799.99, totalPrice: 799.99 },
-        ],
-    },
-];
 
 const OrderHistoryPage = () => {
     const { t } = useTranslation('auth');
@@ -93,9 +58,7 @@ const OrderHistoryPage = () => {
             try {
                 const response = await API.get('/user/order-history');
                 let data = response.data as OrderHistoryItem[];
-                if (!data || data.length === 0) {
-                    data = mockOrders;
-                } else {
+                if (data && data.length > 0) {
                     data = data.map((order, idx) => ({
                         ...order,
                         orderNumber: order.orderNumber || `ORD-2024-00${order.orderId}`,
@@ -108,7 +71,6 @@ const OrderHistoryPage = () => {
                     title: 'Error',
                     description: 'Failed to fetch order history',
                 });
-                setOrders(mockOrders);
             } finally {
                 setIsLoading(false);
             }
@@ -183,7 +145,7 @@ const OrderHistoryPage = () => {
                                                 </HStack>
                                             </Box>
                                             <VStack align="end" gap={1}>
-                                                <Badge colorPalette={statusColor[order.status || 'pending']}>
+                                                <Badge colorPalette={statusColor[order.status || 'pending']} size="md">
                                                     {statusLabel[order.status || 'pending']}
                                                 </Badge>
                                                 <Text fontWeight="bold" fontSize="xl">
