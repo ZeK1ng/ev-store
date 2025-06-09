@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AuthController from '@/utils/AuthController';
 import API from '@/utils/AxiosAPI';
 import {
@@ -25,9 +25,8 @@ import {
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
-import { LuMinus, LuPlus, LuWifiOff } from 'react-icons/lu';
+import { LuMinus, LuPlus, LuWifiOff, LuShoppingCart, LuClipboardCheck, LuChevronDown } from 'react-icons/lu';
 import { useTranslation } from "react-i18next";
-import { LuShoppingCart } from "react-icons/lu"
 import { Link as RouterLink } from 'react-router-dom'
 
 interface UserDetails {
@@ -51,7 +50,7 @@ interface CartItem {
 interface ReservationFormValues {
     fullName: string;
     email: string;
-    phone: string;
+    mobile: string;
     address: string;
     notes: string;
 }
@@ -61,6 +60,7 @@ const CartPage = () => {
     const [userData, setUserData] = useState<UserDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [reservationSuccess, setReservationSuccess] = useState(false);
 
     const fetchUserData = async () => {
         setLoading(true);
@@ -118,45 +118,98 @@ const CartPage = () => {
         },
     ]);
 
-    // React Hook Form for reservation details
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<ReservationFormValues>({
-        defaultValues: {
-            fullName: '',
-            email: '',
-            phone: '',
-            address: '',
-            notes: '',
-        },
+        defaultValues: AuthController.isLoggedIn()
+            ? {
+                mobile: userData?.mobile,
+                address: userData?.address,
+                notes: '',
+            } : {
+                fullName: '',
+                email: '',
+                mobile: '',
+                address: '',
+                notes: '',
+            },
+        shouldUnregister: true,
     });
 
-    const removeItem = (id: string) => {
-        setCartItems((prev) => prev.filter((item) => item.id !== id));
+    const removeItem = async (id: string) => {
+        try {
+            await API.delete('/cart/delete', { data: { productId: id } });
+            setCartItems((prev) => prev.filter((item) => item.id !== id));
+        } catch (err) {
+            setError(t('cart.deleteError'));
+        }
     };
 
-    const updateQuantity = (id: string, newQty: number) => {
-        setCartItems((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, quantity: newQty } : item
-            )
-        );
+    const updateQuantity = async (id: string, newQty: number) => {
+        try {
+            await API.put('/cart/update', { productId: id, newQuantity: newQty });
+            setCartItems((prev) =>
+                prev.map((item) =>
+                    item.id === id ? { ...item, quantity: newQty } : item
+                )
+            );
+        } catch (err) {
+            setError(t('cart.updateError'));
+        }
     };
 
-    // Calculate subtotal & total
     const subtotal = cartItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
     );
-    const totalValue = subtotal; // Adjust if taxes/fees are added
+    const totalValue = subtotal;
 
-    const onSubmit: SubmitHandler<ReservationFormValues> = (data) => {
-        console.log('Reservation Details:', data);
-        console.log('Cart Items:', cartItems);
-        // TODO: send reservation data to API
+    const onSubmitAuth: SubmitHandler<ReservationFormValues> = async (data) => {
+        try {
+            setLoading(true);
+            setError(null);
+            await API.post('/reservation/create', {
+                mobile: data.mobile,
+                address: data.address,
+                notes: data.notes,
+            });
+            setReservationSuccess(true);
+        } catch (err: any) {
+            setError(t('reservation.error'));
+        } finally {
+            setLoading(false);
+        }
     };
+
+    const onSubmitGuest: SubmitHandler<ReservationFormValues> = async (data) => {
+        try {
+            setLoading(true);
+            setError(null);
+            await API.post('/reservation/create-guest', data);
+            setReservationSuccess(true);
+        } catch (err: any) {
+            setError(t('reservation.error'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const reservationRef = useRef<HTMLDivElement>(null);
+    const [showStickyButton, setShowStickyButton] = useState(true);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (reservationRef.current) {
+                const rect = reservationRef.current.getBoundingClientRect();
+                setShowStickyButton(rect.top > window.innerHeight - 200);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     if (loading) {
         return (
@@ -189,6 +242,32 @@ const CartPage = () => {
                         </EmptyState.Content>
                     </EmptyState.Root>
                 </Stack>
+            </Center>
+        );
+    }
+
+    if (reservationSuccess) {
+        return (
+            <Center minH="90vh">
+                <VStack gap={6}>
+                    <LuClipboardCheck color="#9CE94F" size="60px" />
+                    <Heading size="lg">{t('reservation.successTitle')}</Heading>
+                    <Text fontSize="lg" color="gray.600">{t('reservation.successDescription')}</Text>
+                    <ButtonGroup gap={4}>
+                        <RouterLink to="/catalog">
+                            <Button size="lg" bg="#9CE94F" color="gray.950" w="100%">
+                                {t('reservation.goToShopping')}
+                            </Button>
+                        </RouterLink>
+                        {AuthController.isLoggedIn() && (
+                            <RouterLink to="/order-history">
+                                <Button size="lg" variant="outline" colorScheme="green" w="100%">
+                                    {t('reservation.goToOrderHistory')}
+                                </Button>
+                            </RouterLink>
+                        )}
+                    </ButtonGroup>
+                </VStack>
             </Center>
         );
     }
@@ -306,57 +385,64 @@ const CartPage = () => {
                     </Stack>
                 </Box>
 
-                <Box flex={1} borderRadius="md" border="xs" borderColor="border.emphasized" p={6} h="max-content">
+                <Box
+                    ref={reservationRef}
+                    flex={1}
+                    borderRadius="md"
+                    border="xs"
+                    borderColor="border.emphasized"
+                    p={6}
+                    h="max-content"
+                >
                     <Heading size="lg" mb={4}>
                         {t('reservation.title')}
                     </Heading>
 
-                    <Box as="form" onSubmit={handleSubmit(onSubmit)}>
+                    <Box as="form" onSubmit={handleSubmit(AuthController.isLoggedIn() ? onSubmitAuth : onSubmitGuest)}>
                         <Stack gap={4}>
-                            <Show when={!AuthController.isLoggedIn()}>
-                                <Field.Root id="fullName" invalid={!!errors.fullName}>
-                                    <Field.Label>
-                                        {t('reservation.fullName')} *
-                                    </Field.Label>
-                                    <Input
-                                        placeholder={t('reservation.fullNamePlaceholder')}
-                                        {...register('fullName', { required: t('reservation.fullNameError') })}
-                                    />
-                                    {errors.fullName && (
-                                        <Field.ErrorText>{errors.fullName.message}</Field.ErrorText>
-                                    )}
-                                </Field.Root>
-                            </Show>
+                            {!AuthController.isLoggedIn() && (
+                                <>
+                                    <Field.Root id="fullName" invalid={!!errors.fullName}>
+                                        <Field.Label>
+                                            {t('reservation.fullName')} *
+                                        </Field.Label>
+                                        <Input
+                                            placeholder={t('reservation.fullNamePlaceholder')}
+                                            {...register('fullName', { required: t('reservation.fullNameError') })}
+                                        />
+                                        {errors.fullName && (
+                                            <Field.ErrorText>{errors.fullName.message}</Field.ErrorText>
+                                        )}
+                                    </Field.Root>
+                                    <Field.Root id="email" invalid={!!errors.email}>
+                                        <Field.Label>
+                                            {t('reservation.email')} *
+                                        </Field.Label>
+                                        <Input
+                                            placeholder={t('reservation.emailPlaceholder')}
+                                            type="email"
+                                            {...register('email', {
+                                                required: t('reservation.emailError'),
+                                            })}
+                                        />
+                                        {errors.email && (
+                                            <Field.ErrorText>{errors.email.message}</Field.ErrorText>
+                                        )}
+                                    </Field.Root>
+                                </>
+                            )}
 
-                            <Show when={!AuthController.isLoggedIn()}>
-                                <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label>
-                                        {t('reservation.email')} *
-                                    </Field.Label>
-                                    <Input
-                                        placeholder={t('reservation.emailPlaceholder')}
-                                        type="email"
-                                        {...register('email', {
-                                            required: t('reservation.emailError'),
-                                        })}
-                                    />
-                                    {errors.email && (
-                                        <Field.ErrorText>{errors.email.message}</Field.ErrorText>
-                                    )}
-                                </Field.Root>
-                            </Show>
-
-                            <Field.Root id="phone" invalid={!!errors.phone}>
+                            <Field.Root id="mobile" invalid={!!errors.mobile}>
                                 <Field.Label>
-                                    {t('reservation.phone')} *
+                                    {t('reservation.mobile')} *
                                 </Field.Label>
                                 <Input
-                                    value={userData?.mobile || ''}
-                                    placeholder={t('reservation.phonePlaceholder')}
-                                    {...register('phone', { required: t('reservation.phoneError') })}
+                                    defaultValue={userData?.mobile || ''}
+                                    placeholder={t('reservation.mobilePlaceholder')}
+                                    {...register('mobile', { required: t('reservation.mobileError') })}
                                 />
-                                {errors.phone && (
-                                    <Field.ErrorText>{errors.phone.message}</Field.ErrorText>
+                                {errors.mobile && (
+                                    <Field.ErrorText>{errors.mobile.message}</Field.ErrorText>
                                 )}
                             </Field.Root>
 
@@ -365,7 +451,7 @@ const CartPage = () => {
                                     {t('reservation.address')} *
                                 </Field.Label>
                                 <Input
-                                    value={userData?.address || ''}
+                                    defaultValue={userData?.address || ''}
                                     placeholder={t('reservation.addressPlaceholder')}
                                     {...register('address', { required: t('reservation.addressError') })}
                                 />
@@ -376,10 +462,10 @@ const CartPage = () => {
 
                             <Field.Root id="notes" invalid={false}>
                                 <Field.Label>
-                                    {t('reservation.notes')}
+                                    {t('reservation.specialRequests')}
                                 </Field.Label>
                                 <Textarea
-                                    placeholder={t('reservation.notesPlaceholder')}
+                                    placeholder={t('reservation.specialRequestsPlaceholder')}
                                     {...register('notes')}
                                 />
                             </Field.Root>
@@ -401,6 +487,7 @@ const CartPage = () => {
                                 bg="#9CE94F"
                                 color="gray.950"
                                 loading={isSubmitting}
+                                disabled={cartItems.length === 0}
                             >
                                 {t('reservation.submit')}
                             </Button>
@@ -412,6 +499,37 @@ const CartPage = () => {
                     </Box>
                 </Box>
             </Flex>
+            {showStickyButton && (
+                <Box
+                    position="fixed"
+                    bottom="0"
+                    left="0"
+                    width="100vw"
+                    zIndex="sticky"
+                    display={{ base: 'block', lg: 'none' }}
+                    bg="bg.muted"
+                    shadow="xl"
+                    p={3}
+                    textAlign="center"
+                >
+                    <Button
+                        size="xl"
+                        bg="#9CE94F"
+                        color="gray.950"
+                        width="90%"
+                        onClick={() => {
+                            if (reservationRef.current) {
+                                window.scrollTo({
+                                    top: reservationRef.current.offsetTop - 100,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }}
+                    >
+                        <LuChevronDown /> {t('reservation.goToReservation')}
+                    </Button>
+                </Box>
+            )}
         </Box>
     );
 };
