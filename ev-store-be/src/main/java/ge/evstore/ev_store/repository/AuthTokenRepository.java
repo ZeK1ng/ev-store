@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface AuthTokenRepository extends JpaRepository<AuthTokens, Integer> {
+public interface    AuthTokenRepository extends JpaRepository<AuthTokens, Integer> {
     @Transactional
     void deleteByUser(User user);
 
