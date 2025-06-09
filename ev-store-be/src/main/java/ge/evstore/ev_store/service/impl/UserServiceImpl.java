@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @UserTokenAspectMarker
-    public UserResponse updateUser(final String city, final String address, final String mobile, final String token) {
+    public UserResponse updateUser(final String city, final String address, final String mobile, final String token) throws UserAlreadyRegisteredException {
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> user = userRepository.findByEmail(username);
         if (user.isEmpty()) {

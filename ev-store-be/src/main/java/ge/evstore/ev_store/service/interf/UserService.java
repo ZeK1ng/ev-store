@@ -25,7 +25,7 @@ public interface UserService {
 
     UserResponse getUserDetails(final String accessToken);
 
-    UserResponse updateUser(String token, String city, String address, String mobile);
+    UserResponse updateUser(String city, String address, String mobile, String token) throws UserAlreadyRegisteredException;
 
     Order saveOrderHistory(User user, CartResponse cartForUser);
 
