@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProductResponse {
+    private Long id;
     private String nameGE;
     private String nameENG;
     private String nameRUS;
@@ -35,6 +36,7 @@ public class ProductResponse {
 
     public static ProductResponse from(final Product product, final List<Long> imageIds) {
         return ProductResponse.builder()
+                .id(product.getId())
                 .nameGE(product.getNameGE())
                 .nameENG(product.getNameENG())
                 .nameRUS(product.getNameRUS())
