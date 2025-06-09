@@ -1,9 +1,11 @@
 package ge.evstore.ev_store.utils;
 
+import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -17,14 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtils {
 
     @Value("${security.jwt.secret}")
     private String jwtSecretStr;
-    @Value("${access.token.life.span.hours}")
-    private int accessTokenLifeSpanHours;
-    @Value("${refresh.token.life.span.hours}")
-    private int refreshTokenLifeSpanHours;
+    private final ParametersConfigEntityRepository tokenConfigEntityRepository;
 
     public String generateToken(final UserDetails userDetails, final TokenType tokenType) {
         final Map<String, Object> claims = new HashMap<>();
@@ -77,8 +77,10 @@ public class JwtUtils {
 
     private Instant getTokenExpiryInstant(final TokenType tokenType) {
         return switch (tokenType) {
-            case REFRESH_TOKEN -> Instant.now().plus(Duration.ofHours(refreshTokenLifeSpanHours));
-            case ACCESS_TOKEN -> Instant.now().plus(Duration.ofHours(accessTokenLifeSpanHours));
+            case REFRESH_TOKEN ->
+                    Instant.now().plus(Duration.ofMinutes(tokenConfigEntityRepository.findById(1L).get().getAccessTokenLifeSpanMinutes()));
+            case ACCESS_TOKEN ->
+                    Instant.now().plus(Duration.ofMinutes(tokenConfigEntityRepository.findById(2L).get().getRefreshTokenLifeSpanMinutes()));
         };
     }
 }

@@ -4,6 +4,7 @@ import ge.evstore.ev_store.annotation.UserTokenAspectMarker;
 import ge.evstore.ev_store.entity.*;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.repository.OrderRepository;
+import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
 import ge.evstore.ev_store.repository.UserRepository;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.response.*;
@@ -11,7 +12,6 @@ import ge.evstore.ev_store.service.interf.ProductService;
 import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
 import ge.evstore.ev_store.utils.NumberFormatUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,16 +32,16 @@ public class UserServiceImpl implements UserService {
     private final JwtUtils jwtUtils;
     private final ProductService productService;
     private final OrderRepository orderRepository;
-    @Value("${verification.code.expiration.duration.minutes}")
-    private int verifyCodeExpirationDuration;
+    private final int verifyCodeExpirationDuration;
 
 
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JwtUtils jwtUtils, final ProductService productService, final OrderRepository orderRepository) {
+    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JwtUtils jwtUtils, final ProductService productService, final OrderRepository orderRepository, final ParametersConfigEntityRepository configEntityRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.productService = productService;
         this.orderRepository = orderRepository;
+        this.verifyCodeExpirationDuration = configEntityRepository.findById(3L).get().getVerificationCodeLifeSpanMinutes();
     }
 
     public Optional<User> findUser(final String username) {

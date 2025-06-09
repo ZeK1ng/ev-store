@@ -1,6 +1,7 @@
 package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.entity.User;
+import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
 import ge.evstore.ev_store.request.CartItemReservationRequest;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.response.CartResponse;
@@ -29,15 +30,17 @@ import static ge.evstore.ev_store.utils.OrderUtils.generateOrderNumber;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    @Value("${verification.code.expiration.duration.minutes}")
-    private String verifyCodeExpirationDuration;
 
     @Value("${email.sender.username}")
     private String storeMail;
 
-    public EmailServiceImpl(final JavaMailSender mailSender) {
+    private final String getVerifyCodeExpirationDuration;
+
+    public EmailServiceImpl(final JavaMailSender mailSender, final ParametersConfigEntityRepository parametersConfigEntityRepository) {
         this.mailSender = mailSender;
+        this.getVerifyCodeExpirationDuration = parametersConfigEntityRepository.findById(3L).get().getVerificationCodeLifeSpanMinutes().toString();
     }
+
 
     public void sendVerificationCode(final String email, final String verificationCode) throws MessagingException {
         sendHtmlEmail(email, getHtmlForVerificationCode(verificationCode), VERIFICATION_EMAIL_SUBJECT);
