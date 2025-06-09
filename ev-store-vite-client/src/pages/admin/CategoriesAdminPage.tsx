@@ -21,6 +21,7 @@ import {
     Spinner,
     EmptyState,
     VStack,
+    Badge,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { FaSitemap, FaPlus, FaEdit, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
@@ -32,7 +33,7 @@ interface Category {
     id: string;
     name: string;
     description: string;
-    parentCategoryId?: string;
+    parentCategoryName?: string;
 }
 
 interface CategoryFormValues {
@@ -82,13 +83,13 @@ const CategoriesAdminPage: React.FC = () => {
         try {
             setIsSubmitting(true);
             setApiError(null);
-            await API.post('/admin/categories', { data: data.description }, {
-                params: {
+            await API.post('/admin/categories',
+                {
+                    description: data.description,
                     name: data.name,
-                    parentCategoryId: data.parentCategoryId || ''
+                    parentCategoryId: data.parentCategoryId || null
                 },
-
-            });
+            );
 
             toaster.success({
                 title: 'Success',
@@ -133,11 +134,9 @@ const CategoriesAdminPage: React.FC = () => {
         try {
             setIsEditing(id);
             setApiError(null);
-            await API.put(`/admin/categories/${id}`, null, {
-                params: {
-                    name: data.name,
-                    description: data.description
-                }
+            await API.put(`/admin/categories/${id}`, {
+                name: data.name,
+                description: data.description
             });
 
             toaster.success({
@@ -162,7 +161,7 @@ const CategoriesAdminPage: React.FC = () => {
             id: cat.id,
             value: cat.name,
             description: cat.description,
-            parentId: cat.parentCategoryId || ''
+            parentId: cat.parentCategoryName || ''
         }))
     });
 
@@ -298,10 +297,10 @@ const CategoriesAdminPage: React.FC = () => {
                         <Card.Root key={cat.id} overflow="hidden" size="sm">
                             <Card.Header>
                                 <Heading size="md">{cat.name}</Heading>
-                                {cat.parentCategoryId && (
-                                    <Text fontSize="sm" color="gray.500">
-                                        Parent: {categories.find(p => p.id === cat.parentCategoryId)?.name || cat.parentCategoryId}
-                                    </Text>
+                                {cat.parentCategoryName && (
+                                    <Badge variant="subtle" w="fit-content" size="md">
+                                        Parent: {cat.parentCategoryName}
+                                    </Badge>
                                 )}
                             </Card.Header>
                             <Card.Body>
@@ -353,10 +352,10 @@ const CategoriesAdminPage: React.FC = () => {
                                                             <Field.Label>Description</Field.Label>
                                                             <Textarea defaultValue={cat.description} onChange={e => setValue('description', e.target.value)} />
                                                         </Field.Root>
-                                                        {cat.parentCategoryId && (
-                                                            <Text fontSize="sm" color="gray.500">
-                                                                Parent: {categories.find(p => p.id === cat.parentCategoryId)?.name || cat.parentCategoryId}
-                                                            </Text>
+                                                        {cat.parentCategoryName && (
+                                                            <Badge variant="subtle" w="fit-content" size="md">
+                                                                Parent: {cat.parentCategoryName}
+                                                            </Badge>
                                                         )}
                                                     </Stack>
                                                 </Dialog.Body>
