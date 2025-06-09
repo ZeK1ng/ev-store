@@ -9,6 +9,7 @@ COPY target/ev-store-*.war app.war
 
 # Expose the port your Spring Boot app runs on
 EXPOSE 8080
+EXPOSE 443
 
 # Run the WAR using java -jar
 ENTRYPOINT ["java", "-jar", "app.war"]
