@@ -275,7 +275,7 @@ const ItemsManagementAdminPage: React.FC = () => {
             <Button size="xs" asChild variant='outline'>
                 <a href="/cms-admin/items">
                     <FaArrowLeft />
-                    Back to Admin Dashboard
+                    Back to Items Dashboard
                 </a>
             </Button>
             {apiError && (
