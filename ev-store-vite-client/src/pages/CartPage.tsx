@@ -83,6 +83,10 @@ const CartPage = () => {
         }
     }, []);
 
+    const reloadPage = () => {
+        window.location.reload();
+    };
+
     const [cartItems, setCartItems] = useState<CartItem[]>([
         {
             id: '1',
@@ -237,7 +241,7 @@ const CartPage = () => {
                                 </EmptyState.Description>
                             </VStack>
                             <ButtonGroup>
-                                <Button onClick={fetchUserData}>{t('tryAgain')}</Button>
+                                <Button onClick={reloadPage}>{t('tryAgain')}</Button>
                             </ButtonGroup>
                         </EmptyState.Content>
                     </EmptyState.Root>

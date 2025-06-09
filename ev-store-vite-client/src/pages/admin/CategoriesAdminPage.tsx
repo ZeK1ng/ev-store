@@ -21,6 +21,7 @@ import {
     Spinner,
     EmptyState,
     VStack,
+    Badge,
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { FaSitemap, FaPlus, FaEdit, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
@@ -32,7 +33,7 @@ interface Category {
     id: string;
     name: string;
     description: string;
-    parentCategoryId?: string;
+    parentCategoryName?: string;
 }
 
 interface CategoryFormValues {
@@ -48,14 +49,23 @@ const CategoriesAdminPage: React.FC = () => {
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        reset,
-        formState: { errors }
-    } = useForm<CategoryFormValues>()
+    const createForm = useForm<CategoryFormValues>({
+        defaultValues: {
+            name: '',
+            description: '',
+            parentCategoryId: undefined
+        }
+    });
+
+    const editForm = useForm<CategoryFormValues>({
+        defaultValues: {
+            name: '',
+            description: '',
+            parentCategoryId: undefined
+        }
+    });
 
     const fetchCategories = async () => {
         try {
@@ -82,20 +92,20 @@ const CategoriesAdminPage: React.FC = () => {
         try {
             setIsSubmitting(true);
             setApiError(null);
-            await API.post('/admin/categories', { data: data.description }, {
-                params: {
+            await API.post('/admin/categories',
+                {
+                    description: data.description,
                     name: data.name,
-                    parentCategoryId: data.parentCategoryId || ''
+                    parentCategoryId: data.parentCategoryId || null
                 },
-
-            });
+            );
 
             toaster.success({
                 title: 'Success',
                 description: 'Category created successfully'
             });
 
-            reset();
+            createForm.reset();
             fetchCategories();
         } catch (error) {
             setApiError('Error creating category');
@@ -129,15 +139,15 @@ const CategoriesAdminPage: React.FC = () => {
         }
     }
 
-    const handleEdit = async (id: string, data: CategoryFormValues) => {
+    const handleEdit = async (data: CategoryFormValues) => {
+        if (!editingCategory) return;
+        
         try {
-            setIsEditing(id);
+            setIsEditing(editingCategory.id);
             setApiError(null);
-            await API.put(`/admin/categories/${id}`, null, {
-                params: {
-                    name: data.name,
-                    description: data.description
-                }
+            await API.put(`/admin/categories/${editingCategory.id}`, {
+                name: data.name,
+                description: data.description
             });
 
             toaster.success({
@@ -145,6 +155,7 @@ const CategoriesAdminPage: React.FC = () => {
                 description: 'Category updated successfully'
             });
 
+            setEditingCategory(null);
             fetchCategories();
         } catch (error) {
             setApiError('Error updating category');
@@ -157,12 +168,21 @@ const CategoriesAdminPage: React.FC = () => {
         }
     }
 
+    const openEditDialog = (category: Category) => {
+        setEditingCategory(category);
+        editForm.reset({
+            name: category.name,
+            description: category.description,
+            parentCategoryId: undefined
+        });
+    };
+
     const existingCategories = createListCollection({
         items: categories.map(cat => ({
             id: cat.id,
             value: cat.name,
             description: cat.description,
-            parentId: cat.parentCategoryId || ''
+            parentId: cat.parentCategoryName || ''
         }))
     });
 
@@ -196,27 +216,27 @@ const CategoriesAdminPage: React.FC = () => {
                 </HStack>
             </Heading>
 
-            <Box as="form" onSubmit={handleSubmit(onSubmit)}>
+            <Box as="form" onSubmit={createForm.handleSubmit(onSubmit)}>
                 <Stack gap={5}>
-                    <Field.Root id="name" invalid={!!errors.name}>
+                    <Field.Root id="name" invalid={!!createForm.formState.errors.name}>
                         <Field.Label>Name</Field.Label>
                         <Input
                             placeholder="Enter category name"
-                            {...register('name', { required: 'Name is required' })}
+                            {...createForm.register('name', { required: 'Name is required' })}
                         />
-                        {errors.name && (
-                            <Field.ErrorText>{errors.name.message}</Field.ErrorText>
+                        {createForm.formState.errors.name && (
+                            <Field.ErrorText>{createForm.formState.errors.name.message}</Field.ErrorText>
                         )}
                     </Field.Root>
 
-                    <Field.Root id="description" invalid={!!errors.description}>
+                    <Field.Root id="description" invalid={!!createForm.formState.errors.description}>
                         <Field.Label>Description</Field.Label>
                         <Textarea
                             placeholder="Enter category description"
-                            {...register('description', { required: 'Description is required' })}
+                            {...createForm.register('description', { required: 'Description is required' })}
                         />
-                        {errors.description && (
-                            <Field.ErrorText>{errors.description.message}</Field.ErrorText>
+                        {createForm.formState.errors.description && (
+                            <Field.ErrorText>{createForm.formState.errors.description.message}</Field.ErrorText>
                         )}
                     </Field.Root>
 
@@ -225,7 +245,7 @@ const CategoriesAdminPage: React.FC = () => {
                         <Select.Root
                             collection={existingCategories}
                             width="100%"
-                            onValueChange={e => setValue('parentCategoryId', e.items[0]?.id)}
+                            onValueChange={e => createForm.setValue('parentCategoryId', e.items[0]?.id)}
                         >
                             <Select.HiddenSelect />
                             <Select.Control>
@@ -298,10 +318,10 @@ const CategoriesAdminPage: React.FC = () => {
                         <Card.Root key={cat.id} overflow="hidden" size="sm">
                             <Card.Header>
                                 <Heading size="md">{cat.name}</Heading>
-                                {cat.parentCategoryId && (
-                                    <Text fontSize="sm" color="gray.500">
-                                        Parent: {categories.find(p => p.id === cat.parentCategoryId)?.name || cat.parentCategoryId}
-                                    </Text>
+                                {cat.parentCategoryName && (
+                                    <Badge variant="subtle" w="fit-content" size="md">
+                                        Parent: {cat.parentCategoryName}
+                                    </Badge>
                                 )}
                             </Card.Header>
                             <Card.Body>
@@ -315,6 +335,7 @@ const CategoriesAdminPage: React.FC = () => {
                                             variant="outline"
                                             mr={2}
                                             disabled={isEditing === cat.id}
+                                            onClick={() => openEditDialog(cat)}
                                         >
                                             {isEditing === cat.id ? (
                                                 <HStack>
@@ -344,31 +365,40 @@ const CategoriesAdminPage: React.FC = () => {
                                                     </Dialog.CloseTrigger>
                                                 </Dialog.Header>
                                                 <Dialog.Body>
-                                                    <Stack gap={4}>
-                                                        <Field.Root id="edit-name" invalid={false}>
-                                                            <Field.Label>Name</Field.Label>
-                                                            <Input defaultValue={cat.name} onChange={e => setValue('name', e.target.value)} />
-                                                        </Field.Root>
-                                                        <Field.Root id="edit-description" invalid={false}>
-                                                            <Field.Label>Description</Field.Label>
-                                                            <Textarea defaultValue={cat.description} onChange={e => setValue('description', e.target.value)} />
-                                                        </Field.Root>
-                                                        {cat.parentCategoryId && (
-                                                            <Text fontSize="sm" color="gray.500">
-                                                                Parent: {categories.find(p => p.id === cat.parentCategoryId)?.name || cat.parentCategoryId}
-                                                            </Text>
-                                                        )}
-                                                    </Stack>
+                                                    <Box as="form" onSubmit={editForm.handleSubmit(handleEdit)}>
+                                                        <Stack gap={4}>
+                                                            <Field.Root id="edit-name" invalid={!!editForm.formState.errors.name}>
+                                                                <Field.Label>Name</Field.Label>
+                                                                <Input
+                                                                    {...editForm.register('name', { required: 'Name is required' })}
+                                                                />
+                                                                {editForm.formState.errors.name && (
+                                                                    <Field.ErrorText>{editForm.formState.errors.name.message}</Field.ErrorText>
+                                                                )}
+                                                            </Field.Root>
+                                                            <Field.Root id="edit-description" invalid={!!editForm.formState.errors.description}>
+                                                                <Field.Label>Description</Field.Label>
+                                                                <Textarea
+                                                                    {...editForm.register('description', { required: 'Description is required' })}
+                                                                />
+                                                                {editForm.formState.errors.description && (
+                                                                    <Field.ErrorText>{editForm.formState.errors.description.message}</Field.ErrorText>
+                                                                )}
+                                                            </Field.Root>
+                                                            {cat.parentCategoryName && (
+                                                                <Badge variant="subtle" w="fit-content" size="md">
+                                                                    Parent: {cat.parentCategoryName}
+                                                                </Badge>
+                                                            )}
+                                                        </Stack>
+                                                    </Box>
                                                 </Dialog.Body>
                                                 <Dialog.Footer>
                                                     <Dialog.ActionTrigger asChild>
                                                         <Button variant="outline" disabled={isEditing === cat.id}>Cancel</Button>
                                                     </Dialog.ActionTrigger>
                                                     <Button
-                                                        onClick={() => handleEdit(cat.id, {
-                                                            name: (document.getElementById('edit-name') as HTMLInputElement).value,
-                                                            description: (document.getElementById('edit-description') as HTMLTextAreaElement).value,
-                                                        })}
+                                                        onClick={editForm.handleSubmit(handleEdit)}
                                                         disabled={isEditing === cat.id}
                                                     >
                                                         {isEditing === cat.id ? 'Saving...' : 'Save'}

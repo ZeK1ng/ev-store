@@ -103,7 +103,7 @@ const ItemsManagementAdminPage: React.FC = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await API.get('/category/all');
+            const response = await API.get('/category/list-all');
             setCategories(response.data);
         } catch (error) {
             toaster.error({
@@ -121,7 +121,7 @@ const ItemsManagementAdminPage: React.FC = () => {
             const item = response.data;
             setExistingItem(item);
             setMainImageId(item.mainImageId || null);
-            setAdditionalImageIds(item.imagesIds || []);
+            setAdditionalImageIds(item.imageIds || []);
             reset({
                 nameENG: item.nameENG,
                 nameGE: item.nameGE,
@@ -209,7 +209,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                 },
                 isPopular: data.isPopular,
                 mainImageId: mainImageId,
-                imagesIds: additionalImageIds
+                imageIds: additionalImageIds
             };
 
             if (isCreate) {
@@ -270,7 +270,6 @@ const ItemsManagementAdminPage: React.FC = () => {
     }
 
     return (
-
         <Box p={8} maxW="800px" mx="auto">
             <Button size="xs" asChild variant='outline'>
                 <a href="/cms-admin/items">
@@ -279,7 +278,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                 </a>
             </Button>
             {apiError && (
-                <Alert.Root status="error" mb={4}>
+                <Alert.Root status="error" m={4}>
                     <Alert.Indicator />
                     <Alert.Title>{apiError}</Alert.Title>
                 </Alert.Root>
@@ -409,7 +408,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                             defaultChecked={existingItem?.isPopular}
                             onCheckedChange={(details) => setValue('isPopular', Boolean(details.checked))}
                         >
-                            <Checkbox.HiddenInput {...register('isPopular')} />
+                            <Checkbox.HiddenInput/>
                             <Checkbox.Control />
                             <Checkbox.Label>Mark as Popular</Checkbox.Label>
                         </Checkbox.Root>
