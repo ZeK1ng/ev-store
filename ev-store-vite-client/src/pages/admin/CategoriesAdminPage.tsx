@@ -21,14 +21,12 @@ import {
     Spinner,
     EmptyState,
     VStack,
-    ButtonGroup
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { FaSitemap, FaPlus, FaEdit, FaTrashAlt, FaArrowLeft } from "react-icons/fa";
 import { LuFolderOpen } from "react-icons/lu";
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
-import { useTranslation } from 'react-i18next';
 
 interface Category {
     id: string;
@@ -44,7 +42,6 @@ interface CategoryFormValues {
 }
 
 const CategoriesAdminPage: React.FC = () => {
-    const { t } = useTranslation('common');
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
