@@ -7,28 +7,33 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Converter
 public class JsonListConverter implements AttributeConverter<List<Long>, String> {
     private final ObjectMapper mapper = new ObjectMapper();
 
+
     @Override
-    public String convertToDatabaseColumn(final List<Long> list) {
+    public String convertToDatabaseColumn(final List<Long> attribute) {
         try {
-            return mapper.writeValueAsString(list);
+            return attribute == null ? "[]" : mapper.writeValueAsString(attribute);
         } catch (final JsonProcessingException e) {
-            throw new RuntimeException("Error converting list to JSON", e);
+            throw new RuntimeException("Failed to convert list to JSON string", e);
         }
     }
 
     @Override
-    public List<Long> convertToEntityAttribute(final String json) {
+    public List<Long> convertToEntityAttribute(final String dbData) {
         try {
-            return mapper.readValue(json, new TypeReference<List<Long>>() {
+            if (dbData == null || dbData.isBlank()) {
+                return new ArrayList<>();
+            }
+            return mapper.readValue(dbData, new TypeReference<>() {
             });
         } catch (final IOException e) {
-            throw new RuntimeException("Error converting JSON to list", e);
+            throw new RuntimeException("Failed to convert JSON string to list", e);
         }
     }
 }
