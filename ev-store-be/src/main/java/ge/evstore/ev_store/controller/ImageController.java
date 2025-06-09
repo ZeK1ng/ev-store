@@ -25,12 +25,4 @@ public class ImageController {
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
     }
-
-    @GetMapping("/bulk")
-    public ResponseEntity<?> getImages(@RequestParam final List<Long> imageIds) {
-        final List<byte[]> imageData = imageService.getImagesBulk(imageIds);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
-    }
 }

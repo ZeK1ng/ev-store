@@ -19,6 +19,6 @@ public class ImageEntity {
     private String name;
     private String type;
     @Lob
-    @Column(columnDefinition = "BYTEA") // For PostgreSQL
-    private byte[] image; // either this or the path
+    @Column(length = 3000)
+    private byte[] image;
 }

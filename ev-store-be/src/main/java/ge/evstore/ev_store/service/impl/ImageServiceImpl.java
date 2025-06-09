@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +33,5 @@ public class ImageServiceImpl implements ImageService {
         if (imageId < 0) return null;
         final Optional<ImageEntity> byId = imageRepository.findById(imageId);
         return byId.map(imageEntity -> CompressionUtils.decompressImage(imageEntity.getImage())).orElse(null);
-    }
-
-    @Override
-    public List<byte[]> getImagesBulk(final List<Long> imageIds) {
-        if (imageIds.isEmpty()) return null;
-        final List<ImageEntity> allById = imageRepository.findAllById(imageIds);
-        return allById.stream().map(imageEntity -> CompressionUtils.decompressImage(imageEntity.getImage())).collect(Collectors.toList());
     }
 }
