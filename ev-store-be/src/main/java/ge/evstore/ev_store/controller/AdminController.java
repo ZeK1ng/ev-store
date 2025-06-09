@@ -3,6 +3,7 @@ package ge.evstore.ev_store.controller;
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.Dictionary;
 import ge.evstore.ev_store.entity.Product;
+import ge.evstore.ev_store.request.CreateCategoryRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.DictionaryService;
@@ -100,13 +101,11 @@ public class AdminController {
 
     @PostMapping("/categories")
     public ResponseEntity<Category> createCategory(
-            @RequestParam final String name,
-            @RequestBody final String description,
-            @RequestParam(required = false) final Long parentCategoryId,
+            @RequestBody final CreateCategoryRequest categoryRequest,
             final HttpServletRequest request) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.addCategory(name, description, parentCategoryId, accessToken)
+                adminService.addCategory(categoryRequest.getName(), categoryRequest.getDescription(), categoryRequest.getParentCategoryId(), accessToken)
         );
     }
 
