@@ -45,6 +45,8 @@ public class ProductResponse {
                 .stockAmount(product.getStockAmount())
                 .categoryName(product.getCategory().getName())
                 .mainImageId(product.getMainImageId())
+                .isPopular(product.getIsPopular())
+                .imageIds(imageIds)
                 .build();
     }
 }
