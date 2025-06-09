@@ -2,6 +2,7 @@ package ge.evstore.ev_store.service.interf;
 
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.Product;
+import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public interface AdminService {
 
     // Product operations
-    Product addProduct(Product product, String accessToken) throws AccessDeniedException;
+    Product addProduct(ProductRequest product, String accessToken) throws AccessDeniedException;
 
     Product getProductById(Long id, String accessToken);
 

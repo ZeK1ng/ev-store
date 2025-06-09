@@ -1,10 +1,13 @@
 package ge.evstore.ev_store.entity;
 
 
-import ge.evstore.ev_store.utils.JsonListConverter;
+import ge.evstore.ev_store.request.ProductRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 
@@ -13,6 +16,9 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "products")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Product {
     @Schema(hidden = true)
     @Id
@@ -35,9 +41,7 @@ public class Product {
 
     private Long mainImageId;
 
-    @Column(columnDefinition = "jsonb")
-    @Convert(converter = JsonListConverter.class)
-    private List<Long> imageIds;
+    private String imageIds;
 
     private Boolean isPopular;
     
@@ -45,5 +49,19 @@ public class Product {
         final ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(product, this);
+    }
+
+    public static Product fromProductRequest(final ProductRequest productRequest) {
+        return Product.builder().nameGE(productRequest.getNameGE())
+                .nameENG(productRequest.getNameENG())
+                .nameRUS(productRequest.getNameRUS())
+                .descriptionENG(productRequest.getDescriptionENG())
+                .descriptionGE(productRequest.getDescriptionGE())
+                .descriptionRUS(productRequest.getDescriptionRUS())
+                .price(productRequest.getPrice())
+                .stockAmount(productRequest.getStockAmount())
+                .isPopular(productRequest.getIsPopular())
+                .mainImageId(productRequest.getMainImageId())
+                .build();
     }
 }

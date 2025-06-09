@@ -1,5 +1,6 @@
 package ge.evstore.ev_store.service.impl;
 
+import ge.evstore.ev_store.converter.JsonListConverter;
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.MaxPriceEasySaver;
 import ge.evstore.ev_store.entity.Product;
@@ -7,6 +8,7 @@ import ge.evstore.ev_store.exception.IsParentCategoryException;
 import ge.evstore.ev_store.repository.CategoryRepository;
 import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
+import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.ImageService;
@@ -32,22 +34,31 @@ public class AdminServiceImpl implements AdminService {
     private final CategoryRepository categoryRepository;
     private final MaxPriceSaverRepository maxPriceSaverRepository;
     private final ImageService imageService;
+    private final JsonListConverter jsonListConverter;
 
     @Override
     @Transactional
-    public Product addProduct(final Product product, final String accessToken) throws AccessDeniedException {
+    public Product addProduct(final ProductRequest productRequest, final String accessToken) throws AccessDeniedException {
         final List<MaxPriceEasySaver> maxPriceSaver = maxPriceSaverRepository.findAll();
         if (maxPriceSaver.isEmpty()) {
             final MaxPriceEasySaver maxPriceEasySaver = new MaxPriceEasySaver();
-            maxPriceEasySaver.setMaxPrice(product.getPrice());
+            maxPriceEasySaver.setMaxPrice(productRequest.getPrice());
             maxPriceSaverRepository.save(maxPriceEasySaver);
         } else {
             final MaxPriceEasySaver maxPriceEasySaver = maxPriceSaver.get(0);
-            if (product.getPrice() > maxPriceEasySaver.getMaxPrice()) {
-                maxPriceEasySaver.setMaxPrice(product.getPrice());
+            if (productRequest.getPrice() > maxPriceEasySaver.getMaxPrice()) {
+                maxPriceEasySaver.setMaxPrice(productRequest.getPrice());
                 maxPriceSaverRepository.save(maxPriceEasySaver);
             }
         }
+        final List<Long> imageIds = productRequest.getImageIds();
+        String imageIdsColumnValue = null;
+        if (imageIds != null && !imageIds.isEmpty()) {
+            imageIdsColumnValue = jsonListConverter.convertToDatabaseColumn(imageIds);
+        }
+        final Product product = Product.fromProductRequest(productRequest);
+        product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElse(null));
+        product.setImageIds(imageIdsColumnValue);
         return productRepository.save(product);
     }
 
@@ -121,10 +132,10 @@ public class AdminServiceImpl implements AdminService {
     public Category updateCategory(final Long id, final String name, final String description, final String accessToken) {
         return categoryRepository.findById(id)
                 .map(category1 -> {
-                    if(name != null && !name.isEmpty()) {
+                    if (name != null && !name.isEmpty()) {
                         category1.setName(name);
                     }
-                    if(description != null && !description.isEmpty()) {
+                    if (description != null && !description.isEmpty()) {
                         category1.setDescription(description);
                     }
                     return categoryRepository.save(category1);

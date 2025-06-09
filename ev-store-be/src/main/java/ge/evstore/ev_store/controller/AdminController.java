@@ -4,6 +4,7 @@ import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.Dictionary;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.request.CreateCategoryRequest;
+import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.DictionaryService;
@@ -40,11 +41,11 @@ public class AdminController {
 
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(
-            @RequestBody final Product product,
+            @RequestBody final ProductRequest productRequest,
             final HttpServletRequest request) throws AccessDeniedException {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(
-                adminService.addProduct(product, accessToken)
+                adminService.addProduct(productRequest, accessToken)
         );
     }
 
