@@ -2,7 +2,10 @@ package ge.evstore.ev_store.service.interf;
 
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.Product;
+import ge.evstore.ev_store.response.ImageSaveResponse;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
 
@@ -27,4 +30,6 @@ public interface AdminService {
     Category updateCategory(Long id, String name, String description, String accessToken);
 
     void deleteCategory(Long id, String accessToken);
+
+    List<ImageSaveResponse> saveImages(MultipartFile[] images, String accessToken) throws IOException;
 }
