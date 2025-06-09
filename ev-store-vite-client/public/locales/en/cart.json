@@ -15,15 +15,15 @@
         "title": "Reservation Details",
         "fullName": "Full Name",
         "email": "Email Address",
-        "phone": "Phone Number",
+        "mobile": "mobile Number",
         "address": "Address",
         "fullNamePlaceholder": "Enter your full name",
         "emailPlaceholder": "Enter your email address",
-        "phonePlaceholder": "Enter your phone number",
+        "mobilePlaceholder": "Enter your mobile number",
         "addressPlaceholder": "Enter your address",
         "fullNameError": "Full name is required.",
         "emailError": "Valid email is required.",
-        "phoneError": "Phone number is required.",
+        "mobileError": "mobile number is required.",
         "addressError": "Address is required.",
         "specialRequests": "Special Requests",
         "specialRequestsPlaceholder": "Any special requests or notes",
@@ -31,6 +31,10 @@
         "noPayment": "No payment required for reservations.",
         "concent": "By reserving, you agree to our terms. We'll contact you within 24 hours.",
         "submit": "Reserve Items",
-        "goToReservation": "Go to Reservation"
+        "goToReservation": "Go to Reservation",
+        "successTitle": "Reservation Successful!",
+        "successDescription": "Your reservation has been received. We will contact you soon.",
+        "goToShopping": "Go to Shopping",
+        "goToOrderHistory": "Go to Order History"   
     }
 }
