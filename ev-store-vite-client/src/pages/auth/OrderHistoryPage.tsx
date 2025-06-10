@@ -12,7 +12,8 @@ import {
     ButtonGroup,
     Badge,
     Center,
-    Spinner
+    Spinner,
+    Alert
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom'
 import { LuBox, LuPackageSearch } from "react-icons/lu"
@@ -35,13 +36,14 @@ interface OrderHistoryItem {
         unitPrice: number;
         totalPrice: number;
     }>;
-    orderStatus: 'PENDING' | 'COMPLETED' | 'CANCELLED';
+    orderStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
+    specialInstruction: string;
 }
 
 const statusColor = {
     PENDING: 'yellow',
     COMPLETED: 'green',
-    CANCELLED: 'red',
+    CANCELED: 'red',
 };
 
 
@@ -53,7 +55,7 @@ const OrderHistoryPage = () => {
     const statusLabel = {
         PENDING: t('history.status.pending'),
         COMPLETED: t('history.status.completed'),
-        CANCELLED: t('history.status.cancelled'),
+        CANCELED: t('history.status.canceled'),
     };
 
     useEffect(() => {
@@ -171,6 +173,15 @@ const OrderHistoryPage = () => {
                                                 ))}
                                             </Box>
                                         </Box>
+                                        {order.specialInstruction && (
+                                            <Alert.Root status="warning" mt={4}>
+                                                <Alert.Indicator />
+                                                <Alert.Title>
+                                                    {order.specialInstruction}
+                                                </Alert.Title>
+                                            </Alert.Root>
+                                        )}
+
                                     </Box>
                                 ))
                         )}
