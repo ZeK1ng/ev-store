@@ -11,6 +11,7 @@ import ge.evstore.ev_store.response.ProductResponse;
 import ge.evstore.ev_store.service.interf.CategoryService;
 import ge.evstore.ev_store.service.interf.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final MaxPriceSaverRepository maxPriceSaverRepository;
@@ -30,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse getProductResponseById(final Long productId) {
         final Optional<Product> product = productRepository.findById(productId);
+        log.info("Getting product {}", productId);
         if (product.isEmpty()) {
             throw new ProductNotFoundException("Product not found with ID: " + productId);
         }
@@ -40,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(final Long productId) {
         final Optional<Product> product = productRepository.findById(productId);
+        log.info("Getting product {}", productId);
         return product.orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
     }
 
@@ -64,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular) {
+        log.info("getAllProducts called with: page={}, size={}, sortBy:{}, direction: {}, name: {}, caregoryId:{}, minPrice:{}, maxPrice:{}, inStock:{}, isPopular:{}", page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
         final Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         final Pageable pageable = PageRequest.of(page, size, sort);
 
