@@ -43,7 +43,7 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "asc") final String direction,
             @RequestParam(required = false) final Long productId,
             @RequestParam(required = false) final String name,
-            @RequestParam(required = false) final Long categoryId,
+            @RequestParam(required = false) final String categoryId, // "n1,n2,n3"
             @RequestParam(required = false) final Double minPrice,
             @RequestParam(required = false) final Double maxPrice,
             @RequestParam(required = false) final Boolean inStock,

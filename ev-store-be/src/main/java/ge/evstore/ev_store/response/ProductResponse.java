@@ -49,6 +49,7 @@ public class ProductResponse {
                 .price(product.getPrice())
                 .stockAmount(product.getStockAmount())
                 .categoryName(product.getCategory().getName())
+                .categoryId(product.getCategory().getId())
                 .mainImageId(product.getMainImageId())
                 .isPopular(product.getIsPopular())
                 .tutorialLink(product.getTutorialLink())

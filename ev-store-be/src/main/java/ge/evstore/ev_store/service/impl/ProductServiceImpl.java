@@ -17,8 +17,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular, Long productId) {
+    public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final String categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular, final Long productId) {
         log.info("getAllProducts called with: page={}, size={}, sortBy:{}, direction: {}, name: {}, caregoryId:{}, minPrice:{}, maxPrice:{}, inStock:{}, isPopular:{}", page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
         final Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         final Pageable pageable = PageRequest.of(page, size, sort);
@@ -85,15 +87,21 @@ public class ProductServiceImpl implements ProductService {
             ));
         }
 
-        if(productId != null) {
+        if (productId != null) {
             spec = spec.and((root, query, cb) ->
                     cb.equal(root.get("id"), productId));
         }
 
-        if (categoryId != null) {
-            final Set<Long> categoryIds = categoryService.getDescendantCategoryIds(categoryId);
+        if (categoryId != null && !categoryId.isBlank()) {
+            final String categoryIdToJsonString = convertCategoryIdToJsonString(categoryId);
+            final List<Long> categoryIds = jsonListConverter.convertToEntityAttribute(categoryIdToJsonString);
+            final Set<Long> allDescendantIds = categoryIds.stream()
+                    .map(categoryService::getDescendantCategoryIds)
+                    .filter(Objects::nonNull)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toSet());
             spec = spec.and((root, query, cb) ->
-                    root.get("category").get("id").in(categoryIds));
+                    root.get("category").get("id").in(allDescendantIds));
         }
 
         if (minPrice != null) {
@@ -122,6 +130,10 @@ public class ProductServiceImpl implements ProductService {
             return ProductResponse.from(product, imageIds);
         }).toList();
         return new PageImpl<>(productResponses, all.getPageable(), all.getTotalElements());
+    }
+
+    private String convertCategoryIdToJsonString(final String categoryId) {
+        return "[" + categoryId + "]";
     }
 
 }
