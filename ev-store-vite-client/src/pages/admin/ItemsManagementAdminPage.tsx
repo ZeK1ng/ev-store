@@ -20,6 +20,7 @@ import {
     Alert,
     createListCollection,
     Checkbox,
+    HStack,
     InputGroup
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
@@ -400,29 +401,33 @@ const ItemsManagementAdminPage: React.FC = () => {
                         {errors.categoryId && <Field.ErrorText>{errors.categoryId.message}</Field.ErrorText>}
                     </Field.Root>
 
-                    <Field.Root id="price" invalid={!!errors.price}>
-                        <Field.Label>Price</Field.Label>
-                        <NumberInput.Root
-                            defaultValue={String(existingItem?.price || 0)}
-                            onValueChange={e => setValue('price', Number(e.value))}
-                        >
-                            <NumberInput.Control />
-                            <NumberInput.Input />
-                        </NumberInput.Root>
-                        {errors.price && <Field.ErrorText>{errors.price.message}</Field.ErrorText>}
-                    </Field.Root>
+                    <HStack>
+                        <Field.Root id="price" invalid={!!errors.price}>
+                            <Field.Label>Price</Field.Label>
+                            <NumberInput.Root
+                                defaultValue={String(existingItem?.price || 0)}
+                                onValueChange={e => setValue('price', Number(e.value))}
+                            >
+                                <NumberInput.Control />
+                                <NumberInput.Input />
+                            </NumberInput.Root>
+                            {errors.price && <Field.ErrorText>{errors.price.message}</Field.ErrorText>}
+                        </Field.Root>
 
-                    <Field.Root id="stockAmount" invalid={!!errors.stockAmount}>
-                        <Field.Label>Stock Amount</Field.Label>
-                        <NumberInput.Root
-                            defaultValue={String(existingItem?.stockAmount || 0)}
-                            onValueChange={e => setValue('stockAmount', Number(e.value))}
-                        >
-                            <NumberInput.Control />
-                            <NumberInput.Input />
-                        </NumberInput.Root>
-                        {errors.stockAmount && <Field.ErrorText>{errors.stockAmount.message}</Field.ErrorText>}
-                    </Field.Root>
+                        <Field.Root id="stockAmount" invalid={!!errors.stockAmount}>
+                            <Field.Label>Stock Amount</Field.Label>
+                            <NumberInput.Root
+                                defaultValue={String(existingItem?.stockAmount || 0)}
+                                onValueChange={e => setValue('stockAmount', Number(e.value))}
+                            >
+                                <NumberInput.Control />
+                                <NumberInput.Input />
+                            </NumberInput.Root>
+                            {errors.stockAmount && <Field.ErrorText>{errors.stockAmount.message}</Field.ErrorText>}
+                        </Field.Root>
+                    </HStack>
+
+
 
                     <Field.Root id="isPopular">
                         <Checkbox.Root

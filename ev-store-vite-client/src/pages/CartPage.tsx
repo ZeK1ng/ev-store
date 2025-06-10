@@ -40,9 +40,12 @@ interface UserDetails {
 
 interface CartItem {
     productId: number;
-    productNameGE: string;
-    productNameRUS: string;
-    productNameENG: string;
+    nameGE: string;
+    nameRUS: string;
+    nameENG: string;
+    descriptionGE: string;
+    descriptionRUS: string;
+    descriptionENG: string;
     quantity: number;
     price: number;
     mainImageId: number;
@@ -55,7 +58,7 @@ interface CartResponse {
 }
 
 interface ReservationFormValues {
-    fullName: string;
+    name: string;
     email: string;
     mobile: string;
     city: string;
@@ -64,7 +67,7 @@ interface ReservationFormValues {
 }
 
 const CartPage = () => {
-    const { t } = useTranslation('cart');
+    const { t, i18n } = useTranslation('cart');
     const [userData, setUserData] = useState<UserDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -96,11 +99,11 @@ const CartPage = () => {
             } else {
                 const localCart = getCart();
                 if (localCart.length > 0) {
-                    const productIds = localCart.map((item: { id: number }) => item.id);
+                    const productIds = localCart.map((item: { productId: number }) => item.productId);
                     const response = await API.post<CartItem[]>('/product/bulk', productIds);
-                    const itemsWithQuantity = response.data.map(item => ({
+                    const itemsWithQuantity = response.data.map((item) => ({
                         ...item,
-                        quantity: localCart.find((cartItem: { id: number }) => cartItem.id === item.productId)?.quantity || 1
+                        quantity: localCart.find((cartItem: { productId: number }) => cartItem.productId === item.productId)?.quantity || 1
                     }));
                     setCartItems(itemsWithQuantity);
                     setCartTotalPrice(itemsWithQuantity.reduce((sum, item) => sum + (item.price * item.quantity), 0));
@@ -136,7 +139,7 @@ const CartPage = () => {
                 address: userData?.address,
                 specialInstructions: '',
             } : {
-                fullName: '',
+                name: '',
                 email: '',
                 mobile: '',
                 city: '',
@@ -178,14 +181,15 @@ const CartPage = () => {
         }
     };
 
-    if (!AuthController.isLoggedIn()) {
-        const subtotal = cartItems.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-        );
-        setCartTotalPrice(subtotal)
-    }
-
+    useEffect(() => {
+        if (!AuthController.isLoggedIn()) {
+            const subtotal = cartItems.reduce(
+                (sum, item) => sum + item.price * item.quantity,
+                0
+            );
+            setCartTotalPrice(subtotal);
+        }
+    }, [cartItems]);
 
     const onSubmitAuth: SubmitHandler<ReservationFormValues> = async (data) => {
         try {
@@ -209,7 +213,17 @@ const CartPage = () => {
         try {
             setLoading(true);
             setError(null);
-            await API.post('/reservation/create-guest', data);
+
+            const itemsDataToSend = cartItems.map((item) => ({
+                quantity: item.quantity,
+                productId: item.productId,
+                productName: item.nameENG,
+                productPrice: item.price,
+            }));
+            await API.post('/reservation/create-guest', {
+                ...data,
+                cartItems: itemsDataToSend,
+            });
             setReservationSuccess(true);
         } catch (err: any) {
             setError(t('reservation.error'));
@@ -222,6 +236,7 @@ const CartPage = () => {
     const [showStickyButton, setShowStickyButton] = useState(true);
 
     useEffect(() => {
+
         const handleScroll = () => {
             if (reservationRef.current) {
                 const rect = reservationRef.current.getBoundingClientRect();
@@ -294,6 +309,7 @@ const CartPage = () => {
         );
     }
 
+
     return (
         <Box minH="100vh" px={{ base: 4, md: 8 }} py={8}>
             <Flex mb={6} align="center">
@@ -312,9 +328,9 @@ const CartPage = () => {
                     </Heading>
 
                     <Stack gap={4}>
-                        {cartItems.map((item) => (
+                        {cartItems.length > 0 && cartItems.map((item, index) => (
                             <Flex
-                                key={item.productId}
+                                key={index}
                                 align="flex-start"
                                 justify="space-between"
                                 flexDirection={{ base: 'column', md: 'row' }}
@@ -325,13 +341,14 @@ const CartPage = () => {
                                 <HStack gap={4} align="center">
                                     <Image
                                         src={getImageUrl(item.mainImageId)}
-                                        alt={item.productNameENG}
+                                        alt={item.nameENG}
                                         boxSize="80px"
                                         objectFit="cover"
                                         borderRadius="md"
                                     />
                                     <Box>
-                                        <Text fontWeight="bold">{item.productNameENG}</Text>
+                                        <Text fontWeight="bold">{item.nameENG}</Text>
+                                        <Text fontSize="sm" color="gray.500" lineClamp={2}>{item.descriptionENG}</Text>
                                     </Box>
                                 </HStack>
 
@@ -421,16 +438,16 @@ const CartPage = () => {
                         <Stack gap={4}>
                             {!AuthController.isLoggedIn() && (
                                 <>
-                                    <Field.Root id="fullName" invalid={!!errors.fullName}>
+                                    <Field.Root id="name" invalid={!!errors.name}>
                                         <Field.Label>
-                                            {t('reservation.fullName')} *
+                                            {t('reservation.name')} *
                                         </Field.Label>
                                         <Input
-                                            placeholder={t('reservation.fullNamePlaceholder')}
-                                            {...register('fullName', { required: t('reservation.fullNameError') })}
+                                            placeholder={t('reservation.namePlaceholder')}
+                                            {...register('name', { required: t('reservation.nameError') })}
                                         />
-                                        {errors.fullName && (
-                                            <Field.ErrorText>{errors.fullName.message}</Field.ErrorText>
+                                        {errors.name && (
+                                            <Field.ErrorText>{errors.name.message}</Field.ErrorText>
                                         )}
                                     </Field.Root>
                                     <Field.Root id="email" invalid={!!errors.email}>

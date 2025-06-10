@@ -43,6 +43,7 @@ interface OrderItem {
         totalPrice: number;
     }>;
     orderStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
+    specialInstruction: string;
 }
 
 const statusColor = {
@@ -55,7 +56,6 @@ const OrdersManagementAdminPage = () => {
     const { t } = useTranslation('auth');
     const [orders, setOrders] = useState<OrderItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [isUpdating, setIsUpdating] = useState<number | null>(null);
     const [apiError, setApiError] = useState<string | null>(null);
     const [searchId, setSearchId] = useState<string>('');
     const [totalOrders, setTotalOrders] = useState(0);
@@ -107,10 +107,9 @@ const OrdersManagementAdminPage = () => {
 
     const handleStatusChange = async (orderId: number, newStatus: 'PENDING' | 'COMPLETED' | 'CANCELED') => {
         try {
-            setIsUpdating(orderId);
             setApiError(null);
             await API.patch(`/admin/orders/change-status?orderId=${orderId}&orderStatus=${newStatus}`);
-            
+
             toaster.success({
                 title: 'Success',
                 description: 'Order status updated successfully'
@@ -123,8 +122,6 @@ const OrdersManagementAdminPage = () => {
                 title: 'Error',
                 description: 'Failed to update order status'
             });
-        } finally {
-            setIsUpdating(null);
         }
     };
 
@@ -141,7 +138,7 @@ const OrdersManagementAdminPage = () => {
     }
 
     return (
-        <Box p={8} maxW="800px" mx="auto" h="100dvh">
+        <Box p={8} maxW="800px" mx="auto">
             {apiError && (
                 <Alert.Root status="error" mb={4}>
                     <Alert.Indicator />
@@ -214,7 +211,7 @@ const OrdersManagementAdminPage = () => {
                                             {statusLabel[order.orderStatus]}
                                         </Badge>
                                         <Text fontWeight="bold" fontSize="xl">
-                                            ${order.totalPrice.toFixed(2)}
+                                            {order.totalPrice.toFixed(2)}
                                         </Text>
                                     </VStack>
                                 </HStack>
@@ -229,40 +226,54 @@ const OrdersManagementAdminPage = () => {
                                                 <Text>
                                                     {item.productNameEng} × {item.quantity}
                                                 </Text>
-                                                <Text color="gray.600">${item.unitPrice.toFixed(2)}</Text>
+                                                <Text color="gray.600">{item.unitPrice.toFixed(2)}</Text>
                                             </HStack>
                                         ))}
                                     </Box>
                                 </Box>
+                                {order.specialInstruction && (
+                                    <Alert.Root status="warning" mt={4}>
+                                        <Alert.Indicator />
+                                        <Alert.Title>
+                                            {order.specialInstruction}
+                                        </Alert.Title>
+                                    </Alert.Root>
+                                )}
                                 <Separator my={3} />
                                 <ButtonGroup size="sm" w="full" justifyContent="end" gap={2}>
-                                    <Button
-                                        colorPalette="yellow"
-                                        variant={order.orderStatus === 'PENDING' ? 'surface' : 'solid'}
-                                        disabled={order.orderStatus === 'PENDING'}
-                                        onClick={() => handleStatusChange(order.orderId, 'PENDING')}
-                                        loading={isUpdating === order.orderId && order.orderStatus === 'PENDING'}
-                                    >
-                                        {statusLabel.PENDING}
-                                    </Button>
-                                    <Button
-                                        colorPalette="green"
-                                        variant={order.orderStatus === 'COMPLETED' ? 'surface' : 'solid'}
-                                        disabled={order.orderStatus === 'COMPLETED'}
-                                        onClick={() => handleStatusChange(order.orderId, 'COMPLETED')}
-                                        loading={isUpdating === order.orderId && order.orderStatus === 'COMPLETED'}
-                                    >
-                                        {statusLabel.COMPLETED}
-                                    </Button>
-                                    <Button
-                                        colorPalette="red"
-                                        variant={order.orderStatus === 'CANCELED' ? 'surface' : 'solid'}
-                                        disabled={order.orderStatus === 'CANCELED'}
-                                        onClick={() => handleStatusChange(order.orderId, 'CANCELED')}
-                                        loading={isUpdating === order.orderId && order.orderStatus === 'CANCELED'}
-                                    >
-                                        {statusLabel.CANCELED}
-                                    </Button>
+
+                                    {order.orderStatus !== 'PENDING' && (
+                                        <Button
+                                            colorPalette="yellow"
+                                            variant="solid"
+                                            onClick={() => handleStatusChange(order.orderId, 'PENDING')}
+                                        >
+                                            {statusLabel.PENDING}
+                                        </Button>
+                                    )}
+
+                                    {order.orderStatus !== 'COMPLETED' && (
+                                        <Button
+                                            colorPalette="green"
+                                            variant="solid"
+                                            onClick={() => handleStatusChange(order.orderId, 'COMPLETED')}
+                                        >
+                                            {statusLabel.COMPLETED}
+                                        </Button>
+                                    )}
+
+                                    {order.orderStatus !== 'CANCELED' && (
+                                        <Button
+                                            colorPalette="red"
+                                            variant="solid"
+                                            onClick={() => handleStatusChange(order.orderId, 'CANCELED')}
+                                        >
+                                            {statusLabel.CANCELED}
+                                        </Button>
+                                    )}
+
+
+
                                 </ButtonGroup>
                             </Card.Body>
                         </Card.Root>
@@ -277,7 +288,7 @@ const OrdersManagementAdminPage = () => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                 setCurrentPage(details.page - 1);
                             }}
-                            mt="6"
+                            mt="4"
                             justifySelf="center"
                         >
                             <ButtonGroup variant="ghost" size="sm">

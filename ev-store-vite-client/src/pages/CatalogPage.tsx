@@ -13,7 +13,6 @@ import {
     Button,
     Field,
     Input,
-    NativeSelect,
     Accordion,
     Checkbox,
     ButtonGroup,
@@ -25,185 +24,118 @@ import {
     EmptyState,
     List,
     Show,
+    Portal,
+    Select,
+    createListCollection,
+    Center,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
 import { LuShoppingCart } from "react-icons/lu";
-import { addItemToCart } from "@/utils/helpers";
+import { addItemToCart, getImageUrl } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
 
-
-
-interface Item {
+interface Category {
     id: number;
     name: string;
-    description: string;
-    category: string;
-    subcategory: string;
+}
+
+interface Product {
+    productId: number;
+    nameENG: string;
+    nameGE: string;
+    nameRUS: string;
+    descriptionENG: string;
+    descriptionGE: string;
+    descriptionRUS: string;
+    categoryId: number;
+    categoryName: string;
     price: number;
-    image: string;
+    mainImageId: number;
+    isPopular: boolean;
+}
+
+interface ProductResponse {
+    content: Product[];
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
 }
 
 const CatalogPage = () => {
     const { t } = useTranslation('catalog')
 
-    const products: Item[] = [
-        {
-            id: 1,
-            name: "Fast Charging Adapter",
-            description: "A high-speed adapter for fast charging.",
-            category: "EV Accessories",
-            subcategory: "Adapters",
-            price: 49.99,
-            image: "https://placehold.co/300?text=Adapter"
-        },
-        {
-            id: 2,
-            name: "Heavy-Duty Charging Cable",
-            description: "A durable cable for heavy-duty charging.",
-            category: "EV Accessories",
-            subcategory: "Cables",
-            price: 79.99,
-            image: "https://placehold.co/300?text=Cable"
-        },
-        {
-            id: 3,
-            name: "Home Charging Station",
-            description: "A convenient home charging station for your EV.",
-            category: "EV Chargers",
-            subcategory: "Home Chargers",
-            price: 299.99,
-            image: "https://placehold.co/300?text=Home+Charger"
-        },
-        {
-            id: 4,
-            name: "Portable EV Charger",
-            description: "A portable charger for on-the-go charging.",
-            category: "EV Chargers",
-            subcategory: "Portable Chargers",
-            price: 199.99,
-            image: "https://placehold.co/300?text=Portable+Charger"
-        },
-        {
-            id: 5,
-            name: "Smart EV Charger",
-            description: "A smart charger with app connectivity.",
-            category: "EV Chargers",
-            subcategory: "Home Chargers",
-            price: 349.99,
-            image: "https://placehold.co/300?text=Smart+Charger"
-        },
-        {
-            id: 6,
-            name: "Universal EV Adapter",
-            description: "An adapter compatible with all EV models.",
-            category: "EV Chargers",
-            subcategory: "Adapters",
-            price: 29.99,
-            image: "https://placehold.co/300?text=Universal+Adapter"
-        },
-        {
-            id: 7,
-            name: "EV Battery Monitor",
-            description: "A device to monitor your EV battery health.",
-            category: "EV Accessories",
-            subcategory: "Monitors",
-            price: 99.99,
-            image: "https://placehold.co/300?text=Battery+Monitor"
-        },
-        {
-            id: 8,
-            name: "Wireless EV Charger",
-            description: "A wireless charger for hassle-free charging.",
-            category: "EV Chargers",
-            subcategory: "Home Chargers",
-            price: 399.99,
-            image: "https://placehold.co/300?text=Wireless+Charger"
-        },
-        {
-            id: 9,
-            name: "EV Charging Station",
-            description: "A public charging station for EVs.",
-            category: "EV Chargers",
-            subcategory: "Public Chargers",
-            price: 499.99,
-            image: "https://placehold.co/300?text=Charging+Station"
-        },
-        {
-            id: 10,
-            name: "EV Maintenance Kit",
-            description: "A kit for maintaining your EV.",
-            category: "EV Accessories",
-            subcategory: "Kits",
-            price: 59.99,
-            image: "https://placehold.co/300?text=Maintenance+Kit"
-        },
-        {
-            id: 11,
-            name: "EV Cleaning Supplies",
-            description: "Supplies for cleaning your EV.",
-            category: "EV Accessories",
-            subcategory: "Cleaning",
-            price: 39.99,
-            image: "https://placehold.co/300?text=Cleaning+Supplies"
-        },
-        {
-            id: 12,
-            name: "EV Tire Inflator",
-            description: "A tire inflator for your EV.",
-            category: "EV Accessories",
-            subcategory: "Inflators",
-            price: 29.99,
-            image: "https://placehold.co/300?text=Tire+Inflator"
-        },
-        {
-            id: 13,
-            name: "EV Windshield Cover",
-            description: "A cover to protect your EV windshield.",
-            category: "EV Accessories",
-            subcategory: "Covers",
-            price: 19.99,
-            image: "https://placehold.co/300?text=Windshield+Cover"
-        },
-        {
-            id: 14,
-            name: "EV Seat Covers",
-            description: "Seat covers for your EV.",
-            category: "EV Accessories",
-            subcategory: "Covers",
-            price: 49.99,
-            image: "https://placehold.co/300?text=Seat+Cover"
-        },
-    ];
-
-    const categories = Array.from(new Set(products.map(p => p.category)))
-    const subcategories = Array.from(new Set(products.map(p => p.subcategory)))
+    const [categories, setCategories] = useState<Category[]>([])
+    const [products, setProducts] = useState<Product[]>([])
+    const [totalProducts, setTotalProducts] = useState(0)
+    const [loading, setLoading] = useState(true)
 
     const [search, setSearch] = useState('')
-    const [selCats, setSelCats] = useState<string[]>([])
-    const [selSubs, setSelSubs] = useState<string[]>([])
-    const [selRange, setSelRange] = useState<number[]>([0, 1000])
-    const [sliderRange, setSliderRange] = useState<number[]>([0, 1000])
-    const [filtered, setFiltered] = useState(products)
+    const [selCats, setSelCats] = useState<number[]>([])
+    const [selRange, setSelRange] = useState<number[]>([0, 0])
+    const [sliderRange, setSliderRange] = useState<number[]>([0, 0])
+    const [sortDirection, setSortDirection] = useState('asc')
+    const [isPopular, setIsPopular] = useState(false)
 
-
-    const pageSize = 12
-    const [page, setPage] = useState(1)
-    const paged = filtered.slice((page - 1) * pageSize, page * pageSize)
+    const pageSize = 10
+    const [page, setPage] = useState(0)
 
     useEffect(() => {
-        let res = products.filter(p =>
-            p.name.toLowerCase().includes(search.toLowerCase()) ||
-            p.description.toLowerCase().includes(search.toLowerCase())
-        )
-        if (selCats.length) res = res.filter(p => selCats.includes(p.category))
-        if (selSubs.length) res = res.filter(p => selSubs.includes(p.subcategory))
+        const fetchCategories = async () => {
+            try {
+                const response = await API.get('/category/all')
+                setCategories(response.data)
+            } catch (error) {
+                console.error('Error fetching categories:', error)
+            }
+        }
+        fetchCategories()
+    }, [])
 
-        setFiltered(res)
-        setPage(1)
-    }, [search, selCats, selSubs, selRange])
+    useEffect(() => {
+        const fetchMaxPrice = async () => {
+            try {
+                const response = await API.get('/product/max-price')
+                const max = response.data?.maxPrice
+                setSliderRange([0, max])
+                setSelRange([0, max])
+            } catch (error) {
+                console.error('Error fetching max price:', error)
+            }
+        }
+        fetchMaxPrice()
+    }, [])
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true)
+            try {
+                const params = new URLSearchParams({
+                    page: page.toString(),
+                    size: pageSize.toString(),
+                    direction: sortDirection,
+                    name: search || '',
+                    categoryId: selCats.join(','),
+                    minPrice: selRange[0].toString(),
+                    maxPrice: selRange[1].toString(),
+                    isPopular: isPopular.toString()
+                })
+
+                const response = await API.get<ProductResponse>(`/product?${params}`)
+                setProducts(response.data.content)
+                setTotalProducts(response.data.totalElements)
+            } catch (error) {
+                console.error('Error fetching products:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchProducts()
+    }, [page, pageSize, sortDirection, search, selCats, selRange, isPopular])
 
     const addToCart = async (productId: number) => {
         if (AuthController.isLoggedIn()) {
@@ -214,10 +146,14 @@ const CatalogPage = () => {
                 })
             } catch (error) {
                 console.error('Error adding to cart:', error)
+                toaster.success({
+                    title: t('addToCartSuccess')
+                })
             }
         } else {
             addItemToCart(productId, 1)
         }
+
     }
 
     return (
@@ -232,7 +168,7 @@ const CatalogPage = () => {
                     variant="outline"
                     multiple
                     collapsible
-                    defaultValue={["category", "subcategory", "price"]}
+                    defaultValue={["category", "price", "availability"]}
                 >
                     <Accordion.Item value="price">
                         <Accordion.ItemTrigger>
@@ -244,9 +180,11 @@ const CatalogPage = () => {
                         <Accordion.ItemContent>
                             <Accordion.ItemBody px="4" py="3">
                                 <Slider.Root width="200px"
-
-                                    max={sliderRange[1]} min={sliderRange[0]} step={1}
-                                    defaultValue={selRange} onValueChangeEnd={(e) => setSelRange(e.value)}>
+                                    min={sliderRange[0]}
+                                    max={sliderRange[1]}
+                                    value={selRange}
+                                    step={1}
+                                    onValueChange={(e) => setSelRange(e.value)}>
                                     <Slider.ValueText>
                                         <HStack justify="space-between">
                                             <Text fontSize="sm">{selRange[0]}</Text>
@@ -274,44 +212,36 @@ const CatalogPage = () => {
                         <Accordion.ItemContent>
                             <Accordion.ItemBody as={Stack} px="4" py="3">
                                 {categories.map(cat => (
-                                    <Checkbox.Root key={cat} value={cat} onChange={() => {
+                                    <Checkbox.Root key={cat.id} value={cat.id.toString()} onChange={() => {
                                         setSelCats(prev =>
-                                            prev.includes(cat)
-                                                ? prev.filter(c => c !== cat)
-                                                : [...prev, cat]
+                                            prev.includes(cat.id)
+                                                ? prev.filter(c => c !== cat.id)
+                                                : [...prev, cat.id]
                                         )
                                     }}>
                                         <Checkbox.HiddenInput />
                                         <Checkbox.Control />
-                                        <Checkbox.Label>{cat}</Checkbox.Label>
+                                        <Checkbox.Label>{cat.name}</Checkbox.Label>
                                     </Checkbox.Root>
                                 ))}
                             </Accordion.ItemBody>
                         </Accordion.ItemContent>
                     </Accordion.Item>
 
-                    <Accordion.Item value="subcategory">
+                    <Accordion.Item value="availability">
                         <Accordion.ItemTrigger>
                             <Text flex="1" fontWeight="medium">
-                                {t('subcategoryFilterTitle')}
+                                {t('availabilityFilterTitle')}
                             </Text>
                             <Accordion.ItemIndicator />
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent>
                             <Accordion.ItemBody as={Stack} px="4" py="3">
-                                {subcategories.map((sub, index) => (
-                                    <Checkbox.Root key={index} value={sub} onChange={() => {
-                                        setSelSubs(prev =>
-                                            prev.includes(sub)
-                                                ? prev.filter(s => s !== sub)
-                                                : [...prev, sub]
-                                        )
-                                    }}>
-                                        <Checkbox.HiddenInput />
-                                        <Checkbox.Control />
-                                        <Checkbox.Label>{sub}</Checkbox.Label>
-                                    </Checkbox.Root>
-                                ))}
+                                <Checkbox.Root value="isPopular" onChange={() => setIsPopular(!isPopular)}>
+                                    <Checkbox.HiddenInput />
+                                    <Checkbox.Control />
+                                    <Checkbox.Label>{t('popular')}</Checkbox.Label>
+                                </Checkbox.Root>
                             </Accordion.ItemBody>
                         </Accordion.ItemContent>
                     </Accordion.Item>
@@ -323,30 +253,59 @@ const CatalogPage = () => {
                             <Field.Label>
                                 {t('searchLabel')}
                             </Field.Label>
-                            <Input placeholder={t('searchPlaceholder')} size="md" onChange={e => setSearch(e.target.value)} />
+                            <Input
+                                placeholder={t('searchPlaceholder')}
+                                size="md"
+                                onChange={e => setSearch(e.target.value)}
+                                value={search}
+                            />
                         </Field.Root>
                         <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
                             <Field.Label>
                                 {t('sortByLabel')}
                             </Field.Label>
-                            <NativeSelect.Root>
-                                <NativeSelect.Field defaultValue="">
-                                    <option value="" disabled hidden>
-                                        {t('sortByPlaceholder')}
-                                    </option>
-                                    <option value="priceAsc">
-                                        {t('sortByPriceAsc')}
-                                    </option>
-                                    <option value="priceDesc">
-                                        {t('sortByPriceDesc')}
-                                    </option>
-                                </NativeSelect.Field>
-                                <NativeSelect.Indicator />
-                            </NativeSelect.Root>
+                            <Select.Root
+                                collection={createListCollection({
+                                    items: [
+                                        { id: 'asc', value: 'asc', label: t('sortByPriceAsc') },
+                                        { id: 'desc', value: 'desc', label: t('sortByPriceDesc') }
+                                    ]
+                                })}
+                                defaultValue={['asc']}
+                                onValueChange={e => setSortDirection(e.items[0]?.value)}
+                            >
+                                <Select.HiddenSelect />
+                                <Select.Control>
+                                    <Select.Trigger>
+                                        <Select.ValueText placeholder="Select category" />
+                                    </Select.Trigger>
+                                    <Select.IndicatorGroup>
+                                        <Select.Indicator />
+                                    </Select.IndicatorGroup>
+                                </Select.Control>
+                                <Portal>
+                                    <Select.Positioner>
+                                        <Select.Content>
+                                            <Select.Item item={{ value: 'asc' }} key="asc">
+                                                <Select.ItemText>{t('sortByPriceAsc')}</Select.ItemText>
+                                                <Select.ItemIndicator />
+                                            </Select.Item>
+                                            <Select.Item item={{ value: 'desc' }} key="desc">
+                                                <Select.ItemText>{t('sortByPriceDesc')}</Select.ItemText>
+                                                <Select.ItemIndicator />
+                                            </Select.Item>
+                                        </Select.Content>
+                                    </Select.Positioner>
+                                </Portal>
+                            </Select.Root>
                         </Field.Root>
                     </Flex>
 
-                    {filtered.length === 0 ?
+                    {loading ? (
+                        <Center minH="50vh">
+                            <Spinner size="xl" borderWidth="4px" />
+                        </Center>
+                    ) : products.length === 0 ? (
                         <EmptyState.Root>
                             <EmptyState.Content>
                                 <EmptyState.Indicator>
@@ -370,24 +329,24 @@ const CatalogPage = () => {
                                 </List.Root>
                             </EmptyState.Content>
                         </EmptyState.Root>
-                        :
+                    ) : (
                         <>
                             <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
-                                {paged.map((product, idx) => (
-                                    <Card.Root overflow="hidden" key={idx} w="100%" bg="whiteAlpha.100">
+                                {products.map((product) => (
+                                    <Card.Root overflow="hidden" key={product.productId} w="100%" bg="whiteAlpha.100">
                                         <Image
-                                            src={product.image}
-                                            alt={product.name}
+                                            src={getImageUrl(product.mainImageId)}
+                                            alt={product.nameENG}
                                             w="full"
                                             h="200px"
                                             objectFit="cover"
                                         />
 
-                                        <Card.Body gap="2" >
-                                            <Card.Title>{product.name}</Card.Title>
-                                            <Card.Description>{product.description}</Card.Description>
+                                        <Card.Body gap="2">
+                                            <Card.Title>{product.nameENG}</Card.Title>
+                                            <Card.Description lineClamp={2}>{product.descriptionENG}</Card.Description>
                                             <Text textStyle="2xl" fontWeight="medium">
-                                                ${product.price.toFixed(2)}
+                                                {product.price.toFixed(2)}
                                             </Text>
                                         </Card.Body>
 
@@ -396,13 +355,13 @@ const CatalogPage = () => {
                                                 variant="solid"
                                                 bg="#9CE94F"
                                                 color="gray.950"
-                                                onClick={() => addToCart(product.id)}
+                                                onClick={() => addToCart(product.productId)}
                                             >
                                                 <LuShoppingCart />
                                                 {t('addToCart')}
                                             </Button>
                                             <Button variant="ghost">
-                                                <Link to={`/product/${product.id}`}>
+                                                <Link to={`/product/${product.productId}`}>
                                                     {t('learnMore')}
                                                 </Link>
                                             </Button>
@@ -411,14 +370,14 @@ const CatalogPage = () => {
                                 ))}
                             </SimpleGrid>
 
-                            <Show when={filtered.length > pageSize}>
+                            <Show when={totalProducts > pageSize}>
                                 <Pagination.Root
-                                    count={filtered.length}
+                                    count={totalProducts}
                                     pageSize={pageSize}
-                                    page={page}
+                                    page={page + 1}
                                     onPageChange={(details) => {
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        setPage(details.page)
+                                        setPage(details.page - 1)
                                     }}
                                     mt="6"
                                     justifySelf="center"
@@ -450,7 +409,7 @@ const CatalogPage = () => {
                                 </Pagination.Root>
                             </Show>
                         </>
-                    }
+                    )}
                 </Box>
             </Flex>
         </Box>

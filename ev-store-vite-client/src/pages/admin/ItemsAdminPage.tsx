@@ -38,7 +38,7 @@ import { getImageUrl } from "@/utils/helpers"
 
 
 interface Item {
-    id: string
+    productId: string
     nameGE: string
     nameENG: string
     nameRUS: string
@@ -74,7 +74,6 @@ const ItemsAdminPage = () => {
             const params = new URLSearchParams({
                 page: page.toString(),
                 size: pageSize.toString(),
-                sortBy: 'id',
                 direction: 'asc',
                 ...(name && { name }),
                 ...(productId && { productId })
@@ -236,11 +235,10 @@ const ItemsAdminPage = () => {
             ) : (
                 <Stack gap={5}>
                     {filteredItems.length > 0 && filteredItems.map(item => (
-                        <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
+                        <Card.Root key={item.productId} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
                             <Image
                                 objectFit="cover"
-                                maxW={{ base: '100%', md: '200px' }}
-                                maxH={{ base: '200px', md: '100%' }}
+                                h="200px"
                                 w={{ base: '100%', md: '200px' }}
                                 src={getImageUrl(item.mainImageId)}
                                 shadow="sm"
@@ -249,7 +247,7 @@ const ItemsAdminPage = () => {
                             <Box flex="1">
                                 <Card.Body>
                                     <Card.Title mb="2" fontSize={{ base: 'lg', md: 'xl' }}>{item.nameENG}</Card.Title>
-                                    <Card.Description fontSize={{ base: 'sm', md: 'md' }}>
+                                    <Card.Description fontSize={{ base: 'sm', md: 'md' }} lineClamp={2}>
                                         {item.descriptionENG}
                                     </Card.Description>
                                     <SimpleGrid columns={{ base: 2, md: 4 }} gap={2} mt="4">
@@ -266,7 +264,7 @@ const ItemsAdminPage = () => {
                                                 size={{ base: 'md', md: 'sm' }}
                                                 variant="outline"
                                                 w={{ base: 'full', md: 'auto' }}
-                                                disabled={isDeleting === item.id}
+                                                disabled={isDeleting === item.productId}
                                             >
                                                 <FaEye />
                                                 <Box ml={2}>View</Box>
@@ -387,23 +385,23 @@ const ItemsAdminPage = () => {
                                         variant="outline"
                                         w={{ base: 'full', md: 'auto' }}
                                         asChild
-                                        disabled={isDeleting === item.id}
+                                        disabled={isDeleting === item.productId}
                                     >
-                                        <a href={`/cms-admin/items/${item.id}`}>
+                                        <a href={`/cms-admin/items/${item.productId}`}>
                                             <FaEdit />
                                             <Box ml={2}>Edit</Box>
                                         </a>
                                     </Button>
 
-                                    <Dialog.Root size={{ base: 'full', md: 'lg' }}>
+                                    <Dialog.Root >
                                         <Dialog.Trigger asChild>
                                             <Button
                                                 size={{ base: 'md', md: 'sm' }}
                                                 colorPalette="red"
                                                 w={{ base: 'full', md: 'auto' }}
-                                                disabled={isDeleting === item.id}
+                                                disabled={isDeleting === item.productId}
                                             >
-                                                {isDeleting === item.id ? (
+                                                {isDeleting === item.productId ? (
                                                     <HStack>
                                                         <Spinner size="sm" />
                                                         <Box ml={2}>Deleting...</Box>
@@ -431,16 +429,16 @@ const ItemsAdminPage = () => {
                                                     </Dialog.Body>
                                                     <Dialog.Footer>
                                                         <Dialog.ActionTrigger asChild>
-                                                            <Button variant="outline" disabled={isDeleting === item.id}>
+                                                            <Button variant="outline" disabled={isDeleting === item.productId}>
                                                                 Cancel
                                                             </Button>
                                                         </Dialog.ActionTrigger>
                                                         <Button
                                                             colorPalette="red"
-                                                            onClick={() => handleDelete(item.id)}
-                                                            disabled={isDeleting === item.id}
+                                                            onClick={() => handleDelete(item.productId)}
+                                                            disabled={isDeleting === item.productId}
                                                         >
-                                                            {isDeleting === item.id ? 'Deleting...' : 'Delete'}
+                                                            {isDeleting === item.productId ? 'Deleting...' : 'Delete'}
                                                         </Button>
                                                     </Dialog.Footer>
                                                 </Dialog.Content>
