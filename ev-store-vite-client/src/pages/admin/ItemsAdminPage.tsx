@@ -22,27 +22,34 @@ import {
     List,
     Center,
     Spinner,
-    Alert
+    Alert,
+    ButtonGroup,
+    IconButton,
+    Pagination,
+    Show
 } from '@chakra-ui/react'
-import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft, FaSearch } from "react-icons/fa";
+import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { LuPackageSearch } from "react-icons/lu";
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
 import { debounce } from "lodash";
+import { getImageUrl } from "@/utils/helpers"
 
 
 interface Item {
     id: string
-    nameEn: string
-    descriptionEn: string
-    quantity: number
+    nameGE: string
+    nameENG: string
+    nameRUS: string
+    descriptionGE: string
+    descriptionENG: string
+    descriptionRUS: string
     price: number
-    mainImage: string
-    images: string[]
-    nameGe: string
-    nameRu: string
-    descriptionGe: string
-    descriptionRu: string
+    stockAmount: number
+    categoryName: string
+    isPopular: boolean
+    mainImageId: number
+    imageIds: number[]
 }
 
 const ItemsAdminPage = () => {
@@ -52,16 +59,19 @@ const ItemsAdminPage = () => {
     const [apiError, setApiError] = useState<string | null>(null);
     const [searchName, setSearchName] = useState<string>('');
     const [searchId, setSearchId] = useState<string>('');
+    const [totalItems, setTotalItems] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const pageSize = 10;
 
     const [filteredItems, setFilteredItems] = useState<Item[]>([]);
 
-    const fetchItems = async (name: string = '', productId: string = '') => {
+    const fetchItems = async (name: string = '', productId: string = '', page: number = 0) => {
         try {
             setIsLoading(true);
             setApiError(null);
             const params = new URLSearchParams({
-                page: '0',
-                size: '1000',
+                page: page.toString(),
+                size: pageSize.toString(),
                 sortBy: 'id',
                 direction: 'asc',
                 ...(name && { name }),
@@ -71,6 +81,7 @@ const ItemsAdminPage = () => {
             const response = await API.get(`/product?${params.toString()}`);
             setItems(response.data.content || []);
             setFilteredItems(response.data.content || []);
+            setTotalItems(response.data.totalElements || 0);
         } catch (error) {
             setApiError('Error fetching items');
             toaster.error({
@@ -84,7 +95,8 @@ const ItemsAdminPage = () => {
 
     const debouncedSearch = useCallback(
         debounce((name: string, productId: string) => {
-            fetchItems(name, productId);
+            fetchItems(name, productId, 0);
+            setCurrentPage(0);
         }, 500),
         []
     );
@@ -100,22 +112,11 @@ const ItemsAdminPage = () => {
     };
 
     useEffect(() => {
-        fetchItems();
-    }, []);
+        fetchItems(searchName, searchId, currentPage);
+    }, [currentPage]);
 
     useEffect(() => {
-        let updated = items;
-
-        if (searchName.trim() !== '') {
-            const lowerName = searchName.toLowerCase();
-            updated = updated.filter((item) => item.nameEn.toLowerCase().includes(lowerName));
-        }
-
-        if (searchId.trim() !== '') {
-            updated = updated.filter((item) => item.id.includes(searchId.trim()));
-        }
-
-        setFilteredItems(updated);
+        setFilteredItems(items);
     }, [searchName, searchId, items]);
 
     const handleDelete = async (id: string) => {
@@ -123,12 +124,12 @@ const ItemsAdminPage = () => {
             setIsDeleting(id);
             setApiError(null);
             await API.delete(`/admin/products/${id}`);
-            
+
             toaster.success({
                 title: 'Success',
                 description: 'Item deleted successfully'
             });
-            
+
             fetchItems();
         } catch (error) {
             setApiError('Error deleting item');
@@ -163,13 +164,13 @@ const ItemsAdminPage = () => {
                     Back to Admin Dashboard
                 </a>
             </Button>
-            <Flex justify="space-between" align="center" mt={6} mb={6}>
+            <Flex justify="space-between" align="center" mt={6} mb={6} direction={{ base: 'column', md: 'row' }} gap={4}>
                 <Heading>
                     <HStack>
                         <FaLayerGroup />Items
                     </HStack>
                 </Heading>
-                <HStack gap={2}>
+                <Stack direction={{ base: 'column', md: 'row' }} gap={2} w={{ base: '100%', md: 'auto' }}>
                     <Field.Root flex="1">
                         <Input
                             placeholder="Search by name"
@@ -186,12 +187,12 @@ const ItemsAdminPage = () => {
                             onChange={(e) => handleIdSearch(e.target.value)}
                         />
                     </Field.Root>
-                    <Button asChild>
+                    <Button asChild w={{ base: '100%', md: 'auto' }}>
                         <a href="/cms-admin/items/create">
                             Create Item <FaPlus />
                         </a>
                     </Button>
-                </HStack>
+                </Stack>
             </Flex>
 
             {items.length === 0 ? (
@@ -205,7 +206,7 @@ const ItemsAdminPage = () => {
                                 No Items Found
                             </EmptyState.Title>
                             <EmptyState.Description>
-                                {searchName || searchId 
+                                {searchName || searchId
                                     ? 'No items match your search criteria'
                                     : 'Start by creating your first item to add to your catalog'}
                             </EmptyState.Description>
@@ -232,39 +233,40 @@ const ItemsAdminPage = () => {
                 </EmptyState.Root>
             ) : (
                 <Stack gap={5}>
-                    {filteredItems.map(item => (
+                    {filteredItems.length > 0 && filteredItems.map(item => (
                         <Card.Root key={item.id} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
                             <Image
                                 objectFit="cover"
                                 maxW={{ base: '100%', md: '200px' }}
-                                maxH={{ base: '150px', md: '100%' }}
-                                src={item.mainImage}
-                                alt={item.nameEn}
+                                maxH={{ base: '200px', md: '100%' }}
+                                w={{ base: '100%', md: '200px' }}
+                                src={getImageUrl(item.mainImageId)}
+                                alt={item.nameENG}
                             />
-                            <Box>
+                            <Box flex="1">
                                 <Card.Body>
-                                    <Card.Title mb="2">{item.nameEn}</Card.Title>
-                                    <Card.Description>
-                                        {item.descriptionEn}
+                                    <Card.Title mb="2" fontSize={{ base: 'lg', md: 'xl' }}>{item.nameENG}</Card.Title>
+                                    <Card.Description fontSize={{ base: 'sm', md: 'md' }}>
+                                        {item.descriptionENG}
                                     </Card.Description>
-                                    <HStack mt="4">
-                                        <Badge>Price: {item.price} $</Badge>
-                                        <Badge>quantity: {item.quantity}</Badge>
-                                    </HStack>
+                                    <SimpleGrid columns={{ base: 2, md: 4 }} gap={2} mt="4">
+                                        <Badge size="md" p={2} borderRadius="md" textAlign="center">Price: {item.price} $</Badge>
+                                        <Badge size="md" p={2} borderRadius="md" textAlign="center">Qty: {item.stockAmount}</Badge>
+                                        <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{item.categoryName}</Badge>
+                                        <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="green">Popular: {item.isPopular ? 'Yes' : 'No'}</Badge>
+                                    </SimpleGrid>
                                 </Card.Body>
-                                <Card.Footer justifyContent="flex-end">
-                                    <Dialog.Root scrollBehavior="inside" size="lg">
+                                <Card.Footer justifyContent={{ base: 'center', md: 'flex-end' }} flexWrap="wrap" gap={2}>
+                                    <Dialog.Root scrollBehavior="inside" size={{ base: 'full', md: 'lg' }}>
                                         <Dialog.Trigger asChild>
                                             <Button
-                                                size="sm"
+                                                size={{ base: 'md', md: 'sm' }}
                                                 variant="outline"
-                                                mr={2}
+                                                w={{ base: 'full', md: 'auto' }}
                                                 disabled={isDeleting === item.id}
                                             >
                                                 <FaEye />
-                                                <Box display={{ base: 'none', md: 'inline' }}>
-                                                    View
-                                                </Box>
+                                                <Box ml={2}>View</Box>
                                             </Button>
                                         </Dialog.Trigger>
                                         <Portal>
@@ -278,49 +280,69 @@ const ItemsAdminPage = () => {
                                                         </Dialog.CloseTrigger>
                                                     </Dialog.Header>
                                                     <Dialog.Body pb={8}>
-                                                        <DataList.Root orientation="vertical">
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Name (EN)</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.nameEn}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Name (GE)</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.nameGe}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Name (RU)</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.nameRu}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.descriptionEn}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.descriptionGe}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Description (RU)</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.descriptionRu}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Price</DataList.ItemLabel>
-                                                                <DataList.ItemValue>${item.price}</DataList.ItemValue>
-                                                            </DataList.Item>
-                                                            <DataList.Item>
-                                                                <DataList.ItemLabel>Quantity</DataList.ItemLabel>
-                                                                <DataList.ItemValue>{item.quantity}</DataList.ItemValue>
-                                                            </DataList.Item>
+                                                        <DataList.Root orientation="vertical" gap={4}>
+                                                            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Name (EN)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>{item.nameENG}</DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Name (GE)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>{item.nameGE}</DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Name (RU)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>{item.nameRUS}</DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>{item.descriptionENG}</DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>{item.descriptionGE}</DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Description (RU)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>{item.descriptionRUS}</DataList.ItemValue>
+                                                                </DataList.Item>
+                                                            </SimpleGrid>
+                                                            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Price</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Badge size="md" p={2} borderRadius="md">Price: {item.price} $</Badge>
+                                                                    </DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Quantity</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Badge size="md" p={2} borderRadius="md">Quantity: {item.stockAmount}</Badge>
+                                                                    </DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Category</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Badge size="md" p={2} borderRadius="md" colorPalette="yellow">{item.categoryName}</Badge>
+                                                                    </DataList.ItemValue>
+                                                                </DataList.Item>
+                                                                <DataList.Item>
+                                                                    <DataList.ItemLabel>Is Popular</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Badge size="md" p={2} borderRadius="md" colorPalette="green">{item.isPopular ? 'Yes' : 'No'}</Badge>
+                                                                    </DataList.ItemValue>
+                                                                </DataList.Item>
+                                                            </SimpleGrid>
                                                         </DataList.Root>
 
-                                                        {item.images.length > 0 && (
+                                                        {item.imageIds && item.imageIds.length > 0 && (
                                                             <Box mt={6}>
                                                                 <Text fontWeight="semibold" mb={2}>Additional Images</Text>
-                                                                <SimpleGrid columns={3} gap={2}>
-                                                                    {item.images.map((src, idx) => (
+                                                                <SimpleGrid columns={{ base: 2, md: 3 }} gap={3}>
+                                                                    {item.imageIds.map((src, idx) => (
                                                                         <Image
                                                                             key={idx}
-                                                                            src={src}
+                                                                            src={getImageUrl(src)}
                                                                             alt={`Image ${idx + 1}`}
                                                                             objectFit="cover"
                                                                             w="100%"
@@ -341,40 +363,35 @@ const ItemsAdminPage = () => {
                                     </Dialog.Root>
 
                                     <Button
-                                        size="sm"
+                                        size={{ base: 'md', md: 'sm' }}
                                         variant="outline"
-                                        mr={2}
+                                        w={{ base: 'full', md: 'auto' }}
                                         asChild
                                         disabled={isDeleting === item.id}
                                     >
                                         <a href={`/cms-admin/items/${item.id}`}>
                                             <FaEdit />
-                                            <Box display={{ base: 'none', md: 'inline' }}>
-                                                Edit
-                                            </Box>
+                                            <Box ml={2}>Edit</Box>
                                         </a>
                                     </Button>
 
-                                    <Dialog.Root>
+                                    <Dialog.Root size={{ base: 'full', md: 'lg' }}>
                                         <Dialog.Trigger asChild>
-                                            <Button 
-                                                size="sm" 
+                                            <Button
+                                                size={{ base: 'md', md: 'sm' }}
                                                 colorPalette="red"
+                                                w={{ base: 'full', md: 'auto' }}
                                                 disabled={isDeleting === item.id}
                                             >
                                                 {isDeleting === item.id ? (
                                                     <HStack>
                                                         <Spinner size="sm" />
-                                                        <Box display={{ base: 'none', md: 'inline' }}>
-                                                            Deleting...
-                                                        </Box>
+                                                        <Box ml={2}>Deleting...</Box>
                                                     </HStack>
                                                 ) : (
                                                     <>
                                                         <FaTrashAlt />
-                                                        <Box display={{ base: 'none', md: 'inline' }}>
-                                                            Delete
-                                                        </Box>
+                                                        <Box ml={2}>Delete</Box>
                                                     </>
                                                 )}
                                             </Button>
@@ -390,7 +407,7 @@ const ItemsAdminPage = () => {
                                                         </Dialog.CloseTrigger>
                                                     </Dialog.Header>
                                                     <Dialog.Body>
-                                                        Are you sure you want to delete "{item.nameEn}"?
+                                                        Are you sure you want to delete "{item.nameENG}"?
                                                     </Dialog.Body>
                                                     <Dialog.Footer>
                                                         <Dialog.ActionTrigger asChild>
@@ -414,6 +431,45 @@ const ItemsAdminPage = () => {
                             </Box>
                         </Card.Root>
                     ))}
+
+                    <Show when={totalItems > pageSize}>
+                        <Pagination.Root
+                            count={totalItems}
+                            pageSize={pageSize}
+                            page={currentPage + 1}
+                            onPageChange={(details) => {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                setCurrentPage(details.page - 1);
+                            }}
+                            mt="6"
+                            justifySelf="center"
+                        >
+                            <ButtonGroup variant="ghost" size="sm">
+                                <Pagination.PrevTrigger asChild>
+                                    <IconButton aria-label="Previous page">
+                                        <FaChevronLeft />
+                                    </IconButton>
+                                </Pagination.PrevTrigger>
+
+                                <Pagination.Items
+                                    render={pag => (
+                                        <IconButton
+                                            key={pag.value}
+                                            variant={{ base: 'ghost', _selected: 'outline' }}
+                                        >
+                                            {pag.value}
+                                        </IconButton>
+                                    )}
+                                />
+
+                                <Pagination.NextTrigger asChild>
+                                    <IconButton aria-label="Next page">
+                                        <FaChevronRight />
+                                    </IconButton>
+                                </Pagination.NextTrigger>
+                            </ButtonGroup>
+                        </Pagination.Root>
+                    </Show>
                 </Stack>
             )}
         </Box>
