@@ -58,6 +58,7 @@ interface ReservationFormValues {
     fullName: string;
     email: string;
     mobile: string;
+    city: string;
     address: string;
     notes: string;
 }
@@ -131,12 +132,14 @@ const CartPage = () => {
         defaultValues: AuthController.isLoggedIn()
             ? {
                 mobile: userData?.mobile,
+                city: userData?.city,
                 address: userData?.address,
                 notes: '',
             } : {
                 fullName: '',
                 email: '',
                 mobile: '',
+                city: '',
                 address: '',
                 notes: '',
             },
@@ -175,11 +178,14 @@ const CartPage = () => {
         }
     };
 
-    const subtotal = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-    const totalValue = subtotal;
+    if (!AuthController.isLoggedIn()) {
+        const subtotal = cartItems.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        );
+        setCartTotalPrice(subtotal)
+    }
+
 
     const onSubmitAuth: SubmitHandler<ReservationFormValues> = async (data) => {
         try {
@@ -458,6 +464,20 @@ const CartPage = () => {
                                 )}
                             </Field.Root>
 
+                            <Field.Root id="city" invalid={!!errors.city}>
+                                <Field.Label>
+                                    {t('reservation.city')} *
+                                </Field.Label>
+                                <Input
+                                    defaultValue={userData?.city || ''}
+                                    placeholder={t('reservation.cityPlaceholder')}
+                                    {...register('city', { required: t('reservation.cityError') })}
+                                />
+                                {errors.city && (
+                                    <Field.ErrorText>{errors.city.message}</Field.ErrorText>
+                                )}
+                            </Field.Root>
+
                             <Field.Root id="address" invalid={!!errors.address}>
                                 <Field.Label>
                                     {t('reservation.address')} *
@@ -486,7 +506,7 @@ const CartPage = () => {
                                 <Text>
                                     {t('reservation.totalAmount')}
                                 </Text>
-                                <Text>${totalValue.toFixed(2)}</Text>
+                                <Text>${cartTotalPrice.toFixed(2)}</Text>
                             </Flex>
 
                             <Text fontSize="xs" color="gray.500">
