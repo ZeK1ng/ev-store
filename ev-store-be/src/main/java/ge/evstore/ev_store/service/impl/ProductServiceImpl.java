@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
 
         if (inStock != null && inStock) {
             spec = spec.and((root, query, cb) ->
-                    cb.greaterThan(root.get("stock"), 0));
+                    cb.greaterThan(root.get("stockAmount"), 0));
         }
         if (isPopular != null && isPopular) {
             spec = spec.and((root, query, cb) ->

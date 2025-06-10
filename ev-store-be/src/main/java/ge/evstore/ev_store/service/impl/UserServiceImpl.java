@@ -6,6 +6,8 @@ import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.repository.OrderRepository;
 import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
 import ge.evstore.ev_store.repository.UserRepository;
+import ge.evstore.ev_store.request.CartItemReservationRequest;
+import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.response.CartItemResponse;
 import ge.evstore.ev_store.response.CartResponse;
@@ -156,13 +158,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Order saveOrderHistory(final User user, final CartResponse cartForUser) {
+    public Order saveOrderHistory(final User user, final CartResponse cartForUser, final String specialInstructions) {
         log.info("Saving order history for user {}", user.getEmail());
         final Order order = new Order();
 
         order.setOrderNumber(generateOrderNumber());
         order.setUser(user);
         order.setStatus(OrderStatus.PENDING);
+        order.setSpecialInstructions(specialInstructions);
+        order.setOrderDate(LocalDateTime.now());
 
         double totalOrderPrice = 0.0;
 
@@ -206,6 +210,34 @@ public class UserServiceImpl implements UserService {
             orderHistoryResponse.add(OrderHistoryResponse.createFrom(order));
         });
         return orderHistoryResponse;
+    }
+
+    @Override
+    @Transactional
+    public void saveOrderHistoryForGuest(final UnauthenticatedUserReservationRequest request) {
+        log.info("Saving order history for guest user {}", request.getEmail());
+        final Order order = new Order();
+        order.setOrderNumber(generateOrderNumber());
+        order.setStatus(OrderStatus.PENDING);
+        order.setOrderDate(LocalDateTime.now());
+        order.setUser(null);
+        order.setSpecialInstructions(request.getSpecialInstructions());
+        final List<OrderItem> orderItems = new ArrayList<>();
+        double totalOrderPrice = 0.0;
+        for (final CartItemReservationRequest item : request.getCartItems()) {
+            final OrderItem orderItem = new OrderItem();
+            orderItem.setQuantity(item.getQuantity());
+            orderItem.setProduct(productService.getProductById(item.getProductId()));
+            orderItem.setUnitPrice(item.getProductPrice());
+            final double lineTotal = item.getProductPrice() * item.getQuantity();
+            totalOrderPrice += lineTotal;
+            orderItem.setTotalPrice(lineTotal);
+            orderItem.setOrder(order);
+            orderItems.add(orderItem);
+        }
+        order.setTotalPrice(totalOrderPrice);
+        order.setItems(orderItems);
+        orderRepository.save(order);
     }
 
 }
