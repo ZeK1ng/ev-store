@@ -158,9 +158,10 @@ public class AdminController {
             final HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") final int page,
             @RequestParam(required = false, defaultValue = "10") final int size,
-            @RequestParam(required = false) final Long id) {
+            @RequestParam(required = false) final Long id,
+            @RequestParam(required = false) final OrderStatus orderStatus) {
         final String accessToken = extractBearer(request);
-        return ResponseEntity.ok(adminService.getAllOrders(page, size, id, accessToken));
+        return ResponseEntity.ok(adminService.getAllOrders(page, size, id, orderStatus, accessToken));
     }
 }
 

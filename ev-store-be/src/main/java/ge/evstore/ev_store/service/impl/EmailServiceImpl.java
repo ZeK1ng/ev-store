@@ -86,7 +86,7 @@ public class EmailServiceImpl implements EmailService {
 
     private void sendHtmlEmail(final String email, final String text, final String subject) throws MessagingException {
         final MimeMessage mimeMessage = mailSender.createMimeMessage();
-        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+        final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         helper.setSubject(subject);
         helper.setTo(email);
         helper.setText(text, true);

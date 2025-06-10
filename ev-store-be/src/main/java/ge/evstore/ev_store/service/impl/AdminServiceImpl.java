@@ -196,13 +196,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Page<OrderHistoryResponse> getAllOrders(final int page, final int size, final Long id, final String accessToken) {
+    public Page<OrderHistoryResponse> getAllOrders(final int page, final int size, final Long id, final OrderStatus orderStatus, final String accessToken) {
         log.info("Getting all orders");
         final Pageable pageable = PageRequest.of(page, size);
         Specification<Order> spec = Specification.where(null);
         if (id != null) {
             spec = spec.and((root, query, cb) ->
                     cb.equal(root.get("id"), id));
+        }
+        if (orderStatus != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("status"), orderStatus));
         }
         final Page<Order> all = orderRepository.findAll(spec, pageable);
         final List<OrderHistoryResponse> list = all.stream().map(OrderHistoryResponse::createFrom).toList();

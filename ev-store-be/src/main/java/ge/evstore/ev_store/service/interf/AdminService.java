@@ -37,5 +37,5 @@ public interface AdminService {
 
     OrderHistoryResponse updateOrderStatus(OrderStatus orderStatus, Long orderId, String accessToken);
 
-    Page<OrderHistoryResponse> getAllOrders(int page, int size, Long id, String accessToken);
+    Page<OrderHistoryResponse> getAllOrders(int page, int size, Long id, OrderStatus orderStatus, String accessToken);
 }
