@@ -1,15 +1,15 @@
 package ge.evstore.ev_store.service.impl;
 
 import ge.evstore.ev_store.converter.JsonListConverter;
-import ge.evstore.ev_store.entity.Category;
-import ge.evstore.ev_store.entity.MaxPriceEasySaver;
-import ge.evstore.ev_store.entity.Product;
+import ge.evstore.ev_store.entity.*;
 import ge.evstore.ev_store.exception.IsParentCategoryException;
 import ge.evstore.ev_store.repository.CategoryRepository;
 import ge.evstore.ev_store.repository.MaxPriceSaverRepository;
+import ge.evstore.ev_store.repository.OrderRepository;
 import ge.evstore.ev_store.repository.ProductRepository;
 import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
+import ge.evstore.ev_store.response.OrderHistoryResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.ImageService;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +35,7 @@ public class AdminServiceImpl implements AdminService {
     private final MaxPriceSaverRepository maxPriceSaverRepository;
     private final ImageService imageService;
     private final JsonListConverter jsonListConverter;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional
@@ -171,5 +172,21 @@ public class AdminServiceImpl implements AdminService {
             response.add(imageService.saveImage(image));
         }
         return response;
+    }
+
+    @Override
+    @Transactional
+    public OrderHistoryResponse updateOrderStatus(final OrderStatus orderStatus, final Long orderId, final String accessToken) {
+        log.info("Updating order status for orderId:{} and new status:{}", orderId, orderStatus);
+        final Optional<Order> byId = orderRepository.findById(orderId);
+        if (byId.isEmpty()) {
+            log.error("Order with ID {} not found", orderId);
+            throw new EntityNotFoundException("Order not found for id: " + orderId);
+        }
+        final Order order = byId.get();
+        order.setStatus(orderStatus);
+        orderRepository.save(order);
+        log.info("Order status updated");
+        return OrderHistoryResponse.createFrom(order);
     }
 }

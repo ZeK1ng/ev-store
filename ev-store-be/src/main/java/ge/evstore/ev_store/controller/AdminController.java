@@ -2,10 +2,12 @@ package ge.evstore.ev_store.controller;
 
 import ge.evstore.ev_store.entity.Category;
 import ge.evstore.ev_store.entity.Dictionary;
+import ge.evstore.ev_store.entity.OrderStatus;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.request.CreateCategoryRequest;
 import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
+import ge.evstore.ev_store.response.OrderHistoryResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.DictionaryService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -139,6 +141,15 @@ public class AdminController {
         final String accessToken = extractBearer(request);
         final List<ImageSaveResponse> responses = adminService.saveImages(images, accessToken);
         return ResponseEntity.ok(responses);
+    }
+
+    /*--------------------Order History --------------*/
+
+    @PatchMapping("/order-history/change-status")
+    public ResponseEntity<OrderHistoryResponse> changeStatus(
+            final HttpServletRequest request, @RequestParam final Long orderId, @RequestParam final OrderStatus orderStatus) {
+        final String accessToken = extractBearer(request);
+        return ResponseEntity.ok(adminService.updateOrderStatus(orderStatus, orderId, accessToken));
     }
 }
 

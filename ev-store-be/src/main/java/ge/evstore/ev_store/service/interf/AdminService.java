@@ -1,9 +1,11 @@
 package ge.evstore.ev_store.service.interf;
 
 import ge.evstore.ev_store.entity.Category;
+import ge.evstore.ev_store.entity.OrderStatus;
 import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
+import ge.evstore.ev_store.response.OrderHistoryResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,4 +33,6 @@ public interface AdminService {
     void deleteCategory(Long id, String accessToken);
 
     List<ImageSaveResponse> saveImages(MultipartFile[] images, String accessToken) throws IOException;
+
+    OrderHistoryResponse updateOrderStatus(OrderStatus orderStatus, Long orderId, String accessToken);
 }

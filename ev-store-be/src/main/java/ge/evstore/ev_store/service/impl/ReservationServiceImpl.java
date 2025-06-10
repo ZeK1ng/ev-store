@@ -44,6 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
     @UserTokenAspectMarker
     public void createReservationForUser(final AuthorizedReservationRequest reservationRequest, final String bearer) throws CartNotFoundException, MessagingException {
         try {
+            log.info("Creating reservation For user");
             final String username = jwtUtils.extractUsername(bearer);
             final Optional<User> userOptional = userService.findUser(username);
             log.info("Creating reservation for user {}", username);
