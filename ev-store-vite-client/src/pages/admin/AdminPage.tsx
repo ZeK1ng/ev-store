@@ -59,7 +59,28 @@ const AdminPage: React.FC = () => {
                 </Card.Root>
             </SimpleGrid>
 
-            <SimpleGrid mt={8}>
+            <SimpleGrid mt={8} gap={8}>
+                <Card.Root overflow="hidden">
+                    <Card.Body>
+                        <Heading size="2xl" mb={2}>
+                            <HStack gap={4}>
+                                <FaChartBar /> Orders Management
+                            </HStack>
+
+                        </Heading>
+                        <Text>
+                            Manage orders, including cancellations and refunds.
+                        </Text>
+                    </Card.Body>
+                    <Card.Footer>
+                        <Button
+                            asChild
+                            colorScheme="blue"
+                        >
+                            <a href="/cms-admin/orders-management">Go to Orders</a>
+                        </Button>
+                    </Card.Footer>
+                </Card.Root>
                 <Card.Root overflow="hidden">
                     <Card.Body>
                         <Heading size="2xl" mb={2}>
@@ -69,7 +90,7 @@ const AdminPage: React.FC = () => {
 
                         </Heading>
                         <Text>
-                            View analytics and reports, including sales and user activity. 
+                            View analytics and reports, including sales and user activity.
                         </Text>
                     </Card.Body>
                     <Card.Footer>

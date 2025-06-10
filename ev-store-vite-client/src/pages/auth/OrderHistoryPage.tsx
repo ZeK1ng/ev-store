@@ -35,13 +35,13 @@ interface OrderHistoryItem {
         unitPrice: number;
         totalPrice: number;
     }>;
-    orderStatus: 'PENDING' | 'COMPLETED' | 'CANCELLED';
+    orderStatus: 'PENDING' | 'COMPLETED' | 'CANCELED';
 }
 
 const statusColor = {
     PENDING: 'yellow',
     COMPLETED: 'green',
-    CANCELLED: 'red',
+    CANCELED: 'red',
 };
 
 
@@ -53,7 +53,7 @@ const OrderHistoryPage = () => {
     const statusLabel = {
         PENDING: t('history.status.pending'),
         COMPLETED: t('history.status.completed'),
-        CANCELLED: t('history.status.cancelled'),
+        CANCELED: t('history.status.canceled'),
     };
 
     useEffect(() => {

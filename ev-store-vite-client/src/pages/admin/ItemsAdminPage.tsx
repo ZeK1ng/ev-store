@@ -243,6 +243,7 @@ const ItemsAdminPage = () => {
                                 maxH={{ base: '200px', md: '100%' }}
                                 w={{ base: '100%', md: '200px' }}
                                 src={getImageUrl(item.mainImageId)}
+                                shadow="sm"
                                 alt={item.nameENG}
                             />
                             <Box flex="1">
