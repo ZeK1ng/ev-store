@@ -8,9 +8,12 @@ import lombok.Setter;
 @Getter
 public class CartItemResponse {
     private Long productId;
-    private String productNameGE;
-    private String productNameRUS;
-    private String productNameENG;
+    private String nameGE;
+    private String nameRUS;
+    private String nameENG;
+    private String descriptionGE;
+    private String descriptionENG;
+    private String descriptionRUS;
     private int quantity;
     private double price;
     private Long mainImageId;
@@ -18,9 +21,12 @@ public class CartItemResponse {
     public static CartItemResponse fromCartItem(final CartItem item) {
         final CartItemResponse response = new CartItemResponse();
         response.setProductId(item.getProduct().getId());
-        response.setProductNameGE(item.getProduct().getNameGE());
-        response.setProductNameENG(item.getProduct().getNameENG());
-        response.setProductNameRUS(item.getProduct().getNameRUS());
+        response.setNameGE(item.getProduct().getNameGE());
+        response.setNameENG(item.getProduct().getNameENG());
+        response.setNameRUS(item.getProduct().getNameRUS());
+        response.setDescriptionGE(item.getProduct().getDescriptionGE());
+        response.setDescriptionENG(item.getProduct().getDescriptionENG());
+        response.setDescriptionRUS(item.getProduct().getDescriptionRUS());
         response.setQuantity(item.getQuantity());
         response.setPrice(item.getProduct().getPrice());
         response.setMainImageId(item.getProduct().getMainImageId());
