@@ -35,22 +35,26 @@ interface OrderHistoryItem {
         unitPrice: number;
         totalPrice: number;
     }>;
-    status?: 'pending' | 'delivered';
+    orderStatus: 'PENDING' | 'COMPLETED' | 'CANCELLED';
 }
 
 const statusColor = {
-    delivered: 'green',
-    pending: 'yellow',
+    PENDING: 'yellow',
+    COMPLETED: 'green',
+    CANCELLED: 'red',
 };
-const statusLabel = {
-    delivered: 'Delivered',
-    pending: 'Processing',
-};
+
 
 const OrderHistoryPage = () => {
     const { t } = useTranslation('auth');
     const [orders, setOrders] = useState<OrderHistoryItem[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    const statusLabel = {
+        PENDING: t('history.status.pending'),
+        COMPLETED: t('history.status.completed'),
+        CANCELLED: t('history.status.cancelled'),
+    };
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -61,8 +65,8 @@ const OrderHistoryPage = () => {
                 if (data && data.length > 0) {
                     data = data.map((order, idx) => ({
                         ...order,
-                        orderNumber: order.orderNumber || `ORD-2024-00${order.orderId}`,
-                        status: idx % 2 === 0 ? 'delivered' : 'pending',
+                        orderNumber: order.orderNumber,
+                        status: order.orderStatus
                     }));
                 }
                 setOrders(data);
@@ -125,13 +129,12 @@ const OrderHistoryPage = () => {
                             </EmptyState.Root>
                         ) : (
                             orders
-                                .filter(order => order.status === 'pending' || order.status === 'delivered')
                                 .map((order) => (
                                     <Box key={order.orderId} borderWidth="1px" borderRadius="lg" p={4}>
                                         <HStack justify="space-between" align="flex-start">
                                             <Box>
                                                 <Text fontWeight="bold" fontSize="lg">
-                                                    #{order.orderNumber}
+                                                    {order.orderNumber}-{order.orderId}
                                                 </Text>
                                                 <HStack color="gray.500" fontSize="sm" mt={1}>
                                                     <FaCalendarAlt />
@@ -145,8 +148,8 @@ const OrderHistoryPage = () => {
                                                 </HStack>
                                             </Box>
                                             <VStack align="end" gap={1}>
-                                                <Badge colorPalette={statusColor[order.status || 'pending']} size="md">
-                                                    {statusLabel[order.status || 'pending']}
+                                                <Badge colorPalette={statusColor[order.orderStatus]} size="md">
+                                                    {statusLabel[order.orderStatus]}
                                                 </Badge>
                                                 <Text fontWeight="bold" fontSize="xl">
                                                     ${order.totalPrice.toFixed(2)}
@@ -155,7 +158,7 @@ const OrderHistoryPage = () => {
                                         </HStack>
                                         <Box mt={3}>
                                             <Text fontWeight="semibold" mb={1}>
-                                                Items:
+                                                {t('history.items')}
                                             </Text>
                                             <Box bg="bg.muted" borderRadius="md" p={2}>
                                                 {order.items.map((item, idx) => (

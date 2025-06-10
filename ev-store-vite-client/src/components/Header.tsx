@@ -8,14 +8,14 @@ import {
     IconButton,
     Button,
     Image,
-    Heading,
     VStack,
     Separator,
     useDisclosure,
     Menu,
     Portal,
     Accordion,
-    Span
+    Span,
+    Link
 } from '@chakra-ui/react'
 import { toaster } from "@/components/ui/toaster"
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
@@ -73,9 +73,12 @@ const Header = () => {
                 w="100%"
                 borderBottomWidth="1px">
                 <Flex align="center">
-                    <Image src={
-                        colorMode === 'dark' ? '/logos/header-logo-dark.svg' : '/logos/header-logo-light.svg'
-                    } alt="Logo" h="40px" mr={2} />
+                    <Link href="/">
+                        <Image src={
+                            colorMode === 'dark' ? '/logos/header-logo-dark.svg' : '/logos/header-logo-light.svg'
+                        } alt="Logo" h="40px" mr={2} />
+                    </Link>
+
                 </Flex>
 
                 <HStack gap={4} display={{ base: 'none', md: 'flex' }}>
