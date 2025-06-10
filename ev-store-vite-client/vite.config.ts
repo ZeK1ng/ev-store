@@ -7,5 +7,14 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   optimizeDeps: {
     include: ['@chakra-ui/icons', '@chakra-ui/react']
+  },
+  server: {
+    proxy: {
+      '/api/v1/image': {
+        target: 'http://variance-betty-these-breach.trycloudflare.com',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
   }
 })

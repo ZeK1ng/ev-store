@@ -20,6 +20,7 @@ import {
     Alert,
     createListCollection,
     Checkbox,
+    InputGroup
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -28,6 +29,8 @@ import { FaArrowLeft } from 'react-icons/fa'
 import { HiUpload } from 'react-icons/hi'
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
+import { getImageUrl } from "@/utils/helpers"
+
 
 interface Category {
     id: string;
@@ -49,12 +52,13 @@ interface ItemFormValues {
     mainImageFile: FileList;
     imagesFiles: FileList;
     isPopular: boolean;
+    tutorialLink: string;
 }
 
 interface Item extends Omit<ItemFormValues, 'mainImageFile' | 'imagesFiles'> {
     id: string;
-    mainImage: string;
-    images: string[];
+    mainImageId: number;
+    imageIds: number[];
     category: Category;
 }
 
@@ -88,9 +92,9 @@ const ItemsManagementAdminPage: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
     const [existingItem, setExistingItem] = useState<Item | null>(null);
-    const [mainImageId, setMainImageId] = useState<string | null>(null);
+    const [mainImageId, setMainImageId] = useState<number | null>(null);
     const [mainImageUploading, setMainImageUploading] = useState(false);
-    const [additionalImageIds, setAdditionalImageIds] = useState<string[]>([]);
+    const [additionalImageIds, setAdditionalImageIds] = useState<number[]>([]);
     const [additionalImagesUploading, setAdditionalImagesUploading] = useState(false);
 
     const {
@@ -117,7 +121,7 @@ const ItemsManagementAdminPage: React.FC = () => {
         try {
             setIsLoading(true);
             setApiError(null);
-            const response = await API.get(`/admin/products/${itemId}`);
+            const response = await API.get(`/product/${itemId}`);
             const item = response.data;
             setExistingItem(item);
             setMainImageId(item.mainImageId || null);
@@ -131,7 +135,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                 descriptionRUS: item.descriptionRUS,
                 stockAmount: item.stockAmount,
                 price: item.price,
-                categoryId: item.category.id,
+                categoryId: item.categoryId,
                 isPopular: item.isPopular
             });
         } catch (error) {
@@ -204,12 +208,11 @@ const ItemsManagementAdminPage: React.FC = () => {
                 descriptionRUS: data.descriptionRUS,
                 price: data.price,
                 stockAmount: data.stockAmount,
-                category: {
-                    id: data.categoryId
-                },
+                categoryId: data.categoryId,
                 isPopular: data.isPopular,
                 mainImageId: mainImageId,
-                imageIds: additionalImageIds
+                imageIds: additionalImageIds,
+                tutorialLink: data.tutorialLink
             };
 
             if (isCreate) {
@@ -293,6 +296,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Root id="nameENG" invalid={!!errors.nameENG}>
                             <Field.Label>Name (EN)</Field.Label>
                             <Input
+                                defaultValue={existingItem?.nameENG}
                                 placeholder="English name"
                                 {...register('nameENG', { required: 'English Name is Required' })}
                             />
@@ -302,6 +306,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Root id="nameGE" invalid={!!errors.nameGE}>
                             <Field.Label>Name (GE)</Field.Label>
                             <Input
+                                defaultValue={existingItem?.nameGE}
                                 placeholder="Georgian name"
                                 {...register('nameGE', { required: 'Georgian Name is Required' })}
                             />
@@ -311,6 +316,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Root id="nameRUS" invalid={!!errors.nameRUS}>
                             <Field.Label>Name (RU)</Field.Label>
                             <Input
+                                defaultValue={existingItem?.nameRUS}
                                 placeholder="Russian name"
                                 {...register('nameRUS', { required: 'Russian Name is Required' })}
                             />
@@ -322,6 +328,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Root id="descriptionENG" invalid={!!errors.descriptionENG}>
                             <Field.Label>Description (EN)</Field.Label>
                             <Textarea
+                                defaultValue={existingItem?.descriptionENG}
                                 placeholder="English description"
                                 {...register('descriptionENG', { required: 'English Description is Required' })}
                             />
@@ -331,6 +338,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Root id="descriptionGE" invalid={!!errors.descriptionGE}>
                             <Field.Label>Description (GE)</Field.Label>
                             <Textarea
+                                defaultValue={existingItem?.descriptionGE}
                                 placeholder="Georgian description"
                                 {...register('descriptionGE', { required: 'Georgian Description is Required' })}
                             />
@@ -340,6 +348,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Field.Root id="descriptionRUS" invalid={!!errors.descriptionRUS}>
                             <Field.Label>Description (RU)</Field.Label>
                             <Textarea
+                                defaultValue={existingItem?.descriptionRUS}
                                 placeholder="Russian description"
                                 {...register('descriptionRUS', { required: 'Russian Description is Required' })}
                             />
@@ -347,11 +356,23 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </Field.Root>
                     </SimpleGrid>
 
+
+                    <Field.Root id="tutorial" invalid={!!errors.tutorialLink}>
+                        <Field.Label>Tutorial</Field.Label>
+                        <InputGroup
+                            startElement="https://"
+                            startElementProps={{ color: "fg.muted" }}
+                        >
+                            <Input ps="7ch" placeholder="something.com" {...register('tutorialLink')} />
+                        </InputGroup>
+                    </Field.Root>
+
                     <Field.Root id="categoryId" invalid={!!errors.categoryId}>
                         <Field.Label>Category</Field.Label>
                         <Select.Root
                             collection={existingCategories}
                             width="100%"
+                            defaultValue={[String(existingItem?.categoryId)]}
                             onValueChange={e => setValue('categoryId', e.items[0]?.id)}
                         >
                             <Select.HiddenSelect />
@@ -408,7 +429,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                             defaultChecked={existingItem?.isPopular}
                             onCheckedChange={(details) => setValue('isPopular', Boolean(details.checked))}
                         >
-                            <Checkbox.HiddenInput/>
+                            <Checkbox.HiddenInput />
                             <Checkbox.Control />
                             <Checkbox.Label>Mark as Popular</Checkbox.Label>
                         </Checkbox.Root>
@@ -433,7 +454,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </FileUpload.Root>
                         {existingItem && !isCreate && (
                             <Box mt={2}>
-                                <Image src={existingItem.mainImage} w="200px" borderRadius="md" />
+                                <Image src={getImageUrl(existingItem.mainImageId)} w="200px" borderRadius="md" />
                             </Box>
                         )}
                     </Field.Root>
@@ -455,12 +476,12 @@ const ItemsManagementAdminPage: React.FC = () => {
                             </FileUpload.Trigger>
                             <FileUploadList />
                         </FileUpload.Root>
-                        {existingItem && existingItem.images.length > 0 && (
+                        {existingItem && existingItem.imageIds.length > 0 && (
                             <SimpleGrid columns={4} gap={2} mt={2}>
-                                {existingItem.images.map((src, idx) => (
+                                {existingItem.imageIds.map((src, idx) => (
                                     <Image
                                         key={idx}
-                                        src={src}
+                                        src={getImageUrl(src)}
                                         alt={`Image ${idx + 1}`}
                                         objectFit="cover"
                                         aspectRatio={1}

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import AuthController from '@/utils/AuthController';
 import API from '@/utils/AxiosAPI';
+import { getCart, removeItemFromCart, updateItemQuantity, getImageUrl } from '@/utils/helpers';
 import {
     Box,
     Flex,
@@ -19,7 +20,6 @@ import {
     EmptyState,
     VStack,
     ButtonGroup,
-    Show,
     Spinner,
     Center,
 } from '@chakra-ui/react';
@@ -39,18 +39,26 @@ interface UserDetails {
 }
 
 interface CartItem {
-    id: string;
-    title: string;
-    description: string;
-    price: number;
+    productId: number;
+    productNameGE: string;
+    productNameRUS: string;
+    productNameENG: string;
     quantity: number;
-    imageUrl: string;
+    price: number;
+    mainImageId: number;
+}
+
+interface CartResponse {
+    cartId: number;
+    items: CartItem[];
+    cartTotalPrice: number;
 }
 
 interface ReservationFormValues {
     fullName: string;
     email: string;
     mobile: string;
+    city: string;
     address: string;
     notes: string;
 }
@@ -61,6 +69,8 @@ const CartPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [reservationSuccess, setReservationSuccess] = useState(false);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [cartTotalPrice, setCartTotalPrice] = useState(0);
 
     const fetchUserData = async () => {
         setLoading(true);
@@ -75,52 +85,44 @@ const CartPage = () => {
         }
     };
 
+    const fetchCartData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            if (AuthController.isLoggedIn()) {
+                const response = await API.get<CartResponse>('cart/cart-for-user');
+                setCartItems(response.data.items);
+                setCartTotalPrice(response.data.cartTotalPrice);
+            } else {
+                const localCart = getCart();
+                if (localCart.length > 0) {
+                    const productIds = localCart.map((item: { id: number }) => item.id);
+                    const response = await API.post<CartItem[]>('/product/bulk', productIds);
+                    const itemsWithQuantity = response.data.map(item => ({
+                        ...item,
+                        quantity: localCart.find((cartItem: { id: number }) => cartItem.id === item.productId)?.quantity || 1
+                    }));
+                    setCartItems(itemsWithQuantity);
+                    setCartTotalPrice(itemsWithQuantity.reduce((sum, item) => sum + (item.price * item.quantity), 0));
+                }
+            }
+        } catch (err: any) {
+            setError(t('cart.loadError'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (AuthController.isLoggedIn()) {
             fetchUserData();
-        } else {
-            setLoading(false);
         }
+        fetchCartData();
     }, []);
 
     const reloadPage = () => {
         window.location.reload();
     };
-
-    const [cartItems, setCartItems] = useState<CartItem[]>([
-        {
-            id: '1',
-            title: 'Premium Dining Table',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            price: 899,
-            quantity: 1,
-            imageUrl: 'https://placehold.co/100x100',
-        },
-        {
-            id: '2',
-            title: 'Ergonomic Office Chair',
-            description: 'Comfortable office chair with lumbar support',
-            price: 299,
-            quantity: 2,
-            imageUrl: 'https://placehold.co/100x100',
-        },
-        {
-            id: '3',
-            title: 'Modern Bookshelf',
-            description: '5-tier wooden bookshelf',
-            price: 199,
-            quantity: 1,
-            imageUrl: 'https://placehold.co/100x100',
-        },
-        {
-            id: '4',
-            title: 'Vintage Lamp',
-            description: 'Classic brass lamp with Edison bulb',
-            price: 150,
-            quantity: 1,
-            imageUrl: 'https://placehold.co/100x100',
-        },
-    ]);
 
     const {
         register,
@@ -130,45 +132,60 @@ const CartPage = () => {
         defaultValues: AuthController.isLoggedIn()
             ? {
                 mobile: userData?.mobile,
+                city: userData?.city,
                 address: userData?.address,
                 notes: '',
             } : {
                 fullName: '',
                 email: '',
                 mobile: '',
+                city: '',
                 address: '',
                 notes: '',
             },
         shouldUnregister: true,
     });
 
-    const removeItem = async (id: string) => {
+    const removeItem = async (productId: number) => {
         try {
-            await API.delete('/cart/delete', { data: { productId: id } });
-            setCartItems((prev) => prev.filter((item) => item.id !== id));
+            if (AuthController.isLoggedIn()) {
+                await API.delete(`/cart/delete?productId=${productId}`);
+            } else {
+                removeItemFromCart(productId);
+            }
+            setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+            await fetchCartData(); // Refresh cart data
         } catch (err) {
             setError(t('cart.deleteError'));
         }
     };
 
-    const updateQuantity = async (id: string, newQty: number) => {
+    const updateQuantity = async (productId: number, newQty: number) => {
         try {
-            await API.put('/cart/update', { productId: id, newQuantity: newQty });
+            if (AuthController.isLoggedIn()) {
+                await API.put(`/cart/update?productId=${productId}&quantity=${newQty}`);
+            } else {
+                updateItemQuantity(productId, newQty);
+            }
             setCartItems((prev) =>
                 prev.map((item) =>
-                    item.id === id ? { ...item, quantity: newQty } : item
+                    item.productId === productId ? { ...item, quantity: newQty } : item
                 )
             );
+            await fetchCartData(); // Refresh cart data
         } catch (err) {
             setError(t('cart.updateError'));
         }
     };
 
-    const subtotal = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
-    const totalValue = subtotal;
+    if (!AuthController.isLoggedIn()) {
+        const subtotal = cartItems.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+        );
+        setCartTotalPrice(subtotal)
+    }
+
 
     const onSubmitAuth: SubmitHandler<ReservationFormValues> = async (data) => {
         try {
@@ -296,7 +313,7 @@ const CartPage = () => {
                     <Stack gap={4}>
                         {cartItems.map((item) => (
                             <Flex
-                                key={item.id}
+                                key={item.productId}
                                 align="flex-start"
                                 justify="space-between"
                                 flexDirection={{ base: 'column', md: 'row' }}
@@ -306,28 +323,25 @@ const CartPage = () => {
                             >
                                 <HStack gap={4} align="center">
                                     <Image
-                                        src={item.imageUrl}
-                                        alt={item.title}
+                                        src={getImageUrl(item.mainImageId)}
+                                        alt={item.productNameENG}
                                         boxSize="80px"
                                         objectFit="cover"
                                         borderRadius="md"
                                     />
                                     <Box>
-                                        <Text fontWeight="bold">{item.title}</Text>
-                                        <Text fontSize="sm" color="gray.500" lineClamp="2">
-                                            {item.description}
-                                        </Text>
+                                        <Text fontWeight="bold">{item.productNameENG}</Text>
                                     </Box>
                                 </HStack>
 
                                 <HStack gap={4} alignSelf={{ base: 'end', md: 'center' }}>
-                                    <Field.Root id={`quantity-${item.id}`} invalid={false}>
+                                    <Field.Root id={`quantity-${item.productId}`} invalid={false}>
                                         <NumberInput.Root defaultValue={String(item.quantity)} unstyled spinOnPress={false}
                                             min={1} max={50} step={1}
                                             onValueChange={(e) => {
                                                 const val = parseInt(e.value);
                                                 if (!isNaN(val) && val >= 1) {
-                                                    updateQuantity(item.id, val);
+                                                    updateQuantity(item.productId, val);
                                                 }
                                             }}
                                         >
@@ -354,7 +368,7 @@ const CartPage = () => {
                                         size="sm"
                                         colorScheme="red"
                                         variant="outline"
-                                        onClick={() => removeItem(item.id)}
+                                        onClick={() => removeItem(item.productId)}
                                     >
                                         <FaTrash />
                                     </IconButton>
@@ -450,6 +464,20 @@ const CartPage = () => {
                                 )}
                             </Field.Root>
 
+                            <Field.Root id="city" invalid={!!errors.city}>
+                                <Field.Label>
+                                    {t('reservation.city')} *
+                                </Field.Label>
+                                <Input
+                                    defaultValue={userData?.city || ''}
+                                    placeholder={t('reservation.cityPlaceholder')}
+                                    {...register('city', { required: t('reservation.cityError') })}
+                                />
+                                {errors.city && (
+                                    <Field.ErrorText>{errors.city.message}</Field.ErrorText>
+                                )}
+                            </Field.Root>
+
                             <Field.Root id="address" invalid={!!errors.address}>
                                 <Field.Label>
                                     {t('reservation.address')} *
@@ -478,7 +506,7 @@ const CartPage = () => {
                                 <Text>
                                     {t('reservation.totalAmount')}
                                 </Text>
-                                <Text>${totalValue.toFixed(2)}</Text>
+                                <Text>${cartTotalPrice.toFixed(2)}</Text>
                             </Flex>
 
                             <Text fontSize="xs" color="gray.500">
