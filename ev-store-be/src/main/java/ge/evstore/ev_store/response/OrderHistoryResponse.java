@@ -29,6 +29,7 @@ public class OrderHistoryResponse {
         orderHistoryResponse.setOrderDate(order.getOrderDate());
         orderHistoryResponse.setTotalPrice(NumberFormatUtil.roundDouble(order.getTotalPrice()));
         orderHistoryResponse.setOrderId(order.getId());
+        orderHistoryResponse.setOrderStatus(order.getStatus());
         final List<OrderItemResponse> orderItemResponses = new ArrayList<>();
         final List<OrderItem> items = order.getItems();
         for (final OrderItem orderItem : items) {

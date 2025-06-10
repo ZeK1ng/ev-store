@@ -185,8 +185,8 @@ public class AdminServiceImpl implements AdminService {
         }
         final Order order = byId.get();
         order.setStatus(orderStatus);
-        orderRepository.save(order);
+        final Order ord = orderRepository.save(order);
         log.info("Order status updated");
-        return OrderHistoryResponse.createFrom(order);
+        return OrderHistoryResponse.createFrom(ord);
     }
 }
