@@ -6,5 +6,6 @@ import lombok.Data;
 public class AuthorizedReservationRequest {
     private String mobile;
     private String address;
+    private String city;
     private String specialInstructions;
 }

@@ -167,7 +167,7 @@ public class EmailServiceImpl implements EmailService {
         public ReservationRequestEntity(final User user, final CartResponse cartForUser, final String orderId, final LocalDateTime orderDate, final AuthorizedReservationRequest reservationRequest) {
             this.name = user.getFirstName() + " " + user.getLastName();
             this.address = (reservationRequest.getAddress() == null || reservationRequest.getAddress().isBlank()) ? user.getAddress() : reservationRequest.getAddress();
-            this.city = user.getCity();
+            this.city = (reservationRequest.getCity() == null || reservationRequest.getCity().isBlank()) ? user.getCity() : reservationRequest.getCity();
             this.mobile = (reservationRequest.getMobile() == null || reservationRequest.getMobile().isBlank()) ? user.getMobile() : reservationRequest.getMobile();
             this.orderId = orderId;
             this.specialInstructions = reservationRequest.getSpecialInstructions();

@@ -7,11 +7,13 @@ import ge.evstore.ev_store.repository.OrderRepository;
 import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
 import ge.evstore.ev_store.repository.UserRepository;
 import ge.evstore.ev_store.request.UserRegisterRequest;
-import ge.evstore.ev_store.response.*;
+import ge.evstore.ev_store.response.CartItemResponse;
+import ge.evstore.ev_store.response.CartResponse;
+import ge.evstore.ev_store.response.OrderHistoryResponse;
+import ge.evstore.ev_store.response.UserResponse;
 import ge.evstore.ev_store.service.interf.ProductService;
 import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
-import ge.evstore.ev_store.utils.NumberFormatUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -201,24 +203,8 @@ public class UserServiceImpl implements UserService {
         final List<Order> orderByUser = orderRepository.getOrderByUser(user);
         final List<OrderHistoryResponse> orderHistoryResponse = new ArrayList<>();
         orderByUser.forEach(order -> {
-            orderHistoryResponse.add(createOrderHistory(order));
+            orderHistoryResponse.add(OrderHistoryResponse.createFrom(order));
         });
-        return orderHistoryResponse;
-    }
-
-    private OrderHistoryResponse createOrderHistory(final Order order) {
-        log.info("Creating order history for order {}", order.getOrderNumber());
-        final OrderHistoryResponse orderHistoryResponse = new OrderHistoryResponse();
-        orderHistoryResponse.setOrderNumber(order.getOrderNumber());
-        orderHistoryResponse.setOrderDate(order.getOrderDate());
-        orderHistoryResponse.setTotalPrice(NumberFormatUtil.roundDouble(order.getTotalPrice()));
-        orderHistoryResponse.setOrderId(order.getId());
-        final List<OrderItemResponse> orderItemResponses = new ArrayList<>();
-        final List<OrderItem> items = order.getItems();
-        for (final OrderItem orderItem : items) {
-            orderItemResponses.add(new OrderItemResponse(orderItem));
-        }
-        orderHistoryResponse.setItems(orderItemResponses);
         return orderHistoryResponse;
     }
 
