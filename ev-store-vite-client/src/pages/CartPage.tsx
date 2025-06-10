@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import AuthController from '@/utils/AuthController';
 import API from '@/utils/AxiosAPI';
-import { getCart, removeItemFromCart, updateItemQuantity, getImageUrl } from '@/utils/helpers';
+import { getCart, removeItemFromCart, updateItemQuantity, getImageUrl, clearCart } from '@/utils/helpers';
 import {
     Box,
     Flex,
@@ -67,7 +67,7 @@ interface ReservationFormValues {
 }
 
 const CartPage = () => {
-    const { t, i18n } = useTranslation('cart');
+    const { t } = useTranslation('cart');
     const [userData, setUserData] = useState<UserDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -157,7 +157,7 @@ const CartPage = () => {
                 removeItemFromCart(productId);
             }
             setCartItems((prev) => prev.filter((item) => item.productId !== productId));
-            await fetchCartData(); // Refresh cart data
+            await fetchCartData();
         } catch (err) {
             setError(t('cart.deleteError'));
         }
@@ -224,6 +224,7 @@ const CartPage = () => {
                 ...data,
                 cartItems: itemsDataToSend,
             });
+            clearCart();
             setReservationSuccess(true);
         } catch (err: any) {
             setError(t('reservation.error'));

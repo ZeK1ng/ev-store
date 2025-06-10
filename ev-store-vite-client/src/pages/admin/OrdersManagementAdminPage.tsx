@@ -20,7 +20,10 @@ import {
     IconButton,
     Pagination,
     Show,
-    Separator
+    Separator,
+    Select,
+    Portal,
+    createListCollection
 } from '@chakra-ui/react'
 import { FaArrowLeft, FaChevronLeft, FaChevronRight, FaCalendarAlt } from "react-icons/fa";
 import { LuPackageSearch } from "react-icons/lu";
@@ -58,8 +61,10 @@ const OrdersManagementAdminPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
     const [searchId, setSearchId] = useState<string>('');
+    const [statusFilter, setStatusFilter] = useState<string>('');
     const [totalOrders, setTotalOrders] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
+
     const pageSize = 10;
 
     const statusLabel = {
@@ -75,7 +80,8 @@ const OrdersManagementAdminPage = () => {
             const params = new URLSearchParams({
                 page: page.toString(),
                 size: pageSize.toString(),
-                ...(id && { id })
+                ...(id && { id }),
+                ...(statusFilter && { orderStatus: statusFilter })
             });
 
             const response = await API.get(`/admin/orders/get-all?${params.toString()}`);
@@ -127,7 +133,7 @@ const OrdersManagementAdminPage = () => {
 
     useEffect(() => {
         fetchOrders(searchId, currentPage);
-    }, [currentPage]);
+    }, [currentPage, statusFilter]);
 
     if (isLoading) {
         return (
@@ -138,7 +144,7 @@ const OrdersManagementAdminPage = () => {
     }
 
     return (
-        <Box p={8} maxW="800px" mx="auto">
+        <Box p={8} maxW="800px" mx="auto" minH="90vh">
             {apiError && (
                 <Alert.Root status="error" mb={4}>
                     <Alert.Indicator />
@@ -151,20 +157,75 @@ const OrdersManagementAdminPage = () => {
                     Back to Admin Dashboard
                 </a>
             </Button>
-            <Flex justify="space-between" align="center" mt={6} mb={6} direction={{ base: 'column', md: 'row' }} gap={4}>
-                <Heading>
-                    <HStack>
-                        <LuPackageSearch />Orders Management
-                    </HStack>
-                </Heading>
-                <Field.Root w={{ base: '100%', md: '300px' }}>
-                    <Input
-                        placeholder="Search by Order ID"
-                        size="md"
-                        value={searchId}
-                        onChange={(e) => handleIdSearch(e.target.value)}
-                    />
-                </Field.Root>
+
+            <Heading mt={6}>
+                <HStack>
+                    <LuPackageSearch />Orders Management
+                </HStack>
+            </Heading>
+            <Text fontSize="sm" color="gray.500" mt={2}>
+                Total Orders: {totalOrders}
+            </Text>
+            <Flex justify="end" mt={6} mb={6} direction={{ base: 'column', md: 'row' }} gap={4}>
+                <HStack w={{ base: '100%', md: 'auto' }} gap={4}>
+                    <Field.Root w={{ base: '100%', md: '300px' }}>
+                        <Input
+                            placeholder="Search by Order ID"
+                            size="md"
+                            value={searchId}
+                            onChange={(e) => handleIdSearch(e.target.value)}
+                        />
+                    </Field.Root>
+                    <Field.Root w={{ base: '100%', md: '200px' }}>
+                        <Select.Root
+                            collection={createListCollection({
+                                items: [
+                                    { id: '', value: '', label: 'All Statuses' },
+                                    { id: 'PENDING', value: 'PENDING', label: statusLabel.PENDING },
+                                    { id: 'COMPLETED', value: 'COMPLETED', label: statusLabel.COMPLETED },
+                                    { id: 'CANCELED', value: 'CANCELED', label: statusLabel.CANCELED }
+                                ]
+                            })}
+                            value={[statusFilter]}
+                            onValueChange={e => {
+                                setStatusFilter(e.items[0]?.value || '');
+                                setCurrentPage(0);
+                            }}
+                        >
+                            <Select.HiddenSelect />
+                            <Select.Control>
+                                <Select.Trigger>
+                                    <Select.ValueText placeholder="Filter by status" />
+                                </Select.Trigger>
+                                <Select.IndicatorGroup>
+                                    <Select.Indicator />
+                                </Select.IndicatorGroup>
+                            </Select.Control>
+                            <Portal>
+                                <Select.Positioner>
+                                    <Select.Content>
+                                        <Select.Item item={{ value: '' }} key="">
+                                            <Select.ItemText>All Statuses</Select.ItemText>
+                                            <Select.ItemIndicator />
+                                        </Select.Item>
+                                        <Select.Item item={{ value: 'PENDING' }} key="PENDING">
+                                            <Select.ItemText>{statusLabel.PENDING}</Select.ItemText>
+                                            <Select.ItemIndicator />
+                                        </Select.Item>
+                                        <Select.Item item={{ value: 'COMPLETED' }} key="COMPLETED">
+                                            <Select.ItemText>{statusLabel.COMPLETED}</Select.ItemText>
+                                            <Select.ItemIndicator />
+                                        </Select.Item>
+                                        <Select.Item item={{ value: 'CANCELED' }} key="CANCELED">
+                                            <Select.ItemText>{statusLabel.CANCELED}</Select.ItemText>
+                                            <Select.ItemIndicator />
+                                        </Select.Item>
+                                    </Select.Content>
+                                </Select.Positioner>
+                            </Portal>
+                        </Select.Root>
+                    </Field.Root>
+                </HStack>
             </Flex>
 
             {orders.length === 0 ? (
