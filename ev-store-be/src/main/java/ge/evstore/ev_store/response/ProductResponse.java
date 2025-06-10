@@ -27,6 +27,7 @@ public class ProductResponse {
     private Integer stockAmount;
 
     private String categoryName;
+    private Long categoryId;
 
     private Long mainImageId;
 

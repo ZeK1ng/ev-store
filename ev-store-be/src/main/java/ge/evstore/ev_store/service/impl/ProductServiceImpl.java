@@ -37,7 +37,9 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductNotFoundException("Product not found with ID: " + productId);
         }
         final List<Long> imageIds = jsonListConverter.convertToEntityAttribute(product.get().getImageIds());
-        return ProductResponse.from(product.get(), imageIds);
+        final ProductResponse from = ProductResponse.from(product.get(), imageIds);
+        from.setCategoryId(product.get().getCategory().getId());
+        return from;
     }
 
     @Override
