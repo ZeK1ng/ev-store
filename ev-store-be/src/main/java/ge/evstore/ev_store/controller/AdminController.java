@@ -11,6 +11,7 @@ import ge.evstore.ev_store.response.OrderHistoryResponse;
 import ge.evstore.ev_store.service.interf.AdminService;
 import ge.evstore.ev_store.service.interf.DictionaryService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -145,11 +146,21 @@ public class AdminController {
 
     /*--------------------Order History --------------*/
 
-    @PatchMapping("/order-history/change-status")
+    @PatchMapping("/orders/change-status")
     public ResponseEntity<OrderHistoryResponse> changeStatus(
             final HttpServletRequest request, @RequestParam final Long orderId, @RequestParam final OrderStatus orderStatus) {
         final String accessToken = extractBearer(request);
         return ResponseEntity.ok(adminService.updateOrderStatus(orderStatus, orderId, accessToken));
+    }
+
+    @GetMapping("/orders/get-all")
+    public ResponseEntity<Page<OrderHistoryResponse>> getAllOrders(
+            final HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0") final int page,
+            @RequestParam(required = false, defaultValue = "10") final int size,
+            @RequestParam(required = false) final Long id) {
+        final String accessToken = extractBearer(request);
+        return ResponseEntity.ok(adminService.getAllOrders(page, size, id, accessToken));
     }
 }
 

@@ -69,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular) {
+    public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final Long categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular, Long productId) {
         log.info("getAllProducts called with: page={}, size={}, sortBy:{}, direction: {}, name: {}, caregoryId:{}, minPrice:{}, maxPrice:{}, inStock:{}, isPopular:{}", page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
         final Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         final Pageable pageable = PageRequest.of(page, size, sort);
@@ -83,6 +83,11 @@ public class ProductServiceImpl implements ProductService {
                     cb.like(cb.lower(root.get("nameGE")), pattern),
                     cb.like(cb.lower(root.get("nameRUS")), pattern)
             ));
+        }
+
+        if(productId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("id"), productId));
         }
 
         if (categoryId != null) {
