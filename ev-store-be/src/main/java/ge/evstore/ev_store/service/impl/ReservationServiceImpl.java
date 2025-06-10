@@ -33,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void createGuestReservation(final UnauthenticatedUserReservationRequest request) throws MessagingException {
         try {
+            userService.saveOrderHistoryForGuest(request);
             emailService.sendReservationMailForUnauthorizedUser(request);
         } catch (final MessagingException e) {
             throw new MessagingException("Messaging Exception during reservation" + e.getMessage());
@@ -54,7 +55,7 @@ public class ReservationServiceImpl implements ReservationService {
             }
             final User user = userOptional.get();
             final CartResponse cartForUser = cartService.getCartForUser(bearer);
-            final Order order = userService.saveOrderHistory(user, cartForUser);
+            final Order order = userService.saveOrderHistory(user, cartForUser, reservationRequest.getSpecialInstructions());
             emailService.sendReservationMailForUser(user, cartForUser, order.getOrderNumber(), order.getOrderDate(), reservationRequest);
             cartService.clearCartForUser(user);
         } catch (final MessagingException e) {

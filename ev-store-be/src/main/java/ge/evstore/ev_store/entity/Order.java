@@ -34,9 +34,11 @@ public class Order {
 
     // Which user placed this order
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(length = 1000)
+    private String specialInstructions;
     // The list of items in this order
     @OneToMany(
             mappedBy = "order",
