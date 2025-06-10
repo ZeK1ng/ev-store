@@ -28,10 +28,11 @@ import {
     Select,
     createListCollection,
     Center,
-    Spinner
+    Spinner,
+    Separator
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
-import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
+import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
 import { LuShoppingCart } from "react-icons/lu";
 import { addItemToCart, getImageUrl } from "@/utils/helpers";
@@ -41,6 +42,8 @@ import { toaster } from "@/components/ui/toaster";
 interface Category {
     id: number;
     name: string;
+    description: string;
+    children: Category[];
 }
 
 interface Product {
@@ -66,6 +69,100 @@ interface ProductResponse {
     number: number;
 }
 
+const CategoryTree = ({
+    categories,
+    selectedCategories,
+    onCategorySelect,
+    expanded,
+    onToggle,
+    level = 0
+}: {
+    categories: Category[],
+    selectedCategories: number[],
+    onCategorySelect: (categoryId: number) => void,
+    expanded: Set<number>,
+    onToggle: (categoryId: number) => void,
+    level?: number
+}) => {
+    return (
+        <Stack  position="relative">
+            {categories.map(category => (
+                <>
+                    <Box key={category.id} position="relative">
+                        <Flex
+                            align="center"
+                            py={1}
+                            px={1}
+                            borderRadius="md"
+                            _hover={{ bg: "gray.50" }}
+                            transition="background 0.2s"
+                        >
+                            {category.children && category.children.length > 0 ? (
+                                <Box
+                                    as="button"
+                                    aria-label={expanded.has(category.id) ? 'Collapse' : 'Expand'}
+                                    onClick={() => onToggle(category.id)}
+                                    minW="20px"
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    background="none"
+                                    border="none"
+                                    cursor="pointer"
+                                    p={0}
+                                    mr={2}
+                                >
+                                    {expanded.has(category.id) ? <FaChevronDown size={14}/> : <FaChevronRight size={14} />}
+                                </Box>
+                            ) : (
+                                <Box minW="20px" mr={2} />
+                            )}
+                            <Checkbox.Root
+                                value={category.id.toString()}
+                                onChange={() => onCategorySelect(category.id)}
+                                checked={selectedCategories.includes(category.id)}
+                                variant="solid"
+                                colorPalette="green"
+                            >
+                                <Checkbox.HiddenInput />
+                                <Checkbox.Control />
+                                <Checkbox.Label
+                                >
+                                    {category.name}
+                                </Checkbox.Label>
+                            </Checkbox.Root>
+                        </Flex>
+
+                        {category.children && category.children.length > 0 && expanded.has(category.id) && (
+                            <Box position="relative">
+                                <Box
+                                    position="absolute"
+                                    top="0"
+                                    left="15px"
+                                    width="1px"
+                                    height="100%"
+                                    bg="gray.200"
+                                    zIndex={0}
+                                />
+                                <Box pl={6} borderLeft="1px solid transparent">
+                                    <CategoryTree
+                                        categories={category.children}
+                                        selectedCategories={selectedCategories}
+                                        onCategorySelect={onCategorySelect}
+                                        expanded={expanded}
+                                        onToggle={onToggle}
+                                        level={level + 1}
+                                    />
+                                </Box>
+                            </Box>
+                        )}
+                    </Box>
+                </>
+            ))}
+        </Stack>
+    );
+};
+
 const CatalogPage = () => {
     const { t } = useTranslation('catalog')
 
@@ -83,11 +180,13 @@ const CatalogPage = () => {
 
     const pageSize = 10
     const [page, setPage] = useState(0)
+    const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await API.get('/category/all')
+                console.log(response.data);
                 setCategories(response.data)
             } catch (error) {
                 console.error('Error fetching categories:', error)
@@ -164,89 +263,36 @@ const CatalogPage = () => {
             </Heading>
 
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
-                <Accordion.Root
-                    width={{ base: "100%", md: "250px" }}
-                    variant="outline"
-                    multiple
-                    collapsible
-                    defaultValue={["category", "price", "availability"]}
-                >
-                    <Accordion.Item value="price">
-                        <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">
-                                {t('priceFilterTitle')}
-                            </Text>
-                            <Accordion.ItemIndicator />
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                            <Accordion.ItemBody px="4" py="3">
-                                <Slider.Root width="200px"
-                                    min={sliderRange[0]}
-                                    max={sliderRange[1]}
-                                    value={selRange}
-                                    step={1}
-                                    onValueChange={(e) => setSelRange(e.value)}>
-                                    <Slider.ValueText>
-                                        <HStack justify="space-between">
-                                            <Text fontSize="sm">{selRange[0]}</Text>
-                                            <Text fontSize="sm">{selRange[1]}</Text>
-                                        </HStack>
-                                    </Slider.ValueText>
-                                    <Slider.Control>
-                                        <Slider.Track>
-                                            <Slider.Range bg="#9CE94F" />
-                                        </Slider.Track>
-                                        <Slider.Thumbs />
-                                    </Slider.Control>
-                                </Slider.Root>
-                            </Accordion.ItemBody>
-                        </Accordion.ItemContent>
-                    </Accordion.Item>
-
-                    <Accordion.Item value="category">
-                        <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">
-                                {t('categoryFilterTitle')}
-                            </Text>
-                            <Accordion.ItemIndicator />
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                            <Accordion.ItemBody as={Stack} px="4" py="3">
-                                {categories.map(cat => (
-                                    <Checkbox.Root key={cat.id} value={cat.id.toString()} onChange={() => {
-                                        setSelCats(prev =>
-                                            prev.includes(cat.id)
-                                                ? prev.filter(c => c !== cat.id)
-                                                : [...prev, cat.id]
-                                        )
-                                    }}>
-                                        <Checkbox.HiddenInput />
-                                        <Checkbox.Control />
-                                        <Checkbox.Label>{cat.name}</Checkbox.Label>
-                                    </Checkbox.Root>
-                                ))}
-                            </Accordion.ItemBody>
-                        </Accordion.ItemContent>
-                    </Accordion.Item>
-
-                    <Accordion.Item value="availability">
-                        <Accordion.ItemTrigger>
-                            <Text flex="1" fontWeight="medium">
-                                {t('availabilityFilterTitle')}
-                            </Text>
-                            <Accordion.ItemIndicator />
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                            <Accordion.ItemBody as={Stack} px="4" py="3">
-                                <Checkbox.Root value="isPopular" onChange={() => setIsPopular(!isPopular)}>
-                                    <Checkbox.HiddenInput />
-                                    <Checkbox.Control />
-                                    <Checkbox.Label>{t('popular')}</Checkbox.Label>
-                                </Checkbox.Root>
-                            </Accordion.ItemBody>
-                        </Accordion.ItemContent>
-                    </Accordion.Item>
-                </Accordion.Root>
+                <Box bg="whiteAlpha.50" borderRadius="lg" minW="260px" w="100%" maxW="320px">
+                    <Text fontWeight="bold" fontSize="xl" mb="4">
+                        {t('categoryFilterTitle')}
+                    </Text>
+                    <Box maxH="400px" overflowY="auto" pr="2">
+                        <CategoryTree
+                            categories={categories}
+                            selectedCategories={selCats}
+                            onCategorySelect={(categoryId) => {
+                                setSelCats(prev =>
+                                    prev.includes(categoryId)
+                                        ? prev.filter(c => c !== categoryId)
+                                        : [...prev, categoryId]
+                                )
+                            }}
+                            expanded={expandedCats}
+                            onToggle={(categoryId) => {
+                                setExpandedCats(prev => {
+                                    const next = new Set(prev)
+                                    if (next.has(categoryId)) {
+                                        next.delete(categoryId)
+                                    } else {
+                                        next.add(categoryId)
+                                    }
+                                    return next
+                                })
+                            }}
+                        />
+                    </Box>
+                </Box>
 
                 <Box flex="1" w="100%">
                     <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
