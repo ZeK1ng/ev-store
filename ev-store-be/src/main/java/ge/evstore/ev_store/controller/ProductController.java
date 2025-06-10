@@ -1,6 +1,5 @@
 package ge.evstore.ev_store.controller;
 
-import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.response.MaxPriceResponse;
 import ge.evstore.ev_store.response.ProductResponse;
 import ge.evstore.ev_store.service.interf.ProductService;
@@ -27,7 +26,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable final Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+        return ResponseEntity.ok(productService.getProductResponseById(id));
     }
 
     @PostMapping("/bulk")
@@ -40,7 +39,7 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
             @RequestParam(required = false, defaultValue = "0") final int page,
             @RequestParam(required = false, defaultValue = "10") final int size,
-            @RequestParam(required = false,defaultValue = "id") final String sortBy,
+            @RequestParam(required = false, defaultValue = "id") final String sortBy,
             @RequestParam(required = false, defaultValue = "asc") final String direction,
             @RequestParam(required = false) final String name,
             @RequestParam(required = false) final Long categoryId,

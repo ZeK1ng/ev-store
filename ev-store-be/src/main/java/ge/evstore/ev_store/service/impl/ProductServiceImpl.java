@@ -28,13 +28,19 @@ public class ProductServiceImpl implements ProductService {
     private final JsonListConverter jsonListConverter;
 
     @Override
-    public ProductResponse getProductById(final Long productId) {
+    public ProductResponse getProductResponseById(final Long productId) {
         final Optional<Product> product = productRepository.findById(productId);
         if (product.isEmpty()) {
             throw new ProductNotFoundException("Product not found with ID: " + productId);
         }
         final List<Long> imageIds = jsonListConverter.convertToEntityAttribute(product.get().getImageIds());
         return ProductResponse.from(product.get(), imageIds);
+    }
+
+    @Override
+    public Product getProductById(final Long productId) {
+        final Optional<Product> product = productRepository.findById(productId);
+        return product.orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + productId));
     }
 
     @Override

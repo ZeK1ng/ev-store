@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ProductService {
-    ProductResponse getProductById(Long productId);
+    ProductResponse getProductResponseById(Long productId);
+
+    Product getProductById(Long productId);
 
     MaxPriceResponse getOverAllMaxPrice();
 
