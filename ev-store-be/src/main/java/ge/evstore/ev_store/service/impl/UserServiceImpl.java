@@ -12,6 +12,7 @@ import ge.evstore.ev_store.service.interf.ProductService;
 import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
 import ge.evstore.ev_store.utils.NumberFormatUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import static ge.evstore.ev_store.utils.OrderUtils.generateOrderNumber;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -50,8 +52,10 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User registerUserWithoutVerification(final UserRegisterRequest request, final String verificationCode) throws UserAlreadyRegisteredException {
+        log.info("Registering user without verification code {}", verificationCode);
         final Optional<User> user1 = findUser(request.getEmail());
         if (user1.isPresent() && user1.get().getVerified()) {
+            log.info("Verified User {} already exists", request.getEmail());
             throw new UserAlreadyRegisteredException(request);
         } else {
             user1.ifPresent(userRepository::delete);
@@ -74,6 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User verifyUser(final User userFound) {
+        log.info("Verifying user {}", userFound.getEmail());
         userFound.setVerified(true);
         userFound.setVerificationCode(null);
         userFound.setOtpVerificationExpiration(null);
@@ -85,6 +90,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void updateVerificationCodeFor(final User user, final String verificationCode) {
+        log.info("Updating verification code for user {}", user.getEmail());
         user.setVerificationCode(verificationCode);
         user.setOtpVerificationExpiration(LocalDateTime.now().plusMinutes(verifyCodeExpirationDuration));
         userRepository.save(user);
@@ -92,6 +98,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void updatePassword(final User user, final String newPassword) {
+        log.info("Updating password for user {}", user.getEmail());
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setVerificationCode(null);
         user.setOtpVerificationExpiration(null);
@@ -103,6 +110,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserDetails(final String accessToken) {
         final String username = jwtUtils.extractUsername(accessToken);
         final Optional<User> user = userRepository.findByEmail(username);
+        log.info("Retrieved user {}", username);
         if (user.isEmpty()) {
             return null;
         }
@@ -115,6 +123,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @UserTokenAspectMarker
     public UserResponse updateUser(final String city, final String address, final String mobile, final String token) throws UserAlreadyRegisteredException {
+        log.info("Updating user city: {}, address: {}, mobile: {}", city, address, mobile);
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> user = userRepository.findByEmail(username);
         if (user.isEmpty()) {
@@ -146,6 +155,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Order saveOrderHistory(final User user, final CartResponse cartForUser) {
+        log.info("Saving order history for user {}", user.getEmail());
         final Order order = new Order();
 
         order.setOrderNumber(generateOrderNumber());
@@ -180,9 +190,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @UserTokenAspectMarker
     public List<OrderHistoryResponse> getUserOrderHistory(final String token) {
+        log.info("Retrieving user order history for token {}", token);
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> userOpt = userRepository.findByEmail(username);
         if (userOpt.isEmpty()) {
+            log.error("User not found for name: " + username);
             throw new UsernameNotFoundException("User not found for name: " + username);
         }
         final User user = userOpt.get();
@@ -195,6 +207,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private OrderHistoryResponse createOrderHistory(final Order order) {
+        log.info("Creating order history for order {}", order.getOrderNumber());
         final OrderHistoryResponse orderHistoryResponse = new OrderHistoryResponse();
         orderHistoryResponse.setOrderNumber(order.getOrderNumber());
         orderHistoryResponse.setOrderDate(order.getOrderDate());

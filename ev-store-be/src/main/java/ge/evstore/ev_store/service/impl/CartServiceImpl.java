@@ -13,6 +13,7 @@ import ge.evstore.ev_store.service.interf.ProductService;
 import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CartServiceImpl implements CartService {
     private final JwtUtils jwtUtils;
     private final UserService userService;
@@ -32,14 +34,19 @@ public class CartServiceImpl implements CartService {
     @UserTokenAspectMarker
     public CartResponse getCartForUser(final String token) {
         final String username = jwtUtils.extractUsername(token);
+        log.info("Fetching cart for user: {}", username);
+
         final Optional<User> userOptional = userService.findUser(username);
         if (userOptional.isEmpty()) {
+            log.warn("User not found for username: {}", username);
             throw new UsernameNotFoundException("User not found for username: " + username);
         }
         final Cart cart = userOptional.get().getCart();
         if (cart == null) {
+            log.warn("Cart not found for user: {}", username);
             throw new CartNotFoundException("Cart not found for user: " + username);
         }
+        log.info("Cart found for user: {}", username);
         return CartResponse.fromCart(cart);
     }
 
@@ -48,31 +55,51 @@ public class CartServiceImpl implements CartService {
     @UserTokenAspectMarker
     public CartResponse addProductToCart(final Long productId, final Integer quantity, final String token) {
         final String username = jwtUtils.extractUsername(token);
+        log.info("Add product to cart requested. User: {}, ProductId: {}, Quantity: {}", username, productId, quantity);
+
         final Optional<User> userOptional = userService.findUser(username);
         if (userOptional.isEmpty()) {
-            throw new UsernameNotFoundException("User not found for username:" + username);
+            log.warn("User not found for username: {}", username);
+            throw new UsernameNotFoundException("User not found for username: " + username);
         }
+
         final Product productById = productService.getProductById(productId);
+        log.debug("Product retrieved: {} (ID: {})", productById.getNameENG(), productId);
+
         final Cart cart = userOptional.get().getCart();
+        if (cart == null) {
+            log.warn("Cart not found for user: {}", username);
+            throw new CartNotFoundException("Cart not found for user: " + username);
+        }
+
         final Optional<CartItem> existingItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productById.getId()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
             final CartItem item = existingItem.get();
-            item.setQuantity(item.getQuantity() + quantity);
+            final int oldQuantity = item.getQuantity();
+            item.setQuantity(oldQuantity + quantity);
+            log.info("Updated quantity for product ID {} in cart from {} to {}", productId, oldQuantity, item.getQuantity());
         } else {
-//            final Integer stockAmount = productById.getStockAmount();
-//            if (stockAmount < quantity) {
-//                throw new AmountExceededException("Amount exceeded for product" + "Max amount is:" + stockAmount);
-//            }
+            // Uncomment if you want to enforce stock amount check
+            // final Integer stockAmount = productById.getStockAmount();
+            // if (stockAmount < quantity) {
+            //     log.warn("Requested quantity {} exceeds stock amount {} for product ID {}", quantity, stockAmount, productId);
+            //     throw new AmountExceededException("Amount exceeded for product. Max amount is: " + stockAmount);
+            // }
+
             final CartItem cartItem = new CartItem();
             cartItem.setProduct(productById);
             cartItem.setQuantity(quantity);
             cartItem.setCart(cart);
             cart.getItems().add(cartItem);
+            log.info("Added new product ID {} with quantity {} to cart for user {}", productId, quantity, username);
         }
+
         cartRepository.save(cart);
+        log.info("Cart saved successfully for user: {}", username);
+
         return CartResponse.fromCart(cart);
     }
 

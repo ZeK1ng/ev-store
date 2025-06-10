@@ -10,4 +10,6 @@ public interface ImageService {
     ImageSaveResponse saveImage(MultipartFile image) throws IOException;
 
     byte[] getImageById(Long imageId);
+
+    int deleteOrphanImages();
 }

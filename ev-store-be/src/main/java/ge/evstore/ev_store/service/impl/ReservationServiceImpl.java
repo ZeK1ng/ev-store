@@ -14,6 +14,7 @@ import ge.evstore.ev_store.service.interf.UserService;
 import ge.evstore.ev_store.utils.JwtUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationServiceImpl implements ReservationService {
     private final EmailService emailService;
     private final UserService userService;
@@ -44,7 +46,9 @@ public class ReservationServiceImpl implements ReservationService {
         try {
             final String username = jwtUtils.extractUsername(bearer);
             final Optional<User> userOptional = userService.findUser(username);
+            log.info("Creating reservation for user {}", username);
             if (userOptional.isEmpty()) {
+                log.error("User {} not found", username);
                 throw new UsernameNotFoundException("User not found for username:" + username);
             }
             final User user = userOptional.get();

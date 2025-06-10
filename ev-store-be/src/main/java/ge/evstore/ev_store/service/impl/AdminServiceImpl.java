@@ -39,18 +39,22 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public Product addProduct(final ProductRequest productRequest, final String accessToken) throws AccessDeniedException {
+        log.info("Adding new product: {}", productRequest);
         final List<MaxPriceEasySaver> maxPriceSaver = maxPriceSaverRepository.findAll();
         if (maxPriceSaver.isEmpty()) {
             final MaxPriceEasySaver maxPriceEasySaver = new MaxPriceEasySaver();
             maxPriceEasySaver.setMaxPrice(productRequest.getPrice());
             maxPriceSaverRepository.save(maxPriceEasySaver);
+            log.info("Max price created: {}", maxPriceEasySaver.getMaxPrice());
         } else {
             final MaxPriceEasySaver maxPriceEasySaver = maxPriceSaver.get(0);
             if (productRequest.getPrice() > maxPriceEasySaver.getMaxPrice()) {
                 maxPriceEasySaver.setMaxPrice(productRequest.getPrice());
                 maxPriceSaverRepository.save(maxPriceEasySaver);
+                log.info("Max price updated: {}", maxPriceEasySaver.getMaxPrice());
             }
         }
+
         final List<Long> imageIds = productRequest.getImageIds();
         String imageIdsColumnValue = null;
         if (imageIds != null && !imageIds.isEmpty()) {
@@ -71,6 +75,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public Product updateProduct(final Long id, final ProductRequest productRequest, final String accessToken) {
+        log.info("Updating product -> id: {} data: {}", id, productRequest);
         return productRepository.findById(id)
                 .map(existingProduct -> {
                     final Product updatedProduct = Product.fromProductRequest(productRequest);
@@ -101,6 +106,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public Category addCategory(final String name, final String description, final Long parentCategoryId, final String accessToken) {
+        log.info("Adding category: {}", name);
         final AtomicReference<Category> result = new AtomicReference<>();
         if (parentCategoryId == null) {
             final Category category = new Category();
@@ -109,6 +115,7 @@ public class AdminServiceImpl implements AdminService {
             category.setParentCategory(null);
             categoryRepository.save(category);
             result.set(category);
+            log.info("Category created: {} with null as parent category", category);
         } else {
             categoryRepository.findById(parentCategoryId).ifPresent(parent -> {
                 final Category child = new Category();
@@ -119,6 +126,7 @@ public class AdminServiceImpl implements AdminService {
                 categoryRepository.save(parent); // cascading will persist the new child
                 categoryRepository.save(child);
                 result.set(child);
+                log.info("Category updated: {} with {} as parent category", child, parent);
             });
         }
         return result.get();
@@ -157,6 +165,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ImageSaveResponse> saveImages(final MultipartFile[] images, final String accessToken) throws IOException {
+        log.info("Saving {} images", images.length);
         final List<ImageSaveResponse> response = new ArrayList<>();
         for (final MultipartFile image : images) {
             response.add(imageService.saveImage(image));

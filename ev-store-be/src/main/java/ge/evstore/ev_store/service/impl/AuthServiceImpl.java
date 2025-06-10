@@ -64,16 +64,24 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     public AccessTokenResponse rotateAccessTokenForUser(final String refreshToken) {
+        log.info("Attempting to rotate access token for refresh token");
+
         if (!validateToken(refreshToken, TokenType.REFRESH_TOKEN)) {
+            log.warn("Invalid refresh token received");
             throw new MalformedJwtException("Invalid refresh token");
         }
+
         final String userName = jwtUtils.extractUsername(refreshToken);
+        log.debug("Extracted username from refresh token: {}", userName);
+
         final Optional<User> user = userService.findUser(userName);
         if (user.isEmpty()) {
+            log.error("User {} not found while rotating access token", userName);
             throw new UsernameNotFoundException("User " + userName + " not found");
         }
         final AuthTokens authTokens = authTokenRepository.findByUser(user.get());
         if (!authTokens.getRefreshToken().equals(refreshToken)) {
+            log.warn("Mismatched refresh token for user {}", userName);
             throw new UnsupportedJwtException("Invalid refresh token for user " + userName);
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
@@ -81,6 +89,7 @@ public class AuthServiceImpl implements AuthService {
         final String accessToken = jwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
         authTokens.setAccessToken(accessToken);
         authTokenRepository.save(authTokens);
+        log.info("Successfully rotated access token for user {}", userName);
         return new AccessTokenResponse(accessToken);
     }
 
@@ -89,11 +98,15 @@ public class AuthServiceImpl implements AuthService {
     @UserTokenAspectMarker
     public void handleLogout(final String token) {
         final String username = jwtUtils.extractUsername(token);
+        log.info("Attempting logout for user: {}", username);
+
         final Optional<User> user = userService.findUser(username);
         if (user.isEmpty()) {
+            log.warn("Logout failed: user '{}' not found", username);
             throw new UsernameNotFoundException("User " + username + " not found");
         }
         authTokenRepository.deleteByUser(user.get());
+        log.info("Successfully logged out user: {}", username);
     }
 
     @Override
@@ -101,111 +114,171 @@ public class AuthServiceImpl implements AuthService {
         try {
             final String s = jwtUtils.extractTokenTypeFromClaims(token);
             if (s == null || s.isBlank() || !s.equals(tokenType.toString())) {
+                log.warn("Invalid token type. Expected: {}, Found: {}", tokenType, s);
                 return false;
             }
-            return jwtUtils.isTokenValid(token, userDetailsService.loadUserByUsername(jwtUtils.extractUsername(token)));
+            final String username = jwtUtils.extractUsername(token);
+            final boolean isValid = jwtUtils.isTokenValid(token, userDetailsService.loadUserByUsername(username));
+            log.debug("Token validation result for user '{}': {}", username, isValid);
+            return isValid;
         } catch (final Exception e) {
-            log.error(e.getMessage());
+            log.error("Token validation failed: {}", e.getMessage(), e);
             return false;
         }
     }
 
     @Override
     public boolean verifyOtp(final OtpVerificationRequest otpVerificationRequest) {
-        final Optional<User> user = userService.findUser(otpVerificationRequest.getEmail());
+        final String email = otpVerificationRequest.getEmail();
+        log.info("Verifying OTP for email: {}", email);
+
+        final Optional<User> user = userService.findUser(email);
         if (user.isEmpty()) {
+            log.warn("OTP verification failed: user with email '{}' not found", email);
             return false;
         }
+
         final User user1 = user.get();
         if (user1.getOtpVerificationExpiration() == null || user1.getOtpVerificationExpiration().isBefore(LocalDateTime.now())) {
+            log.warn("OTP expired for user '{}'", email);
             throw new VerificationCodeExpiredException("Verification code expired");
         }
-        return user1.getVerificationCode().equals(otpVerificationRequest.getOtp());
+
+        final boolean isMatch = user1.getVerificationCode().equals(otpVerificationRequest.getOtp());
+        log.info("OTP verification {} for user '{}'", isMatch ? "succeeded" : "failed", email);
+        return isMatch;
     }
 
 
     @Transactional
     public AuthResponse handleLogin(final AuthRequest request) {
+        log.info("Attempting login for user: {}", request.getUsername());
+
         final Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
+
         final UserDetails userDetails = (UserDetails) auth.getPrincipal();
         final Optional<User> userOptional = userService.findUser(userDetails.getUsername());
+
         if (userOptional.isEmpty()) {
+            log.error("Login failed: user '{}' not found after authentication", request.getUsername());
             throw new UsernameNotFoundException("User not found for login: " + request.getUsername());
         }
+
         final User user = userOptional.get();
+        log.info("Login successful for user: {}", user.getEmail());
+
         return generateAndRegisterTokens(userDetails, user);
     }
 
     @Transactional
     public void handleRegister(final UserRegisterRequest request) throws UserAlreadyRegisteredException, MessagingException {
+        final String email = request.getEmail();
+        log.info("Initiating registration for email: {}", email);
+
         final String verificationCode = VerificationUtils.generateVerificationCode();
         final User user = userService.registerUserWithoutVerification(request, verificationCode);
+
+        log.info("User registered successfully without verification. Sending verification code to: {}", email);
         emailService.sendVerificationCode(user.getEmail(), verificationCode);
+
+        log.info("Verification code sent successfully to: {}", email);
     }
 
     @Transactional
     public AuthResponse verifyUser(final VerifyUserRequest verifyUserRequest) {
-        final Optional<User> user = userService.findUser(verifyUserRequest.getEmail());
+        final String email = verifyUserRequest.getEmail();
+        log.info("Initiating user verification for email: {}", email);
+
+        final Optional<User> user = userService.findUser(email);
         if (user.isEmpty()) {
-            logUserNotFound(verifyUserRequest.getEmail());
-            throw new UsernameNotFoundException("User not found for email: " + verifyUserRequest.getEmail());
+            logUserNotFound(email);
+            throw new UsernameNotFoundException("User not found for email: " + email);
         }
+
         final User userFound = user.get();
         if (userFound.getOtpVerificationExpiration().isBefore(LocalDateTime.now())) {
-            log.info("Verification code expired for user:{}", verifyUserRequest.getEmail());
-            throw new VerificationCodeExpiredException("Verification code expired for user:" + userFound.getEmail());
+            log.warn("Verification code expired for user: {}", email);
+            throw new VerificationCodeExpiredException("Verification code expired for user: " + email);
         }
+
         if (!userFound.getVerificationCode().equals(verifyUserRequest.getVerificationCode())) {
-            log.info("Verification code mismatch for user:{}", verifyUserRequest.getEmail());
-            throw new VerificationFailedException("Verification failed for user:" + userFound.getEmail());
+            log.warn("Verification code mismatch for user: {}", email);
+            throw new VerificationFailedException("Verification failed for user: " + email);
         }
+
+        log.info("User '{}' successfully verified", email);
         final User verifiedUser = userService.verifyUser(userFound);
+        log.info("Generating authentication tokens for user: {}", email);
+
         return generateAndRegisterTokens(userDetailsService.getUserDetailsForUser(verifiedUser), verifiedUser);
     }
 
     @Transactional
     public void resendVerificationCode(final String userEmail) throws MessagingException {
+        log.info("Resend verification code requested for email: {}", userEmail);
+
         final Optional<User> user = userService.findUser(userEmail);
         if (user.isEmpty()) {
             logUserNotFound(userEmail);
             throw new UsernameNotFoundException("User not found for email: " + userEmail);
         }
+
         final User userFound = user.get();
         final String verificationCode = VerificationUtils.generateVerificationCode();
         userService.updateVerificationCodeFor(userFound, verificationCode);
+
+        log.info("Updated verification code for user: {}", userEmail);
         emailService.sendVerificationCode(userEmail, verificationCode);
+        log.info("Verification code resent successfully to: {}", userEmail);
     }
 
     @Transactional
     public AuthResponse generateAndRegisterTokens(final UserDetails userDetails, final User user) {
+        log.info("Generating access and refresh tokens for user: {}", user.getEmail());
+
         final String accessToken = jwtUtils.generateToken(userDetails, TokenType.ACCESS_TOKEN);
         final String refreshToken = jwtUtils.generateToken(userDetails, TokenType.REFRESH_TOKEN);
+
         registerTokensForUser(user, accessToken, refreshToken);
+        log.info("Tokens registered successfully for user: {}", user.getEmail());
+
         return new AuthResponse(accessToken, refreshToken);
     }
 
     @Transactional
     public void sendPasswordResetCode(final String email) throws MessagingException {
+        log.info("Request received to send password reset code to email: {}", email);
+
         final Optional<User> user = userService.findUser(email);
-        if (user.isEmpty()) throw new UsernameNotFoundException("User not found: " + email);
+        if (user.isEmpty()) {
+            log.warn("Password reset failed - user not found for email: {}", email);
+            throw new UsernameNotFoundException("User not found: " + email);
+        }
 
         final String code = VerificationUtils.generateVerificationCode();
         userService.updateVerificationCodeFor(user.get(), code);
+
         emailService.sendPasswordResetCode(email, code);
-        log.info("Password reset code sent to : {}", email);
+        log.info("Password reset code sent successfully to email: {}", email);
     }
 
     @Transactional
     public void resetPassword(final ResetPasswordRequest request) {
-        final Optional<User> userOtp = userService.findUser(request.getEmail());
-        if (userOtp.isEmpty()) throw new UsernameNotFoundException("User not found");
+        final String email = request.getEmail();
+        log.info("Password reset requested for email: {}", email);
+
+        final Optional<User> userOtp = userService.findUser(email);
+        if (userOtp.isEmpty()) {
+            log.warn("Password reset failed: user not found with email {}", email);
+            throw new UsernameNotFoundException("User not found");
+        }
 
         final User user = userOtp.get();
 
         userService.updatePassword(user, request.getNewPassword());
-        log.info("Password updated for : {}", user.getEmail());
+        log.info("Password updated successfully for user: {}", user.getEmail());
     }
 
     private static void logUserNotFound(final String userEmail) {
