@@ -26,7 +26,8 @@ import {
     ButtonGroup,
     IconButton,
     Pagination,
-    Show
+    Show,
+    Link
 } from '@chakra-ui/react'
 import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { LuPackageSearch } from "react-icons/lu";
@@ -50,6 +51,7 @@ interface Item {
     isPopular: boolean
     mainImageId: number
     imageIds: number[]
+    tutorialLink: string
 }
 
 const ItemsAdminPage = () => {
@@ -335,7 +337,19 @@ const ItemsAdminPage = () => {
                                                             </SimpleGrid>
                                                         </DataList.Root>
 
-                                                        {item.imageIds && item.imageIds.length > 0 && (
+                                                        {item.tutorialLink && (
+                                                            <Box mt={6}>
+                                                                <Text fontWeight="semibold" mb={2}>Tutorial</Text>
+                                                                <Badge size="lg" p={2}>
+                                                                    <Link href={`https://${item.tutorialLink}`} target="_blank">
+                                                                        {item.tutorialLink}
+                                                                    </Link>
+                                                                </Badge>
+                                                            </Box>
+                                                        )}
+
+
+                                                        {item.imageIds && item.imageIds.length > 0 ? (
                                                             <Box mt={6}>
                                                                 <Text fontWeight="semibold" mb={2}>Additional Images</Text>
                                                                 <SimpleGrid columns={{ base: 2, md: 3 }} gap={3}>
@@ -352,6 +366,11 @@ const ItemsAdminPage = () => {
                                                                     ))}
                                                                 </SimpleGrid>
                                                             </Box>
+                                                        ) : (
+                                                            <Alert.Root status="info" mt={6}>
+                                                                <Alert.Indicator />
+                                                                <Alert.Title>No additional images</Alert.Title>
+                                                            </Alert.Root>
                                                         )}
                                                     </Dialog.Body>
                                                     <Dialog.CloseTrigger asChild>

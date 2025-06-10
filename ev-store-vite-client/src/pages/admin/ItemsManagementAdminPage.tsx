@@ -20,6 +20,7 @@ import {
     Alert,
     createListCollection,
     Checkbox,
+    InputGroup
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -51,6 +52,7 @@ interface ItemFormValues {
     mainImageFile: FileList;
     imagesFiles: FileList;
     isPopular: boolean;
+    tutorialLink: string;
 }
 
 interface Item extends Omit<ItemFormValues, 'mainImageFile' | 'imagesFiles'> {
@@ -133,7 +135,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                 descriptionRUS: item.descriptionRUS,
                 stockAmount: item.stockAmount,
                 price: item.price,
-                categoryId: item.category.id,
+                categoryId: item.categoryId,
                 isPopular: item.isPopular
             });
         } catch (error) {
@@ -209,7 +211,8 @@ const ItemsManagementAdminPage: React.FC = () => {
                 categoryId: data.categoryId,
                 isPopular: data.isPopular,
                 mainImageId: mainImageId,
-                imageIds: additionalImageIds
+                imageIds: additionalImageIds,
+                tutorialLink: data.tutorialLink
             };
 
             if (isCreate) {
@@ -353,11 +356,23 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </Field.Root>
                     </SimpleGrid>
 
+
+                    <Field.Root id="tutorial" invalid={!!errors.tutorialLink}>
+                        <Field.Label>Tutorial</Field.Label>
+                        <InputGroup
+                            startElement="https://"
+                            startElementProps={{ color: "fg.muted" }}
+                        >
+                            <Input ps="7ch" placeholder="something.com" {...register('tutorialLink')} />
+                        </InputGroup>
+                    </Field.Root>
+
                     <Field.Root id="categoryId" invalid={!!errors.categoryId}>
                         <Field.Label>Category</Field.Label>
                         <Select.Root
                             collection={existingCategories}
                             width="100%"
+                            defaultValue={[String(existingItem?.categoryId)]}
                             onValueChange={e => setValue('categoryId', e.items[0]?.id)}
                         >
                             <Select.HiddenSelect />

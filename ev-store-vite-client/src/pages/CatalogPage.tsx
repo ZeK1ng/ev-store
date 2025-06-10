@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API from '@/utils/AxiosAPI';
 
 import {
     Box,
@@ -29,6 +30,10 @@ import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
 import { LuShoppingCart } from "react-icons/lu";
+import { addItemToCart } from "@/utils/helpers";
+import AuthController from "@/utils/AuthController";
+import { toaster } from "@/components/ui/toaster";
+
 
 
 interface Item {
@@ -200,6 +205,21 @@ const CatalogPage = () => {
         setPage(1)
     }, [search, selCats, selSubs, selRange])
 
+    const addToCart = async (productId: number) => {
+        if (AuthController.isLoggedIn()) {
+            try {
+                await API.post(`/cart/add?productId=${productId}&quantity=1`)
+                toaster.success({
+                    title: t('addToCartSuccess')
+                })
+            } catch (error) {
+                console.error('Error adding to cart:', error)
+            }
+        } else {
+            addItemToCart(productId, 1)
+        }
+    }
+
     return (
         <Box p={{ base: 4, md: 8 }}>
             <Heading size="lg" mb="6">
@@ -224,7 +244,7 @@ const CatalogPage = () => {
                         <Accordion.ItemContent>
                             <Accordion.ItemBody px="4" py="3">
                                 <Slider.Root width="200px"
-                                
+
                                     max={sliderRange[1]} min={sliderRange[0]} step={1}
                                     defaultValue={selRange} onValueChangeEnd={(e) => setSelRange(e.value)}>
                                     <Slider.ValueText>
@@ -235,7 +255,7 @@ const CatalogPage = () => {
                                     </Slider.ValueText>
                                     <Slider.Control>
                                         <Slider.Track>
-                                            <Slider.Range bg="#9CE94F"/>
+                                            <Slider.Range bg="#9CE94F" />
                                         </Slider.Track>
                                         <Slider.Thumbs />
                                     </Slider.Control>
@@ -376,6 +396,7 @@ const CatalogPage = () => {
                                                 variant="solid"
                                                 bg="#9CE94F"
                                                 color="gray.950"
+                                                onClick={() => addToCart(product.id)}
                                             >
                                                 <LuShoppingCart />
                                                 {t('addToCart')}
