@@ -175,7 +175,7 @@ public class EmailServiceImpl implements EmailService {
             this.email = user.getEmail();
             this.orderDate = orderDate;
             cartForUser.getItems().forEach(item -> {
-                this.cartItems.add(new CartItemReservationRequest(item.getQuantity(), item.getProductId(), item.getProductNameENG(), item.getPrice()));
+                this.cartItems.add(new CartItemReservationRequest(item.getQuantity(), item.getProductId(), item.getNameENG(), item.getPrice()));
             });
         }
     }
