@@ -161,7 +161,7 @@ public class EmailServiceImpl implements EmailService {
             this.specialInstructions = request.getSpecialInstructions();
             this.email = request.getEmail();
             this.orderId = generateOrderNumber();
-            this.orderDate = request.getOrderDate();
+            this.orderDate = LocalDateTime.now();
         }
 
         public ReservationRequestEntity(final User user, final CartResponse cartForUser, final String orderId, final LocalDateTime orderDate, final AuthorizedReservationRequest reservationRequest) {
