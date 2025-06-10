@@ -30,7 +30,7 @@ public class UserController {
     @PatchMapping("/update")
     public ResponseEntity<UserResponse> updateUser(@RequestBody final UpdateUserRequest userDetails, final HttpServletRequest request) {
         final String token = HeaderUtils.extractBearer(request);
-        return ResponseEntity.ok(userService.updateUser(userDetails.getAddress(), userDetails.getMobile(), userDetails.getCity(), token));
+        return ResponseEntity.ok(userService.updateUser(userDetails, token));
     }
 
     @GetMapping("/order-history")

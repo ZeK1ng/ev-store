@@ -4,10 +4,12 @@ import ge.evstore.ev_store.entity.Order;
 import ge.evstore.ev_store.entity.User;
 import ge.evstore.ev_store.exception.UserAlreadyRegisteredException;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
+import ge.evstore.ev_store.request.UpdateUserRequest;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.response.CartResponse;
 import ge.evstore.ev_store.response.OrderHistoryResponse;
 import ge.evstore.ev_store.response.UserResponse;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +28,7 @@ public interface UserService {
 
     UserResponse getUserDetails(final String accessToken);
 
-    UserResponse updateUser(String city, String address, String mobile, String token) throws UserAlreadyRegisteredException;
+    UserResponse updateUser(UpdateUserRequest userUpdateDetails, String token) throws UserAlreadyRegisteredException;
 
     Order saveOrderHistory(User user, CartResponse cartForUser, String specialInstructions);
 

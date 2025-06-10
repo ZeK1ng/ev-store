@@ -8,6 +8,7 @@ import ge.evstore.ev_store.repository.ParametersConfigEntityRepository;
 import ge.evstore.ev_store.repository.UserRepository;
 import ge.evstore.ev_store.request.CartItemReservationRequest;
 import ge.evstore.ev_store.request.UnauthenticatedUserReservationRequest;
+import ge.evstore.ev_store.request.UpdateUserRequest;
 import ge.evstore.ev_store.request.UserRegisterRequest;
 import ge.evstore.ev_store.response.CartItemResponse;
 import ge.evstore.ev_store.response.CartResponse;
@@ -126,7 +127,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @UserTokenAspectMarker
-    public UserResponse updateUser(final String city, final String address, final String mobile, final String token) throws UserAlreadyRegisteredException {
+    public UserResponse updateUser(final UpdateUserRequest userDetails, final String token) throws UserAlreadyRegisteredException {
+        final String city = userDetails.getCity();
+        final String address = userDetails.getAddress();
+        final String mobile = userDetails.getMobile();
         log.info("Updating user city: {}, address: {}, mobile: {}", city, address, mobile);
         final String username = jwtUtils.extractUsername(token);
         final Optional<User> user = userRepository.findByEmail(username);
