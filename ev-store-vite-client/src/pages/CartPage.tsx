@@ -60,7 +60,7 @@ interface ReservationFormValues {
     mobile: string;
     city: string;
     address: string;
-    notes: string;
+    specialInstructions: string;
 }
 
 const CartPage = () => {
@@ -134,14 +134,14 @@ const CartPage = () => {
                 mobile: userData?.mobile,
                 city: userData?.city,
                 address: userData?.address,
-                notes: '',
+                specialInstructions: '',
             } : {
                 fullName: '',
                 email: '',
                 mobile: '',
                 city: '',
                 address: '',
-                notes: '',
+                specialInstructions: '',
             },
         shouldUnregister: true,
     });
@@ -172,7 +172,7 @@ const CartPage = () => {
                     item.productId === productId ? { ...item, quantity: newQty } : item
                 )
             );
-            await fetchCartData(); // Refresh cart data
+            await fetchCartData();
         } catch (err) {
             setError(t('cart.updateError'));
         }
@@ -193,8 +193,9 @@ const CartPage = () => {
             setError(null);
             await API.post('/reservation/create', {
                 mobile: data.mobile,
+                city: data.city,
                 address: data.address,
-                notes: data.notes,
+                specialInstructions: data.specialInstructions,
             });
             setReservationSuccess(true);
         } catch (err: any) {
@@ -492,13 +493,13 @@ const CartPage = () => {
                                 )}
                             </Field.Root>
 
-                            <Field.Root id="notes" invalid={false}>
+                            <Field.Root id="specialInstructions" invalid={false}>
                                 <Field.Label>
                                     {t('reservation.specialRequests')}
                                 </Field.Label>
                                 <Textarea
                                     placeholder={t('reservation.specialRequestsPlaceholder')}
-                                    {...register('notes')}
+                                    {...register('specialInstructions')}
                                 />
                             </Field.Root>
 
