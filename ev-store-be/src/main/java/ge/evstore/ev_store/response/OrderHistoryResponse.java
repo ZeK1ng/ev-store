@@ -21,14 +21,16 @@ public class OrderHistoryResponse {
     private BigDecimal totalPrice;
     private List<OrderItemResponse> items;
     private OrderStatus orderStatus;
+    private String specialInstruction;
 
-    public static OrderHistoryResponse createFrom(final Order order){
+    public static OrderHistoryResponse createFrom(final Order order) {
         log.info("Creating order history for order {}", order.getOrderNumber());
         final OrderHistoryResponse orderHistoryResponse = new OrderHistoryResponse();
         orderHistoryResponse.setOrderNumber(order.getOrderNumber());
         orderHistoryResponse.setOrderDate(order.getOrderDate());
         orderHistoryResponse.setTotalPrice(NumberFormatUtil.roundDouble(order.getTotalPrice()));
         orderHistoryResponse.setOrderId(order.getId());
+        orderHistoryResponse.setSpecialInstruction(order.getSpecialInstructions());
         orderHistoryResponse.setOrderStatus(order.getStatus());
         final List<OrderItemResponse> orderItemResponses = new ArrayList<>();
         final List<OrderItem> items = order.getItems();
