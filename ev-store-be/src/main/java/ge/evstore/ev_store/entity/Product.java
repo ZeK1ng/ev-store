@@ -28,8 +28,11 @@ public class Product {
     private String nameENG;
     private String nameRUS;
 
+    @Column(length = 1000)
     private String descriptionGE;
+    @Column(length = 1000)
     private String descriptionENG;
+    @Column(length = 1000)
     private String descriptionRUS;
 
     private Double price;

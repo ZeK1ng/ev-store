@@ -15,6 +15,11 @@ import ge.evstore.ev_store.service.interf.ImageService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -188,5 +193,19 @@ public class AdminServiceImpl implements AdminService {
         final Order ord = orderRepository.save(order);
         log.info("Order status updated");
         return OrderHistoryResponse.createFrom(ord);
+    }
+
+    @Override
+    public Page<OrderHistoryResponse> getAllOrders(final int page, final int size, final Long id, final String accessToken) {
+        log.info("Getting all orders");
+        final Pageable pageable = PageRequest.of(page, size);
+        Specification<Order> spec = Specification.where(null);
+        if (id != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("id"), id));
+        }
+        final Page<Order> all = orderRepository.findAll(spec, pageable);
+        final List<OrderHistoryResponse> list = all.stream().map(OrderHistoryResponse::createFrom).toList();
+        return new PageImpl<>(list, all.getPageable(), all.getTotalElements());
     }
 }

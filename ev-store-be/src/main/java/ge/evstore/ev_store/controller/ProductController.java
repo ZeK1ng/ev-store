@@ -41,6 +41,7 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "10") final int size,
             @RequestParam(required = false, defaultValue = "id") final String sortBy,
             @RequestParam(required = false, defaultValue = "asc") final String direction,
+            @RequestParam(required = false) final Long productId,
             @RequestParam(required = false) final String name,
             @RequestParam(required = false) final Long categoryId,
             @RequestParam(required = false) final Double minPrice,
@@ -48,7 +49,7 @@ public class ProductController {
             @RequestParam(required = false) final Boolean inStock,
             @RequestParam(required = false) final Boolean isPopular
     ) {
-        final Page<ProductResponse> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
+        final Page<ProductResponse> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular, productId);
         return ResponseEntity.ok(products);
     }
 }

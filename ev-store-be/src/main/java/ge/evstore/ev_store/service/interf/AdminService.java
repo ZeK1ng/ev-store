@@ -6,6 +6,7 @@ import ge.evstore.ev_store.entity.Product;
 import ge.evstore.ev_store.request.ProductRequest;
 import ge.evstore.ev_store.response.ImageSaveResponse;
 import ge.evstore.ev_store.response.OrderHistoryResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,4 +36,6 @@ public interface AdminService {
     List<ImageSaveResponse> saveImages(MultipartFile[] images, String accessToken) throws IOException;
 
     OrderHistoryResponse updateOrderStatus(OrderStatus orderStatus, Long orderId, String accessToken);
+
+    Page<OrderHistoryResponse> getAllOrders(int page, int size, Long id, String accessToken);
 }
