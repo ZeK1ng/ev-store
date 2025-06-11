@@ -53,15 +53,22 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendReservationMailForUnauthorizedUser(final UnauthenticatedUserReservationRequest request) throws MessagingException {
-        //TODO CHANGE DESTINATION TO BE STORE
-        sendHtmlEmail(request.getEmail(), getHtmlForReservation(new ReservationRequestEntity(request)), RESERVATION_EMAIL_SUBJECT);
+        final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(request);
+        final String htmlForReservation = getHtmlForReservation(reservationRequestEntity);
+        sendMails(htmlForReservation, request.getEmail());
     }
+
 
     @Override
     public void sendReservationMailForUser(final User user, final CartResponse cartForUser, final String orderNumber, final LocalDateTime orderDate, final AuthorizedReservationRequest reservationRequest) throws MessagingException {
-        //TODO CHANGE DESTINATION TO BE STORE
         final ReservationRequestEntity reservationRequestEntity = new ReservationRequestEntity(user, cartForUser, orderNumber, orderDate, reservationRequest);
-        sendHtmlEmail(user.getEmail(), getHtmlForReservation(reservationRequestEntity), RESERVATION_EMAIL_SUBJECT);
+        final String htmlForReservation = getHtmlForReservation(reservationRequestEntity);
+        sendMails(htmlForReservation, user.getEmail());
+    }
+
+    private void sendMails(final String htmlForReservation, final String userEmail) throws MessagingException {
+        sendHtmlEmail(userEmail, htmlForReservation, RESERVATION_EMAIL_SUBJECT);
+        sendHtmlEmail(storeMail, htmlForReservation, RESERVATION_EMAIL_SUBJECT);
     }
 
     private String getHtmlForReservation(final ReservationRequestEntity reservationRequestEntity) {
