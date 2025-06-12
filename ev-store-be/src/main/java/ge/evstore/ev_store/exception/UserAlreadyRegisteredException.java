@@ -9,10 +9,6 @@ public class UserAlreadyRegisteredException extends RuntimeException {
 
     }
 
-    public UserAlreadyRegisteredException(final String emailAlreadyRegistered) {
-        super(emailAlreadyRegistered);
-    }
-
     private static String constructMessage(final UserRegisterRequest userRegisterRequest) {
         return "User already registered with this email address: " +
                 userRegisterRequest.getEmail() +

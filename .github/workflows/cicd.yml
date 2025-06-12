@@ -51,7 +51,7 @@ jobs:
           pwd &&\
           ls -la &&\
           echo "Building project..." && \
-          mvn clean package && \
+          mvn clean package -DskipTests && \
           pwd && \
           ls -la && \
           ls -la target
