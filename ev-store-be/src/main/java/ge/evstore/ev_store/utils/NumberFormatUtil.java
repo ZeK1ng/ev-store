@@ -12,4 +12,7 @@ public class NumberFormatUtil {
         final BigDecimal bd = new BigDecimal(n);
         return bd.setScale(2, RoundingMode.HALF_UP);
     }
+
+
+
 }
