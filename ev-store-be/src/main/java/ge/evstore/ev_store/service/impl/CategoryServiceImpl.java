@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public String getFullCategoryPath(final Long categoryId) {
+    public List<CategoryWithoutChildren> getFullCategoryPath(final Long categoryId) {
         log.info("Retrieving full category path for categoryId: {}", categoryId);
 
         Category category = this.getCategoryById(categoryId);
@@ -50,17 +50,18 @@ public class CategoryServiceImpl implements CategoryService {
             return null;
         }
 
-        final List<String> path = new ArrayList<>();
+        final List<CategoryWithoutChildren> path = new ArrayList<>();
         while (category != null) {
-            path.add(category.getName());
+            final CategoryWithoutChildren categoryWithoutChildren = CategoryWithoutChildren.builder().id(category.getId())
+                    .description(category.getDescription())
+                    .name(category.getName())
+                    .parentCategoryName(category.getParentCategory().getName()).build();
+            path.add(categoryWithoutChildren);
             category = category.getParentCategory();
         }
 
         Collections.reverse(path);
-        final String fullPath = String.join("/", path);
-        log.info("Full category path for id {} is '{}'", categoryId, fullPath);
-
-        return fullPath;
+        return path;
     }
 
     @Override

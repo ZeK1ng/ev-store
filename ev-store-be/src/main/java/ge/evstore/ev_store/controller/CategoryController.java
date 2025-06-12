@@ -21,7 +21,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/get-full-path/{id}")
-    public ResponseEntity<String> getFullCategoryPath(
+    public ResponseEntity<List<CategoryWithoutChildren>> getFullCategoryPath(
             @PathVariable final Long id) {
         return ResponseEntity.ok(categoryService.getFullCategoryPath(id));
     }

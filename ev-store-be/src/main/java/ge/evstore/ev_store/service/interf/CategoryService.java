@@ -10,7 +10,7 @@ import java.util.Set;
 public interface CategoryService {
     List<CategoryFullTreeResponse> getAllCategories();
 
-    String getFullCategoryPath(Long categoryId);
+    List<CategoryWithoutChildren> getFullCategoryPath(Long categoryId);
 
     Category getCategoryById(Long id);
 
