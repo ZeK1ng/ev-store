@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +24,14 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImageSaveResponse saveImage(final MultipartFile image) throws IOException {
-        final String originalFilename = image.getOriginalFilename();
-        final byte[] compress = CompressionUtils.compress(image.getBytes());
-
-        final ImageEntity save = imageRepository.save(ImageEntity.builder().name(originalFilename)
-                .type(image.getContentType())
-                .image(compress).build());
-        return ImageSaveResponse.builder().imageId(save.getId()).imageSize(compress.length).imageName(originalFilename).build();
+        try (final InputStream inputStream = image.getInputStream()) {
+            final String originalFilename = image.getOriginalFilename();
+            final byte[] compress = CompressionUtils.compress(inputStream);
+            final ImageEntity save = imageRepository.save(ImageEntity.builder().name(originalFilename)
+                    .type(image.getContentType())
+                    .image(compress).build());
+            return ImageSaveResponse.builder().imageId(save.getId()).imageSize(compress.length).imageName(originalFilename).build();
+        }
     }
 
     @Override
