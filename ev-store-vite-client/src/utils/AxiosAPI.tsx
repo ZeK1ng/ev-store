@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AuthController from './AuthController';
 
-const API_BASE_URL = 'https://variance-betty-these-breach.trycloudflare.com/api/v1';
+const API_BASE_URL = 'https://tar-estimation-bone-passed.trycloudflare.com/api/v1';
 
 const API = axios.create({
     baseURL: API_BASE_URL,

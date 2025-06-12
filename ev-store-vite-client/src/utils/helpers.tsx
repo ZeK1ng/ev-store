@@ -1,5 +1,5 @@
 export const getImageUrl = (imageId: number): string => {
-    return `/api/v1/image?imageId=${imageId}`;
+    return `https://tar-estimation-bone-passed.trycloudflare.com/api/v1/image?imageId=${imageId}`;
 };
 
 export const addItemToCart = (productId: number, quantity: number) => {
