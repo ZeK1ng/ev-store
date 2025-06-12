@@ -36,7 +36,6 @@ const dummyProducts: Product[] = Array.from({ length: 10 }, (_, i) => ({
 }))
 
 const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSliderProps) => {
-    console.log('PopularProductsSlider categories:', categories);
 
     const sliderRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation('home')
@@ -48,7 +47,7 @@ const PopularProductsSlider = ({ categories, showAll = true }: PopularProductsSl
     }
 
     return (
-        <Box px={{ base: 4, md: 16 }} py={12}>
+        <Box py={12}>
             <Flex justify="space-between" align="center" mb={4}>
                 <Heading size={{ base: '2xl', md: '4xl' }} textAlign='left'>{t('popularProducts.title')}</Heading>
                 <Flex>
