@@ -55,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
             final CategoryWithoutChildren categoryWithoutChildren = CategoryWithoutChildren.builder().id(category.getId())
                     .description(category.getDescription())
                     .name(category.getName())
-                    .parentCategoryName(category.getParentCategory().getName()).build();
+                    .parentCategoryName(category.getParentCategory() != null ? category.getParentCategory().getName() : null).build();
             path.add(categoryWithoutChildren);
             category = category.getParentCategory();
         }
