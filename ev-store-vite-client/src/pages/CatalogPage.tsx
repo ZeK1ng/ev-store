@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import API from '@/utils/AxiosAPI';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import {
     Box,
@@ -162,7 +162,6 @@ const CategoryTree = ({
 const CatalogPage = () => {
     const { t } = useTranslation('catalog')
     const [searchParams, setSearchParams] = useSearchParams();
-    const navigate = useNavigate();
 
     const [categories, setCategories] = useState<Category[]>([])
     const [products, setProducts] = useState<Product[]>([])
@@ -477,6 +476,7 @@ const CatalogPage = () => {
                                             w="full"
                                             h="200px"
                                             objectFit="cover"
+                                            shadow="sm"
                                         />
 
                                         <Card.Body gap="2">
@@ -487,7 +487,7 @@ const CatalogPage = () => {
                                             </Text>
                                         </Card.Body>
 
-                                        <Card.Footer gap="2">
+                                        <Card.Footer gap="2" flexShrink={0} pt="4">
                                             <Button
                                                 variant="solid"
                                                 bg="#9CE94F"

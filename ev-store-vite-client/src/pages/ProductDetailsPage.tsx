@@ -154,7 +154,7 @@ const ProductDetailsPage = () => {
                             {index === categoryPath.length - 1 ? (
                                 <Breadcrumb.CurrentLink>{category.name}</Breadcrumb.CurrentLink>
                             ) : (
-                                <Link to={`/catalog?category=${category.id}`}>{category.name}</Link>
+                                <Link to={`/catalog?categories=${category.id}`}>{category.name}</Link>
                             )}
                         </Breadcrumb.Item>
                     ])}

@@ -47,11 +47,11 @@ interface PopularProductsSliderProps {
     isPopular?: boolean;
 }
 
-const PopularProductsSlider = ({ 
-    categoryId, 
-    currentProductId, 
+const PopularProductsSlider = ({
+    categoryId,
+    currentProductId,
     showAll = true,
-    isPopular = false 
+    isPopular = false
 }: PopularProductsSliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation('home')
@@ -174,30 +174,27 @@ const PopularProductsSlider = ({
                 )}
             </Flex>
 
-            <Flex
-                ref={sliderRef}
-                overflowX="auto"
-                gap={4}
-                py={4}
+            <Flex ref={sliderRef} overflowX="auto" gap={4} py={4}
+                scrollBehavior="smooth"
                 css={{
                     scrollSnapType: 'x mandatory',
                     '&::-webkit-scrollbar': { display: 'none' }
                 }}
-                scrollBehavior="smooth"
             >
                 {products.map((product) => (
                     <Box
-                        key={product.productId}
-                        flex={{ base: '0 0 300px', md: '0 0 27%' }}
-                        scrollSnapAlign="start"
                         h="100%"
+                        key={product.productId}
+                        scrollSnapAlign="start"
+                        flex={{ base: '0 0 300px', md: '0 0 27%' }}
+
                     >
-                        <Card.Root 
-                            overflow="hidden" 
-                            bg="whiteAlpha.100"
+                        <Card.Root
                             h="100%"
                             display="flex"
                             flexDirection="column"
+                            overflow="hidden"
+                            bg="whiteAlpha.100"
                         >
                             <Box h="200px" flexShrink={0}>
                                 <Image
@@ -206,68 +203,27 @@ const PopularProductsSlider = ({
                                     w="full"
                                     h="full"
                                     objectFit="cover"
+                                    shadow="sm"
                                 />
                             </Box>
 
-                            <Card.Body 
-                                gap="2" 
-                                flex="1"
-                                display="flex"
-                                flexDirection="column"
-                                minH="180px"
-                            >
-                                <Box 
-                                    minH="48px"
-                                    display="flex"
-                                    alignItems="center"
-                                >
-                                    <Text
-                                        fontSize="lg"
-                                        fontWeight="bold"
-                                        style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
-                                        }}
-                                    >
+                            <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">
+                                <Box minH="48px" display="flex" alignItems="center">
+                                    <Text fontSize="lg" fontWeight="bold">
                                         {product.nameENG}
                                     </Text>
                                 </Box>
-                                <Box 
-                                    flex="1"
-                                    minH="72px"
-                                >
-                                    <Text
-                                        fontSize="md"
-                                        color="gray.600"
-                                        style={{
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 3,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis'
-                                        }}
-                                    >
+                                <Box flex="1" minH="72px">
+                                    <Text fontSize="md" color="gray.600" lineClamp={3}>
                                         {product.descriptionENG}
                                     </Text>
                                 </Box>
-                                <Text 
-                                    textStyle="2xl" 
-                                    fontWeight="medium"
-                                    mt="auto"
-                                    pt="2"
-                                >
+                                <Text textStyle="2xl" fontWeight="medium" mt="auto" pt="2">
                                     {product.price.toFixed(2)}
                                 </Text>
                             </Card.Body>
 
-                            <Card.Footer 
-                                gap="2"
-                                flexShrink={0}
-                                pt="4"
-                            >
+                            <Card.Footer gap="2" flexShrink={0} pt="4">
                                 <Button
                                     variant="solid"
                                     bg="#9CE94F"
@@ -275,13 +231,12 @@ const PopularProductsSlider = ({
                                     onClick={() => addToCart(product.productId)}
                                     flex="1"
                                 >
-                                    <LuShoppingCart />
-                                    {t('popularProducts.addToCart')}
+                                    <LuShoppingCart /> {t('popularProducts.addToCart')}
                                 </Button>
-                                <Button 
+                                <Button
+                                    flex="1"
                                     variant="ghost"
                                     onClick={() => navigate(`/product/${product.productId}`)}
-                                    flex="1"
                                 >
                                     {t('popularProducts.learnMoreLabel')}
                                 </Button>
@@ -292,8 +247,8 @@ const PopularProductsSlider = ({
             </Flex>
             {showAll && (
                 <Flex justify="center" align="center" mt={4}>
-                    <Button 
-                        size="lg" 
+                    <Button
+                        size="lg"
                         variant="subtle"
                         onClick={() => {
                             if (categoryId) {
