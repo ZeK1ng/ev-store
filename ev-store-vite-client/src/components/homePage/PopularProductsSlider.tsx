@@ -295,7 +295,13 @@ const PopularProductsSlider = ({
                     <Button 
                         size="lg" 
                         variant="subtle"
-                        onClick={() => navigate(`/catalog?categories=${categoryId}`)}
+                        onClick={() => {
+                            if (categoryId) {
+                                navigate(`/catalog?categories=${categoryId}`)
+                            } else {
+                                navigate('/catalog')
+                            }
+                        }}
                     >
                         {t('popularProducts.seeAllLabel')}
                     </Button>
