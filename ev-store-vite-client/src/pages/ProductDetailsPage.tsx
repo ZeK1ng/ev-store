@@ -30,6 +30,13 @@ interface FormValues {
     quantity: number;
 }
 
+  interface Category {
+    id: number;
+    name: string;
+    description: string;
+    parentCategoryName: string;
+  }
+
 interface Product {
     productId: number;
     nameGE: string;
@@ -55,7 +62,7 @@ const ProductDetailsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeImage, setActiveImage] = useState<number | null>(null);
-    const [categoryPath, setCategoryPath] = useState<string[]>([]);
+    const [categoryPath, setCategoryPath] = useState<Category[]>([]);
 
     const {
         watch,
@@ -73,8 +80,8 @@ const ProductDetailsPage = () => {
                 setLoading(true);
                 setError(null);
                 const response = await API.get<Product>(`/product/${id}`);
-                const categoryfullpath = await API.get<string>(`category/get-full-path/${response.data.categoryId}`);
-                setCategoryPath(categoryfullpath.data.split('/'));
+                const categoryfullpath = await API.get<Category[]>(`category/get-full-path/${response.data.categoryId}`);
+                setCategoryPath(categoryfullpath.data);
                 setProduct(response.data);
                 setActiveImage(response.data.mainImageId);
             } catch (err) {
@@ -145,9 +152,9 @@ const ProductDetailsPage = () => {
                         <Breadcrumb.Separator key={`sep-${index}`} />,
                         <Breadcrumb.Item key={`item-${index}`}>
                             {index === categoryPath.length - 1 ? (
-                                <Breadcrumb.CurrentLink>{category}</Breadcrumb.CurrentLink>
+                                <Breadcrumb.CurrentLink>{category.name}</Breadcrumb.CurrentLink>
                             ) : (
-                                <Link to={`/catalog?category=${category}`}>{category}</Link>
+                                <Link to={`/catalog?category=${category.id}`}>{category.name}</Link>
                             )}
                         </Breadcrumb.Item>
                     ])}
@@ -247,7 +254,7 @@ const ProductDetailsPage = () => {
                 </Box>
             </Flex>
 
-            <PopularProductsSlider categories={[product.categoryId.toString()]} showAll={false} />
+            <PopularProductsSlider categoryId={product.categoryId} currentProductId={product.productId} showAll={false} />
         </Box>
     );
 };

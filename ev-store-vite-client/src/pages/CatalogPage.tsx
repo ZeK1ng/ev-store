@@ -14,7 +14,6 @@ import {
     Button,
     Field,
     Input,
-    Accordion,
     Checkbox,
     ButtonGroup,
     IconButton,
@@ -30,7 +29,6 @@ import {
     createListCollection,
     Center,
     Spinner,
-    Separator
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
@@ -59,7 +57,6 @@ interface Product {
     categoryName: string;
     price: number;
     mainImageId: number;
-    isPopular: boolean;
 }
 
 interface ProductResponse {
@@ -86,7 +83,7 @@ const CategoryTree = ({
     level?: number
 }) => {
     return (
-        <Stack  position="relative">
+        <Stack position="relative">
             {categories.map(category => (
                 <>
                     <Box key={category.id} position="relative">
@@ -94,9 +91,7 @@ const CategoryTree = ({
                             align="center"
                             py={1}
                             px={1}
-                            borderRadius="md"
-                            _hover={{ bg: "gray.50" }}
-                            transition="background 0.2s"
+                            _hover={{ bg: "bg.subtle" }}
                         >
                             {category.children && category.children.length > 0 ? (
                                 <Box
@@ -113,7 +108,7 @@ const CategoryTree = ({
                                     p={0}
                                     mr={2}
                                 >
-                                    {expanded.has(category.id) ? <FaChevronDown size={14}/> : <FaChevronRight size={14} />}
+                                    {expanded.has(category.id) ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
                                 </Box>
                             ) : (
                                 <Box minW="20px" mr={2} />
@@ -173,6 +168,7 @@ const CatalogPage = () => {
     const [products, setProducts] = useState<Product[]>([])
     const [totalProducts, setTotalProducts] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [initialLoading, setInitialLoading] = useState(true)
 
     const [search, setSearch] = useState(searchParams.get('search') || '')
     const [selCats, setSelCats] = useState<number[]>(
@@ -184,7 +180,6 @@ const CatalogPage = () => {
     ])
     const [sliderRange, setSliderRange] = useState<number[]>([0, 0])
     const [sortDirection, setSortDirection] = useState(searchParams.get('sort') || 'asc')
-    const [isPopular, setIsPopular] = useState(searchParams.get('popular') === 'true')
     const [page, setPage] = useState(Number(searchParams.get('page')) || 0)
     const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
 
@@ -192,7 +187,7 @@ const CatalogPage = () => {
 
     const updateUrlParams = (updates: Record<string, string | number | boolean | null>) => {
         const newParams = new URLSearchParams(searchParams);
-        
+
         Object.entries(updates).forEach(([key, value]) => {
             if (value === null || value === '') {
                 newParams.delete(key);
@@ -215,44 +210,47 @@ const CatalogPage = () => {
             minPrice: selRange[0] || null,
             maxPrice: selRange[1] || null,
             sort: sortDirection,
-            popular: isPopular,
             page: page || null
         });
-    }, [search, selCats, selRange, sortDirection, isPopular, page]);
+    }, [search, selCats, selRange, sortDirection, page]);
 
+    // Initial data fetch
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchInitialData = async () => {
             try {
-                const response = await API.get('/category/all')
-                console.log(response.data);
-                setCategories(response.data)
-                // Expand all categories by default
-                const allCategoryIds = getAllCategoryIds(response.data);
+                const [categoriesResponse, maxPriceResponse] = await Promise.all([
+                    API.get('/category/all'),
+                    API.get('/product/max-price')
+                ]);
+
+                const categoriesData = categoriesResponse.data;
+                const maxPrice = maxPriceResponse.data?.maxPrice;
+
+                setCategories(categoriesData);
+                setSliderRange([0, maxPrice]);
+                
+                if (!searchParams.get('minPrice') && !searchParams.get('maxPrice')) {
+                    setSelRange([0, maxPrice]);
+                }
+
+                const allCategoryIds = getAllCategoryIds(categoriesData);
                 setExpandedCats(new Set(allCategoryIds));
             } catch (error) {
-                console.error('Error fetching categories:', error)
+                console.error('Error fetching initial data:', error);
+            } finally {
+                setInitialLoading(false);
             }
-        }
-        fetchCategories()
-    }, [])
+        };
 
-    useEffect(() => {
-        const fetchMaxPrice = async () => {
-            try {
-                const response = await API.get('/product/max-price')
-                const max = response.data?.maxPrice
-                setSliderRange([0, max])
-                setSelRange([0, max])
-            } catch (error) {
-                console.error('Error fetching max price:', error)
-            }
-        }
-        fetchMaxPrice()
-    }, [])
+        fetchInitialData();
+    }, [searchParams]);
 
+    // Products fetch
     useEffect(() => {
         const fetchProducts = async () => {
-            setLoading(true)
+            if (initialLoading) return; // Don't fetch products until initial data is loaded
+            
+            setLoading(true);
             try {
                 const params = new URLSearchParams({
                     page: page.toString(),
@@ -262,21 +260,20 @@ const CatalogPage = () => {
                     categoryId: selCats.join(','),
                     minPrice: selRange[0].toString(),
                     maxPrice: selRange[1].toString(),
-                    isPopular: isPopular.toString()
-                })
+                });
 
-                const response = await API.get<ProductResponse>(`/product?${params}`)
-                setProducts(response.data.content)
-                setTotalProducts(response.data.totalElements)
+                const response = await API.get<ProductResponse>(`/product?${params}`);
+                setProducts(response.data.content);
+                setTotalProducts(response.data.totalElements);
             } catch (error) {
-                console.error('Error fetching products:', error)
+                console.error('Error fetching products:', error);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        fetchProducts()
-    }, [page, pageSize, sortDirection, search, selCats, selRange, isPopular])
+        fetchProducts();
+    }, [page, pageSize, sortDirection, search, selCats, selRange, initialLoading]);
 
     const addToCart = async (productId: number) => {
         if (AuthController.isLoggedIn()) {
@@ -308,6 +305,14 @@ const CatalogPage = () => {
         }, []);
     };
 
+    if (initialLoading) {
+        return (
+            <Center minH="100vh">
+                <Spinner size="xl" borderWidth="4px" />
+            </Center>
+        );
+    }
+
     return (
         <Box p={{ base: 4, md: 8 }}>
             <Heading size="lg" mb="6">
@@ -315,11 +320,38 @@ const CatalogPage = () => {
             </Heading>
 
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
-                <Box bg="whiteAlpha.50" borderRadius="lg" minW="260px" w="100%" maxW="320px">
+                <Box bg="bg.muted" borderRadius="md" minW="260px" w="100%" maxW={{ base: "100%", md: "320px" }} p={4} flex="1">
                     <Text fontWeight="bold" fontSize="xl" mb="4">
+                        {t('priceFilterTitle')}
+                    </Text>
+                    <Box>
+                        <Slider.Root 
+                            px={4}
+                            min={sliderRange[0]}
+                            max={sliderRange[1]}
+                            value={selRange}
+
+                            step={1}
+                            onValueChange={(e) => setSelRange(e.value)}>
+                            <Slider.ValueText>
+                                <HStack justify="space-between">
+                                    <Text fontSize="sm">{selRange[0]}</Text>
+                                    <Text fontSize="sm">{selRange[1]}</Text>
+                                </HStack>
+                            </Slider.ValueText>
+                            <Slider.Control>
+                                <Slider.Track>
+                                    <Slider.Range bg="#9CE94F" />
+                                </Slider.Track>
+                                <Slider.Thumbs />
+                            </Slider.Control>
+                        </Slider.Root>
+                    </Box>
+                    
+                    <Text fontWeight="bold" fontSize="xl" my="4">
                         {t('categoryFilterTitle')}
                     </Text>
-                    <Box maxH="400px" overflowY="auto" pr="2">
+                    <Box maxH="400px" overflowY="auto">
                         <CategoryTree
                             categories={categories}
                             selectedCategories={selCats}
@@ -332,7 +364,6 @@ const CatalogPage = () => {
                             }}
                             expanded={expandedCats}
                             onToggle={(categoryId) => {
-                                // Allow both expanding and collapsing
                                 setExpandedCats(prev => {
                                     const next = new Set(prev);
                                     if (next.has(categoryId)) {

@@ -66,7 +66,7 @@ const Header = () => {
                 boxSizing="border-box"
                 align="center"
                 justify="space-between"
-                justifySelf="center"
+                mx="auto"
                 px={{ base: 4, md: 8 }}
                 py={4}
                 maxW="1296px"

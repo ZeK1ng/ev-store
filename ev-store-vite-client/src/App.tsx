@@ -12,8 +12,8 @@ const AppContent = () => {
   return (
     <>
       <Header />
-      <Box as="main" w="100%" justifySelf="center" bg="bg.subtle">
-        <Box w="100%" maxW="1296px" justifySelf="center">
+      <Box as="main" w="100%" bg="bg.subtle">
+        <Box w="100%" maxW="1296px" mx="auto">
           <AppRoutes />
         </Box>
       </Box>

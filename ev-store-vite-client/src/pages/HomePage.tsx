@@ -89,7 +89,7 @@ const HomePage = () => {
         onSeeAll={() => console.log('See all clicked')}
         items={dummyDataOBD}
       />
-      <PopularProductsSlider categories={["popular"]}/>
+      <PopularProductsSlider isPopular={true}/>
       <FAQSection />
     </Box>
   )

@@ -14,7 +14,7 @@ const Footer = () => {
         <Box as="footer" bg="gray.900" color="white" py={16} px={{ base: 4, md: 16 }}>
             <Separator borderColor="gray.600" mb={8} />
 
-            <Box w="100%" maxW='1296px' justifySelf="center">
+            <Box w="100%" maxW='1296px' mx="auto">
 
 
                 <Flex direction={{ base: 'column', md: 'row' }} justify="space-between" mb={8} >
