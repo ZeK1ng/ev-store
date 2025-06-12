@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
     Box,
     Flex,
@@ -14,6 +14,7 @@ import {
     Field,
     Spinner,
     Center,
+    Breadcrumb,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { LuMinus, LuPlus } from 'react-icons/lu';
@@ -54,10 +55,9 @@ const ProductDetailsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeImage, setActiveImage] = useState<number | null>(null);
+    const [categoryPath, setCategoryPath] = useState<string[]>([]);
 
     const {
-        register,
-        formState: { errors },
         watch,
         setValue,
     } = useForm<FormValues>({
@@ -73,6 +73,8 @@ const ProductDetailsPage = () => {
                 setLoading(true);
                 setError(null);
                 const response = await API.get<Product>(`/product/${id}`);
+                const categoryfullpath = await API.get<string>(`category/get-full-path/${response.data.categoryId}`);
+                setCategoryPath(categoryfullpath.data.split('/'));
                 setProduct(response.data);
                 setActiveImage(response.data.mainImageId);
             } catch (err) {
@@ -134,6 +136,24 @@ const ProductDetailsPage = () => {
 
     return (
         <Box p={{ base: 4, md: 12 }}>
+            <Breadcrumb.Root mb={6}>
+                <Breadcrumb.List>
+                    <Breadcrumb.Item>
+                        <Link to="/catalog">{t('breadcrumb.catalog')}</Link>
+                    </Breadcrumb.Item>
+                    {categoryPath.flatMap((category, index) => [
+                        <Breadcrumb.Separator key={`sep-${index}`} />,
+                        <Breadcrumb.Item key={`item-${index}`}>
+                            {index === categoryPath.length - 1 ? (
+                                <Breadcrumb.CurrentLink>{category}</Breadcrumb.CurrentLink>
+                            ) : (
+                                <Link to={`/catalog?category=${category}`}>{category}</Link>
+                            )}
+                        </Breadcrumb.Item>
+                    ])}
+                </Breadcrumb.List>
+            </Breadcrumb.Root>
+
             <Flex direction={{ base: 'column', md: 'row' }} gap={8}>
                 <Box flex={1}>
                     <Image

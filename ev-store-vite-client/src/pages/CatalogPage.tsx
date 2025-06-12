@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import API from '@/utils/AxiosAPI';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import {
     Box,
@@ -165,22 +166,59 @@ const CategoryTree = ({
 
 const CatalogPage = () => {
     const { t } = useTranslation('catalog')
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const [categories, setCategories] = useState<Category[]>([])
     const [products, setProducts] = useState<Product[]>([])
     const [totalProducts, setTotalProducts] = useState(0)
     const [loading, setLoading] = useState(true)
 
-    const [search, setSearch] = useState('')
-    const [selCats, setSelCats] = useState<number[]>([])
-    const [selRange, setSelRange] = useState<number[]>([0, 0])
+    const [search, setSearch] = useState(searchParams.get('search') || '')
+    const [selCats, setSelCats] = useState<number[]>(
+        searchParams.get('categories')?.split(',').map(Number).filter(Boolean) || []
+    )
+    const [selRange, setSelRange] = useState<number[]>([
+        Number(searchParams.get('minPrice')) || 0,
+        Number(searchParams.get('maxPrice')) || 0
+    ])
     const [sliderRange, setSliderRange] = useState<number[]>([0, 0])
-    const [sortDirection, setSortDirection] = useState('asc')
-    const [isPopular, setIsPopular] = useState(false)
+    const [sortDirection, setSortDirection] = useState(searchParams.get('sort') || 'asc')
+    const [isPopular, setIsPopular] = useState(searchParams.get('popular') === 'true')
+    const [page, setPage] = useState(Number(searchParams.get('page')) || 0)
+    const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
 
     const pageSize = 10
-    const [page, setPage] = useState(0)
-    const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
+
+    const updateUrlParams = (updates: Record<string, string | number | boolean | null>) => {
+        const newParams = new URLSearchParams(searchParams);
+        
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === null || value === '') {
+                newParams.delete(key);
+            } else {
+                newParams.set(key, String(value));
+            }
+        });
+
+        if (newParams.get('page') === '0') {
+            newParams.delete('page');
+        }
+
+        setSearchParams(newParams);
+    };
+
+    useEffect(() => {
+        updateUrlParams({
+            search: search || null,
+            categories: selCats.length ? selCats.join(',') : null,
+            minPrice: selRange[0] || null,
+            maxPrice: selRange[1] || null,
+            sort: sortDirection,
+            popular: isPopular,
+            page: page || null
+        });
+    }, [search, selCats, selRange, sortDirection, isPopular, page]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -188,6 +226,9 @@ const CatalogPage = () => {
                 const response = await API.get('/category/all')
                 console.log(response.data);
                 setCategories(response.data)
+                // Expand all categories by default
+                const allCategoryIds = getAllCategoryIds(response.data);
+                setExpandedCats(new Set(allCategoryIds));
             } catch (error) {
                 console.error('Error fetching categories:', error)
             }
@@ -256,6 +297,17 @@ const CatalogPage = () => {
 
     }
 
+    // Function to get all category IDs including children
+    const getAllCategoryIds = (categories: Category[]): number[] => {
+        return categories.reduce((ids: number[], category) => {
+            return [
+                ...ids,
+                category.id,
+                ...(category.children ? getAllCategoryIds(category.children) : [])
+            ];
+        }, []);
+    };
+
     return (
         <Box p={{ base: 4, md: 8 }}>
             <Heading size="lg" mb="6">
@@ -280,15 +332,16 @@ const CatalogPage = () => {
                             }}
                             expanded={expandedCats}
                             onToggle={(categoryId) => {
+                                // Allow both expanding and collapsing
                                 setExpandedCats(prev => {
-                                    const next = new Set(prev)
+                                    const next = new Set(prev);
                                     if (next.has(categoryId)) {
-                                        next.delete(categoryId)
+                                        next.delete(categoryId);
                                     } else {
-                                        next.add(categoryId)
+                                        next.add(categoryId);
                                     }
-                                    return next
-                                })
+                                    return next;
+                                });
                             }}
                         />
                     </Box>
@@ -303,7 +356,10 @@ const CatalogPage = () => {
                             <Input
                                 placeholder={t('searchPlaceholder')}
                                 size="md"
-                                onChange={e => setSearch(e.target.value)}
+                                onChange={e => {
+                                    setSearch(e.target.value);
+                                    setPage(0);
+                                }}
                                 value={search}
                             />
                         </Field.Root>
@@ -318,8 +374,11 @@ const CatalogPage = () => {
                                         { id: 'desc', value: 'desc', label: t('sortByPriceDesc') }
                                     ]
                                 })}
-                                defaultValue={['asc']}
-                                onValueChange={e => setSortDirection(e.items[0]?.value)}
+                                defaultValue={[sortDirection]}
+                                onValueChange={e => {
+                                    setSortDirection(e.items[0]?.value);
+                                    setPage(0);
+                                }}
                             >
                                 <Select.HiddenSelect />
                                 <Select.Control>
@@ -424,7 +483,7 @@ const CatalogPage = () => {
                                     page={page + 1}
                                     onPageChange={(details) => {
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        setPage(details.page - 1)
+                                        setPage(details.page - 1);
                                     }}
                                     mt="6"
                                     justifySelf="center"
