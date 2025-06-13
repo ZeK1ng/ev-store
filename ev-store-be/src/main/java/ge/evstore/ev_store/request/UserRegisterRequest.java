@@ -2,9 +2,11 @@ package ge.evstore.ev_store.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Data
+@NoArgsConstructor
 public class UserRegisterRequest {
     private String firstName;
     private String lastName;

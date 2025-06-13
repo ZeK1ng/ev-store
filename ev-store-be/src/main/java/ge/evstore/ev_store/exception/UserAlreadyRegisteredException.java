@@ -6,7 +6,10 @@ public class UserAlreadyRegisteredException extends RuntimeException {
 
     public UserAlreadyRegisteredException(final UserRegisterRequest userRegisterRequest) {
         super(constructMessage(userRegisterRequest));
+    }
 
+    public UserAlreadyRegisteredException(final String message) {
+        super(message);
     }
 
     private static String constructMessage(final UserRegisterRequest userRegisterRequest) {
