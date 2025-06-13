@@ -61,7 +61,7 @@ class ImageServiceImplTest {
             when(multipartFile.getOriginalFilename()).thenReturn(originalFilename);
             when(multipartFile.getContentType()).thenReturn(contentType);
             when(multipartFile.getBytes()).thenReturn(imageBytes);
-            mockedCompressionUtils.when(() -> CompressionUtils.compress(imageBytes)).thenReturn(compressedBytes);
+            mockedCompressionUtils.when(() -> CompressionUtils.compress(any())).thenReturn(compressedBytes);
             when(imageRepository.save(any())).thenReturn(mockImageEntity);
             // Act
             final ImageSaveResponse response = imageService.saveImage(multipartFile);
@@ -84,7 +84,7 @@ class ImageServiceImplTest {
     @Test
     void saveImage_ShouldThrowIOException() throws IOException {
         // Arrange
-        when(multipartFile.getBytes()).thenThrow(new IOException("File error"));
+        when(multipartFile.getInputStream()).thenThrow(new IOException("File error"));
 
         // Act & Assert
         final IOException thrown = assertThrows(IOException.class, () -> imageService.saveImage(multipartFile));
