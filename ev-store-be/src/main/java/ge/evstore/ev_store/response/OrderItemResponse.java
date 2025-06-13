@@ -17,9 +17,9 @@ public class OrderItemResponse {
     private BigDecimal totalPrice;
 
     public OrderItemResponse(final OrderItem orderItem) {
-        this.productNameGe = orderItem.getProduct().getNameGE();
-        this.productNameEng = orderItem.getProduct().getNameENG();
-        this.productNameRUS = orderItem.getProduct().getNameRUS();
+        this.productNameGe = orderItem.getProductNameGE();
+        this.productNameEng = orderItem.getProductNameENG();
+        this.productNameRUS = orderItem.getProductNameRUS();
         this.quantity = orderItem.getQuantity();
         this.unitPrice = orderItem.getUnitPrice();
         this.totalPrice = NumberFormatUtil.roundDouble(orderItem.getTotalPrice());

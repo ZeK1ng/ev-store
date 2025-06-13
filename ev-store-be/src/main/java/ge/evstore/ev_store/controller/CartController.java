@@ -44,5 +44,4 @@ public class CartController {
         final String token = HeaderUtils.extractBearer(request);
         return ResponseEntity.ok(cartService.updateProductQuantityInCart(productId, quantity, token));
     }
-
 }

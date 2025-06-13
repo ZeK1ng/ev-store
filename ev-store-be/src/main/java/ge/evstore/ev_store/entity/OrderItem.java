@@ -17,10 +17,9 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    // Which product (snapshot at time of order)
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private String productNameENG;
+    private String productNameGE;
+    private String productNameRUS;
 
     @Column(nullable = false)
     private int quantity;

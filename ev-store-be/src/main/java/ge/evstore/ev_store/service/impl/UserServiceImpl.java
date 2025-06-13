@@ -180,7 +180,10 @@ public class UserServiceImpl implements UserService {
         for (final CartItemResponse item : items) {
             final OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(item.getQuantity());
-            orderItem.setProduct(productService.getProductById(item.getProductId()));
+            final Product productById = productService.getProductById(item.getProductId());
+            orderItem.setProductNameGE(productById.getNameGE());
+            orderItem.setProductNameENG(productById.getNameENG());
+            orderItem.setProductNameRUS(productById.getNameRUS());
             orderItem.setUnitPrice(item.getPrice());
             final double lineTotal = item.getPrice() * item.getQuantity();
             orderItem.setTotalPrice(lineTotal);
@@ -231,7 +234,10 @@ public class UserServiceImpl implements UserService {
         for (final CartItemReservationRequest item : request.getCartItems()) {
             final OrderItem orderItem = new OrderItem();
             orderItem.setQuantity(item.getQuantity());
-            orderItem.setProduct(productService.getProductById(item.getProductId()));
+            final Product productById = productService.getProductById(item.getProductId());
+            orderItem.setProductNameGE(productById.getNameGE());
+            orderItem.setProductNameENG(productById.getNameENG());
+            orderItem.setProductNameRUS(productById.getNameRUS());
             orderItem.setUnitPrice(item.getProductPrice());
             final double lineTotal = item.getProductPrice() * item.getQuantity();
             totalOrderPrice += lineTotal;
