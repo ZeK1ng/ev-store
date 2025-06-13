@@ -2,6 +2,7 @@ package ge.evstore.ev_store.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -9,10 +10,10 @@ import java.util.zip.Inflater;
 //Took this class from https://github.com/Java-Techie-jt/file-storage-service/blob/main/src/main/java/com/javatechie/util/ImageUtils.java
 public class CompressionUtils {
 
-    public static byte[] compress(final byte[] input) {
+    public static byte[] compress(final InputStream input) throws IOException {
         final Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
-        deflater.setInput(input);
+        deflater.setInput(input.readAllBytes());
         deflater.finish();
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
