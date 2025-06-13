@@ -20,6 +20,7 @@ import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
 import { getImageUrl } from "@/utils/helpers";
+import CachedImage from "@/utils/CachedImage";
 
 interface Product {
     productId: number;
@@ -197,14 +198,7 @@ const PopularProductsSlider = ({
                             bg="whiteAlpha.100"
                         >
                             <Box h="200px" flexShrink={0}>
-                                <Image
-                                    src={getImageUrl(product.mainImageId)}
-                                    alt={product.nameENG}
-                                    w="full"
-                                    h="full"
-                                    objectFit="cover"
-                                    shadow="sm"
-                                />
+                                <CachedImage imageId={product.mainImageId} />
                             </Box>
 
                             <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">

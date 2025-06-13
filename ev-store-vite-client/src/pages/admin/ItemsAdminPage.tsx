@@ -8,7 +8,6 @@ import {
     Card,
     Dialog,
     Portal,
-    Image,
     HStack,
     Badge,
     DataList,
@@ -34,7 +33,7 @@ import { LuPackageSearch } from "react-icons/lu";
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
 import { debounce } from "lodash";
-import { getImageUrl } from "@/utils/helpers"
+import CachedImage from "@/utils/CachedImage"
 
 
 interface Item {
@@ -353,15 +352,7 @@ const ItemsAdminPage = () => {
                                                                 <Text fontWeight="semibold" mb={2}>Additional Images</Text>
                                                                 <SimpleGrid columns={{ base: 2, md: 3 }} gap={3}>
                                                                     {item.imageIds.map((src, idx) => (
-                                                                        <Image
-                                                                            key={idx}
-                                                                            src={getImageUrl(src)}
-                                                                            alt={`Image ${idx + 1}`}
-                                                                            objectFit="cover"
-                                                                            w="100%"
-                                                                            aspectRatio="1"
-                                                                            borderRadius="md"
-                                                                        />
+                                                                        <CachedImage key={idx} imageId={src} alt={`Image ${idx + 1}`} w="100%" aspectRatio="1" borderRadius="md" />
                                                                     ))}
                                                                 </SimpleGrid>
                                                             </Box>

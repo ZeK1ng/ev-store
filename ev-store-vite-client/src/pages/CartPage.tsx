@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import AuthController from '@/utils/AuthController';
 import API from '@/utils/AxiosAPI';
-import { getCart, removeItemFromCart, updateItemQuantity, getImageUrl, clearCart } from '@/utils/helpers';
+import { getCart, removeItemFromCart, updateItemQuantity, clearCart } from '@/utils/helpers';
+import CachedImage from "@/utils/CachedImage";
 import {
     Box,
     Flex,
     Stack,
     Text,
     Heading,
-    Image,
     IconButton,
     Button,
     Input,
@@ -340,13 +340,7 @@ const CartPage = () => {
                                 gap={4}
                             >
                                 <HStack gap={4} align="center">
-                                    <Image
-                                        src={getImageUrl(item.mainImageId)}
-                                        alt={item.nameENG}
-                                        boxSize="80px"
-                                        objectFit="cover"
-                                        borderRadius="md"
-                                    />
+                                    <CachedImage imageId={item.mainImageId} alt={item.nameENG} boxSize="80px" objectFit="cover" borderRadius="md" />
                                     <Box>
                                         <Text fontWeight="bold">{item.nameENG}</Text>
                                         <Text fontSize="sm" color="gray.500" lineClamp={2}>{item.descriptionENG}</Text>

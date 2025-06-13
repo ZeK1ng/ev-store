@@ -10,7 +10,6 @@ import {
     Text,
     Heading,
     Card,
-    Image,
     Button,
     Field,
     Input,
@@ -34,9 +33,10 @@ import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom';
 import { LuShoppingCart } from "react-icons/lu";
-import { addItemToCart, getImageUrl } from "@/utils/helpers";
+import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
+import CachedImage from "@/utils/CachedImage";
 
 interface Category {
     id: number;
@@ -470,14 +470,7 @@ const CatalogPage = () => {
                             <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
                                 {products.map((product) => (
                                     <Card.Root overflow="hidden" key={product.productId} w="100%" bg="whiteAlpha.100">
-                                        <Image
-                                            src={getImageUrl(product.mainImageId)}
-                                            alt={product.nameENG}
-                                            w="full"
-                                            h="200px"
-                                            objectFit="cover"
-                                            shadow="sm"
-                                        />
+                                        <CachedImage imageId={product.mainImageId} alt={product.nameENG} w="full" h="200px" objectFit="cover" shadow="sm" />
 
                                         <Card.Body gap="2">
                                             <Card.Title>{product.nameENG}</Card.Title>

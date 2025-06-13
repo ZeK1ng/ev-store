@@ -7,7 +7,6 @@ import {
     Textarea,
     NumberInput,
     Button,
-    Image,
     SimpleGrid,
     Field,
     FileUpload,
@@ -30,7 +29,7 @@ import { FaArrowLeft } from 'react-icons/fa'
 import { HiUpload } from 'react-icons/hi'
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
-import { getImageUrl } from "@/utils/helpers"
+import CachedImage from "@/utils/CachedImage"
 
 
 interface Category {
@@ -459,7 +458,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </FileUpload.Root>
                         {existingItem && !isCreate && (
                             <Box mt={2}>
-                                <Image src={getImageUrl(existingItem.mainImageId)} w="200px" borderRadius="md" />
+                                <CachedImage imageId={existingItem.mainImageId} w="200px" borderRadius="md" />
                             </Box>
                         )}
                     </Field.Root>
@@ -484,14 +483,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         {existingItem && existingItem.imageIds.length > 0 && (
                             <SimpleGrid columns={4} gap={2} mt={2}>
                                 {existingItem.imageIds.map((src, idx) => (
-                                    <Image
-                                        key={idx}
-                                        src={getImageUrl(src)}
-                                        alt={`Image ${idx + 1}`}
-                                        objectFit="cover"
-                                        aspectRatio={1}
-                                        borderRadius="md"
-                                    />
+                                    <CachedImage key={idx} imageId={src} w="100px" h="100px" borderRadius="md" />
                                 ))}
                             </SimpleGrid>
                         )}
