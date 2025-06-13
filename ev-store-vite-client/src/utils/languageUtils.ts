@@ -4,9 +4,9 @@ interface MultilingualText {
   nameENG: string;
   nameGE: string;
   nameRUS: string;
-  descriptionENG: string;
-  descriptionGE: string;
-  descriptionRUS: string;
+  descriptionENG?: string;
+  descriptionGE?: string;
+  descriptionRUS?: string;
 }
 
 export const getLocalizedText = (
