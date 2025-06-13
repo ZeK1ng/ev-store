@@ -379,8 +379,13 @@ const CartPage = () => {
 
                                     <HStack gap={4} alignSelf={{ base: 'end', md: 'center' }}>
                                         <Field.Root id={`quantity-${item.productId}`} invalid={false}>
-                                            <NumberInput.Root defaultValue={String(item.quantity)} unstyled spinOnPress={false}
-                                                min={1} max={50} step={1}
+                                            <NumberInput.Root 
+                                                defaultValue={String(item.quantity)} 
+                                                unstyled 
+                                                spinOnPress={false}
+                                                min={1} 
+                                                max={50} 
+                                                step={1}
                                                 onValueChange={(e) => {
                                                     const val = parseInt(e.value);
                                                     if (!isNaN(val) && val >= 1) {
@@ -390,13 +395,37 @@ const CartPage = () => {
                                             >
                                                 <HStack gap="2">
                                                     <NumberInput.DecrementTrigger asChild>
-                                                        <IconButton variant="outline" size="sm" _hover={{ bg: 'gray.500', color: 'white' }} >
+                                                        <IconButton 
+                                                            variant="outline" 
+                                                            size="sm" 
+                                                            _hover={{ bg: 'gray.500', color: 'white' }}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                            }}
+                                                        >
                                                             <LuMinus />
                                                         </IconButton>
                                                     </NumberInput.DecrementTrigger>
-                                                    <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
+                                                    <NumberInput.ValueText 
+                                                        textAlign="center" 
+                                                        fontSize="lg" 
+                                                        minW="3ch"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                        }}
+                                                    />
                                                     <NumberInput.IncrementTrigger asChild>
-                                                        <IconButton variant="outline" size="sm" _hover={{ bg: 'gray.500', color: 'white' }}>
+                                                        <IconButton 
+                                                            variant="outline" 
+                                                            size="sm" 
+                                                            _hover={{ bg: 'gray.500', color: 'white' }}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                            }}
+                                                        >
                                                             <LuPlus />
                                                         </IconButton>
                                                     </NumberInput.IncrementTrigger>
@@ -440,7 +469,7 @@ const CartPage = () => {
                                         </EmptyState.Description>
                                     </VStack>
                                     <ButtonGroup>
-                                        <Button>
+                                        <Button asChild>
                                             <RouterLink to="/catalog">
                                                 {t('cart.continueShopping')}
                                             </RouterLink>
