@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import API from '@/utils/AxiosAPI'
 import AuthController from '@/utils/AuthController'
 import {
@@ -10,47 +9,31 @@ import {
     Image,
     VStack,
     Separator,
-    useDisclosure,
     Menu,
     Portal,
     Accordion,
     Span,
-    Link
+    Link,
+    Drawer,
+    CloseButton
 } from '@chakra-ui/react'
 import { toaster } from "@/components/ui/toaster"
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import LangSwitcher from '@/components/LangSwitcher'
 import { useColorMode } from '@/components/ui/color-mode'
-import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuPanelLeftClose, LuPanelRightClose, LuLogOut } from "react-icons/lu";
+import { LuShoppingCart, LuMoon, LuSun, LuCircleUserRound, LuLogIn, LuMenu, LuLogOut } from "react-icons/lu";
 import { useTranslation } from 'react-i18next'
 
 const Header = () => {
     const { t } = useTranslation('common');
-
-    const { open, onOpen, onClose } = useDisclosure()
     const { colorMode, toggleColorMode } = useColorMode()
     const navigate = useNavigate()
-
-    useEffect(() => {
-        if (open) {
-            document.body.style.overflow = 'auto'
-        } else {
-            document.body.style.overflow = 'auto'
-        }
-        return () => {
-            document.body.style.overflow = 'auto'
-        }
-    }, [open])
 
     const logOut = async () => {
         try {
             await API.post('/auth/logout')
             AuthController.logout()
             navigate('/')
-
-            if (open) {
-                onClose()
-            }
         } catch (error) {
             toaster.error({
                 title: t('header.logoutError'),
@@ -160,7 +143,6 @@ const Header = () => {
                         size="xl"
                         variant="surface"
                         asChild
-                        onClick={onClose}
                     >
                         <RouterLink to="/cart">
                             <LuShoppingCart />
@@ -171,121 +153,113 @@ const Header = () => {
                         display={{ base: 'flex', md: 'none' }}
                         size="xl"
                         aria-label="Toggle theme"
-                        onClick={() => {
-                            toggleColorMode()
-                        }}
+                        onClick={toggleColorMode}
                         variant="surface"
                     >
                         {colorMode === 'light' ? <LuMoon /> : <LuSun />}
                     </IconButton>
-
-                    <IconButton
-                        display={{ base: 'flex', md: 'none' }}
-                        aria-label="Toggle menu"
-                        onClick={open ? onClose : onOpen}
-                        variant="surface"
-                        size="xl"
-
-                    >
-                        {open ?
-                            <Box
-                                data-state="open"
-                                _open={{
-                                    animation: "spin 300ms",
-                                }}
-                            >
-                                <LuPanelRightClose />
-                            </Box> : <LuPanelLeftClose />}
-                    </IconButton>
-                </HStack>
-
-            </Flex>
-
-            <Box
-                position="absolute"
-                display={open ? 'block' : 'none'}
-                top="100%"
-                left={0}
-                width="100%"
-                shadow="xl"
-                zIndex="2"
-                bg="bg.muted"
-                h="100dvh"
-                data-state="open"
-                _open={{
-                    animation: "slide-from-right-full 300ms ease-in",
-                }}
-            >
-                <VStack as="nav" gap={4} align="stretch" p={4}>
-                    <RouterLink to="/" onClick={onClose}>
-                        {t('header.home')}
-                    </RouterLink>
-                    <Separator />
-                    <RouterLink to="/catalog" onClick={onClose}>
-                        {t('header.catalog')}
-                    </RouterLink>
-                    <Separator />
-                    <RouterLink to="/about-us" onClick={onClose}>
-                        {t('header.aboutUs')}
-                    </RouterLink>
-                    <Separator />
-                    <RouterLink to="/contact-us" onClick={onClose}>
-                        {t('header.contact')}
-                    </RouterLink>
-                    <Separator />
-
-                    {
-                        AuthController.isLoggedIn() ? (
-                            <Accordion.Root size="lg" collapsible>
-                                <Accordion.Item value="profile">
-                                    <Accordion.ItemTrigger>
-                                        <Span flex="1">
-                                            <HStack align="center" gap={2}>
-                                                <LuCircleUserRound />
-                                                {t('header.profile')}
-                                            </HStack>
-                                        </Span>
-
-                                        <Accordion.ItemIndicator />
-
-                                    </Accordion.ItemTrigger>
-                                    <Accordion.ItemContent>
-                                        <Accordion.ItemBody>
-                                            <VStack gap={2} align="stretch" ml={2}>
-                                                <RouterLink to="/profile" onClick={onClose}>
-                                                    {t('header.myProfile')}
-                                                </RouterLink>
-                                                <Separator />
-                                                <RouterLink to="/order-history" onClick={onClose}>
-                                                    {t('header.orderHistory')}
-                                                </RouterLink>
-                                                <Separator />
-                                                <HStack onClick={logOut}>
-                                                    {t('header.logout')} <LuLogOut />
-                                                </HStack>
-                                            </VStack>
-                                        </Accordion.ItemBody>
-                                    </Accordion.ItemContent>
-                                </Accordion.Item>
-                            </Accordion.Root>
-                        ) : (
-                            <Button
+                    <Drawer.Root>
+                        <Drawer.Trigger asChild>
+                            <IconButton
+                                display={{ base: 'flex', md: 'none' }}
+                                aria-label="Toggle menu"
+                                variant="surface"
                                 size="xl"
-                                variant="outline"
-                                asChild
-                                onClick={onClose}
                             >
-                                <RouterLink to="/login" >
-                                    {t('header.login')} <LuLogIn />
-                                </RouterLink>
-                            </Button>
-                        )
-                    }
+                                <LuMenu />
+                            </IconButton>
+                        </Drawer.Trigger>
+                        <Portal>
+                            <Drawer.Backdrop />
+                            <Drawer.Positioner>
+                                <Drawer.Content>
+                                    <Drawer.Header>
+                                        <Drawer.Title>{t('header.menu')}</Drawer.Title>
+                                        <Drawer.CloseTrigger asChild>
+                                            <CloseButton />
+                                        </Drawer.CloseTrigger>
+                                    </Drawer.Header>
+                                    <Drawer.Context>
+                                        {(store) => (
+                                            <Drawer.Body>
+                                                <VStack as="nav" gap={4} align="stretch">
+                                                    <RouterLink to="/" onClick={() => store.setOpen(false)}>
+                                                        {t('header.home')}
+                                                    </RouterLink>
+                                                    <Separator />
+                                                    <RouterLink to="/catalog" onClick={() => store.setOpen(false)}>
+                                                        {t('header.catalog')}
+                                                    </RouterLink>
+                                                    <Separator />
+                                                    <RouterLink to="/about-us" onClick={() => store.setOpen(false)}>
+                                                        {t('header.aboutUs')}
+                                                    </RouterLink>
+                                                    <Separator />
+                                                    <RouterLink to="/contact-us" onClick={() => store.setOpen(false)}>
+                                                        {t('header.contact')}
+                                                    </RouterLink>
+                                                    <Separator />
 
-                    <LangSwitcher />
-                </VStack>
-            </Box>
-        </Box >
+                                                    {
+                                                        AuthController.isLoggedIn() ? (
+                                                            <Accordion.Root size="lg" collapsible>
+                                                                <Accordion.Item value="profile">
+                                                                    <Accordion.ItemTrigger>
+                                                                        <Span flex="1">
+                                                                            <HStack align="center" gap={2}>
+                                                                                <LuCircleUserRound />
+                                                                                {t('header.profile')}
+                                                                            </HStack>
+                                                                        </Span>
+                                                                        <Accordion.ItemIndicator />
+                                                                    </Accordion.ItemTrigger>
+                                                                    <Accordion.ItemContent>
+                                                                        <Accordion.ItemBody>
+                                                                            <VStack gap={2} align="stretch" ml={2}>
+                                                                                <RouterLink to="/profile" onClick={() => store.setOpen(false)}>
+                                                                                    {t('header.myProfile')}
+                                                                                </RouterLink>
+                                                                                <Separator />
+                                                                                <RouterLink to="/order-history" onClick={() => store.setOpen(false)}>
+                                                                                    {t('header.orderHistory')}
+                                                                                </RouterLink>
+                                                                                <Separator />
+                                                                                <HStack onClick={() => {
+                                                                                    logOut();
+                                                                                    store.setOpen(false);
+                                                                                }}>
+                                                                                    {t('header.logout')} <LuLogOut />
+                                                                                </HStack>
+                                                                            </VStack>
+                                                                        </Accordion.ItemBody>
+                                                                    </Accordion.ItemContent>
+                                                                </Accordion.Item>
+                                                            </Accordion.Root>
+                                                        ) : (
+                                                            <Button
+                                                                size="xl"
+                                                                variant="outline"
+                                                                asChild
+                                                            >
+                                                                <RouterLink to="/login" onClick={() => store.setOpen(false)}>
+                                                                    {t('header.login')} <LuLogIn />
+                                                                </RouterLink>
+                                                            </Button>
+                                                        )
+                                                    }
+
+                                                    <LangSwitcher />
+                                                </VStack>
+                                            </Drawer.Body>
+                                        )}
+                                    </Drawer.Context>
+                                </Drawer.Content>
+                            </Drawer.Positioner>
+                        </Portal>
+                    </Drawer.Root>
+                </HStack>
+            </Flex>
+        </Box>
     )
 }
 

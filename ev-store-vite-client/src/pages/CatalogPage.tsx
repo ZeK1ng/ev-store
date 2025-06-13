@@ -28,12 +28,13 @@ import {
     createListCollection,
     Center,
     Spinner,
-    Link,
+    Drawer,
+    CloseButton,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
 import { Link as RouterLink } from 'react-router-dom';
-import { LuShoppingCart } from "react-icons/lu";
+import { LuShoppingCart, LuPackageSearch } from "react-icons/lu";
 import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
@@ -217,7 +218,6 @@ const CatalogPage = () => {
         });
     }, [search, selCats, selRange, sortDirection, page]);
 
-    // Initial data fetch
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
@@ -248,10 +248,9 @@ const CatalogPage = () => {
         fetchInitialData();
     }, [searchParams]);
 
-    // Products fetch
     useEffect(() => {
         const fetchProducts = async () => {
-            if (initialLoading) return; // Don't fetch products until initial data is loaded
+            if (initialLoading) return;
 
             setLoading(true);
             try {
@@ -330,8 +329,8 @@ const CatalogPage = () => {
                 {t('title')}
             </Heading>
 
-            <Flex direction={{ base: "column", md: "row" }} align="start" gap="8">
-                <Box bg="bg.muted" borderRadius="md" minW="260px" w="100%" maxW={{ base: "100%", md: "320px" }} p={4} flex="1">
+            <Flex direction={{ base: "column", md: "row" }} align="start" gap="8" >
+                <Box bg="bg.muted" borderRadius="md" minW="260px" w="100%" maxW="320px" p={4} flex="1" display={{ base: "none", md: "block" }}>
                     <Text fontWeight="bold" fontSize="xl" mb="4">
                         {t('priceFilterTitle')}
                     </Text>
@@ -341,7 +340,6 @@ const CatalogPage = () => {
                             min={sliderRange[0]}
                             max={sliderRange[1]}
                             value={selRange}
-
                             step={1}
                             onValueChange={(e) => setSelRange(e.value)}>
                             <Slider.ValueText>
@@ -362,7 +360,7 @@ const CatalogPage = () => {
                     <Text fontWeight="bold" fontSize="xl" my="4">
                         {t('categoryFilterTitle')}
                     </Text>
-                    <Box maxH="400px" overflowY="auto">
+                    <Box overflowY="auto">
                         <CategoryTree
                             categories={categories}
                             selectedCategories={selCats}
@@ -389,6 +387,8 @@ const CatalogPage = () => {
                     </Box>
                 </Box>
 
+
+
                 <Box flex="1" w="100%">
                     <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
                         <Field.Root flex="1" maxW={{ base: "100%", md: "400px" }}>
@@ -405,7 +405,7 @@ const CatalogPage = () => {
                                 value={search}
                             />
                         </Field.Root>
-                        <Field.Root w={{ base: "100%", sm: "250px" }} mt={{ base: 4, md: 0 }}>
+                        <Field.Root w={{ base: "100%", sm: "250px" }}>
                             <Field.Label>
                                 {t('sortByLabel')}
                             </Field.Label>
@@ -447,6 +447,87 @@ const CatalogPage = () => {
                                 </Portal>
                             </Select.Root>
                         </Field.Root>
+                        <Drawer.Root>
+                            <Drawer.Trigger asChild display={{ base: "flex", md: "none" }}>
+                                <Button
+                                    variant="outline"
+                                    width="full"
+                                >
+                                    <LuPackageSearch /> {t('filters')}
+                                </Button>
+                            </Drawer.Trigger>
+                            <Portal>
+                                <Drawer.Backdrop />
+                                <Drawer.Positioner>
+                                    <Drawer.Content>
+                                        <Drawer.Header>
+                                            <Drawer.Title>{t('filters')}</Drawer.Title>
+                                            <Drawer.CloseTrigger asChild>
+                                                <CloseButton />
+                                            </Drawer.CloseTrigger>
+                                        </Drawer.Header>
+                                        <Drawer.Body>
+                                            <Box bg="bg.muted" borderRadius="md" p={4}>
+                                                <Text fontWeight="bold" fontSize="xl" mb="4">
+                                                    {t('priceFilterTitle')}
+                                                </Text>
+                                                <Box>
+                                                    <Slider.Root
+                                                        px={4}
+                                                        min={sliderRange[0]}
+                                                        max={sliderRange[1]}
+                                                        value={selRange}
+                                                        step={1}
+                                                        onValueChange={(e) => setSelRange(e.value)}>
+                                                        <Slider.ValueText>
+                                                            <HStack justify="space-between">
+                                                                <Text fontSize="sm">{selRange[0]}</Text>
+                                                                <Text fontSize="sm">{selRange[1]}</Text>
+                                                            </HStack>
+                                                        </Slider.ValueText>
+                                                        <Slider.Control>
+                                                            <Slider.Track>
+                                                                <Slider.Range bg="#9CE94F" />
+                                                            </Slider.Track>
+                                                            <Slider.Thumbs />
+                                                        </Slider.Control>
+                                                    </Slider.Root>
+                                                </Box>
+
+                                                <Text fontWeight="bold" fontSize="xl" my="4">
+                                                    {t('categoryFilterTitle')}
+                                                </Text>
+                                                <Box overflowY="auto">
+                                                    <CategoryTree
+                                                        categories={categories}
+                                                        selectedCategories={selCats}
+                                                        onCategorySelect={(categoryId) => {
+                                                            setSelCats(prev =>
+                                                                prev.includes(categoryId)
+                                                                    ? prev.filter(c => c !== categoryId)
+                                                                    : [...prev, categoryId]
+                                                            )
+                                                        }}
+                                                        expanded={expandedCats}
+                                                        onToggle={(categoryId) => {
+                                                            setExpandedCats(prev => {
+                                                                const next = new Set(prev);
+                                                                if (next.has(categoryId)) {
+                                                                    next.delete(categoryId);
+                                                                } else {
+                                                                    next.add(categoryId);
+                                                                }
+                                                                return next;
+                                                            });
+                                                        }}
+                                                    />
+                                                </Box>
+                                            </Box>
+                                        </Drawer.Body>
+                                    </Drawer.Content>
+                                </Drawer.Positioner>
+                            </Portal>
+                        </Drawer.Root>
                     </Flex>
 
                     {loading ? (
