@@ -19,6 +19,8 @@ import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
 import CachedImage from "@/utils/CachedImage";
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getLocalizedText } from '@/utils/languageUtils';
 
 interface Product {
     productId: number;
@@ -58,6 +60,7 @@ const PopularProductsSlider = ({
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [showScrollButtons, setShowScrollButtons] = useState(false);
+    const { language } = useLanguage();
 
     useEffect(() => {
         const checkScrollButtons = () => {
@@ -201,13 +204,13 @@ const PopularProductsSlider = ({
 
                             <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">
                                 <Box minH="48px" display="flex" alignItems="center">
-                                    <Text fontSize="lg" fontWeight="bold">
-                                        {product.nameENG}
+                                    <Text fontSize="lg" fontWeight="medium" lineClamp={2}>
+                                        {getLocalizedText(product, language, 'name')}
                                     </Text>
                                 </Box>
                                 <Box flex="1" minH="72px">
-                                    <Text fontSize="md" color="gray.600" lineClamp={3}>
-                                        {product.descriptionENG}
+                                    <Text fontSize="sm" color="gray.500" lineClamp={2}>
+                                        {getLocalizedText(product, language, 'description')}
                                     </Text>
                                 </Box>
                                 <Text textStyle="2xl" fontWeight="medium" mt="auto" pt="2">

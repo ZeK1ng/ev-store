@@ -24,6 +24,8 @@ import AuthController from '@/utils/AuthController';
 import { addItemToCart } from '@/utils/helpers';
 import CachedImage from '@/utils/CachedImage';
 import { toaster } from '@/components/ui/toaster';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getLocalizedText } from '@/utils/languageUtils';
 
 interface FormValues {
     quantity: number;
@@ -62,6 +64,7 @@ const ProductDetailsPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [activeImage, setActiveImage] = useState<number | null>(null);
     const [categoryPath, setCategoryPath] = useState<Category[]>([]);
+    const { language } = useLanguage();
 
     const {
         watch,
@@ -164,7 +167,7 @@ const ProductDetailsPage = () => {
                 <Box flex={1}>
                     <CachedImage
                         imageId={activeImage || product.mainImageId}
-                        alt={product.nameENG}
+                        alt={getLocalizedText(product, language, 'name')}
                         objectFit="cover"
                         height={{ base: '300px', md: '400px' }}
                         width="full"
@@ -200,7 +203,7 @@ const ProductDetailsPage = () => {
                                 >
                                     <CachedImage
                                         imageId={imageId}
-                                        alt={`${product.nameENG} thumbnail ${idx + 1}`}
+                                        alt={`${getLocalizedText(product, language, 'name')} thumbnail ${idx + 1}`}
                                     />
                                 </IconButton>
                             ))}
@@ -210,11 +213,11 @@ const ProductDetailsPage = () => {
 
                 <Box flex={1}>
                     <Stack gap={4}>
-                        <Heading size="xl">{product.nameENG}</Heading>
+                        <Heading size="xl">{getLocalizedText(product, language, 'name')}</Heading>
                         <Text fontSize="2xl" fontWeight="bold" color="green.500">
                             ${product.price}
                         </Text>
-                        <Text>{product.descriptionENG}</Text>
+                        <Text>{getLocalizedText(product, language, 'description')}</Text>
 
                         <Field.Root>
                             <NumberInput.Root 

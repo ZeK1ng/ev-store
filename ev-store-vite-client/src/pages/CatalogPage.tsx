@@ -37,6 +37,8 @@ import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
 import CachedImage from "@/utils/CachedImage";
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getLocalizedText } from '@/utils/languageUtils';
 
 interface Category {
     id: number;
@@ -162,6 +164,7 @@ const CategoryTree = ({
 const CatalogPage = () => {
     const { t } = useTranslation('catalog')
     const [searchParams, setSearchParams] = useSearchParams();
+    const { language } = useLanguage();
 
     const [categories, setCategories] = useState<Category[]>([])
     const [products, setProducts] = useState<Product[]>([])
@@ -470,11 +473,11 @@ const CatalogPage = () => {
                             <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
                                 {products.map((product) => (
                                     <Card.Root overflow="hidden" key={product.productId} w="100%" bg="whiteAlpha.100">
-                                        <CachedImage imageId={product.mainImageId} alt={product.nameENG} width="full" height="200px" objectFit="cover" shadow="sm" />
+                                        <CachedImage imageId={product.mainImageId} alt={getLocalizedText(product, language, 'name')} width="full" height="200px" objectFit="cover" shadow="sm" />
 
                                         <Card.Body gap="2">
-                                            <Card.Title>{product.nameENG}</Card.Title>
-                                            <Card.Description lineClamp={2}>{product.descriptionENG}</Card.Description>
+                                            <Card.Title>{getLocalizedText(product, language, 'name')}</Card.Title>
+                                            <Card.Description lineClamp={2}>{getLocalizedText(product, language, 'description')}</Card.Description>
                                             <Text textStyle="2xl" fontWeight="medium">
                                                 {product.price.toFixed(2)}
                                             </Text>

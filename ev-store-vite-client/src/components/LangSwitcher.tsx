@@ -1,8 +1,10 @@
 import { Select, Portal, createListCollection } from '@chakra-ui/react'
-import { useTranslation } from 'react-i18next'
+import { Language, useLanguage } from '@/contexts/LanguageContext'
+
+
 
 const LangSwitcher = () => {
-  const { i18n } = useTranslation()
+  const { language, setLanguage } = useLanguage()
 
   const langs = createListCollection({
     items: [
@@ -17,12 +19,13 @@ const LangSwitcher = () => {
     <Select.Root
       collection={langs}
       size={{ base: "lg", md: "xs" }}
-      value={[i18n.language]}
+      value={[language]}
       width={{ base: "100%", md: "120px" }}
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
-        i18n.changeLanguage(e.value[0]);
-        localStorage.setItem('ev-i18nextLng', e.value[0]);
+        const newLang = e.value[0] as Language;
+        setLanguage(newLang);
+        localStorage.setItem('ev-language', newLang);
       }}
     >
       <Select.HiddenSelect />

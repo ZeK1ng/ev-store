@@ -28,6 +28,8 @@ import { FaTrash } from 'react-icons/fa';
 import { LuMinus, LuPlus, LuWifiOff, LuShoppingCart, LuClipboardCheck, LuChevronDown } from 'react-icons/lu';
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from 'react-router-dom'
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getLocalizedText } from '@/utils/languageUtils';
 
 interface UserDetails {
     firstName: string;
@@ -68,6 +70,7 @@ interface ReservationFormValues {
 
 const CartPage = () => {
     const { t } = useTranslation('cart');
+    const { language } = useLanguage();
     const [userData, setUserData] = useState<UserDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -217,7 +220,7 @@ const CartPage = () => {
             const itemsDataToSend = cartItems.map((item) => ({
                 quantity: item.quantity,
                 productId: item.productId,
-                productName: item.nameENG,
+                productName: getLocalizedText(item, language, 'name'),
                 productPrice: item.price,
             }));
             await API.post('/reservation/create-guest', {
@@ -340,10 +343,10 @@ const CartPage = () => {
                                 gap={4}
                             >
                                 <HStack gap={4} align="center">
-                                    <CachedImage imageId={item.mainImageId} alt={item.nameENG} width="80px" height="80px" objectFit="cover" borderRadius="md" />
+                                    <CachedImage imageId={item.mainImageId} alt={getLocalizedText(item, language, 'name')} width="80px" height="80px" objectFit="cover" borderRadius="md" />
                                     <Box>
-                                        <Text fontWeight="bold">{item.nameENG}</Text>
-                                        <Text fontSize="sm" color="gray.500" lineClamp={2}>{item.descriptionENG}</Text>
+                                        <Text fontWeight="bold">{getLocalizedText(item, language, 'name')}</Text>
+                                        <Text fontSize="sm" color="gray.500" lineClamp={2}>{getLocalizedText(item, language, 'description')}</Text>
                                     </Box>
                                 </HStack>
 
