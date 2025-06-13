@@ -3,7 +3,6 @@ import { useParams, Link } from 'react-router-dom';
 import {
     Box,
     Flex,
-    Image,
     Heading,
     Text,
     Stack,
@@ -23,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import API from '@/utils/AxiosAPI';
 import AuthController from '@/utils/AuthController';
 import { addItemToCart } from '@/utils/helpers';
-import { getImageUrl } from '@/utils/helpers';
+import CachedImage from '@/utils/CachedImage';
 import { toaster } from '@/components/ui/toaster';
 
 interface FormValues {
@@ -163,8 +162,8 @@ const ProductDetailsPage = () => {
 
             <Flex direction={{ base: 'column', md: 'row' }} gap={8}>
                 <Box flex={1}>
-                    <Image
-                        src={getImageUrl(activeImage || product.mainImageId)}
+                    <CachedImage
+                        imageId={activeImage || product.mainImageId}
                         alt={product.nameENG}
                         objectFit="cover"
                         h={{ base: '300px', md: '400px' }}
@@ -199,8 +198,8 @@ const ProductDetailsPage = () => {
                                     boxSize="50px"
                                     overflow={'hidden'}
                                 >
-                                    <Image
-                                        src={getImageUrl(imageId)}
+                                    <CachedImage
+                                        imageId={imageId}
                                         alt={`${product.nameENG} thumbnail ${idx + 1}`}
                                     />
                                 </IconButton>
