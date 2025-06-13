@@ -22,6 +22,8 @@ import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react';
 import API from '@/utils/AxiosAPI';
 import { toaster } from '@/components/ui/toaster';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { getLocalizedText } from '@/utils/languageUtils';
 
 interface OrderHistoryItem {
     orderId: number;
@@ -29,9 +31,9 @@ interface OrderHistoryItem {
     orderDate: string;
     totalPrice: number;
     items: Array<{
-        productNameGe: string;
-        productNameEng: string;
-        productNameRUS: string;
+        nameENG: string;
+        nameGE: string;
+        nameRUS: string;
         quantity: number;
         unitPrice: number;
         totalPrice: number;
@@ -51,6 +53,7 @@ const OrderHistoryPage = () => {
     const { t } = useTranslation('auth');
     const [orders, setOrders] = useState<OrderHistoryItem[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const { language } = useLanguage();
 
     const statusLabel = {
         PENDING: t('history.status.pending'),
@@ -166,7 +169,7 @@ const OrderHistoryPage = () => {
                                                 {order.items.map((item, idx) => (
                                                     <HStack key={idx} justify="space-between" py={1}>
                                                         <Text>
-                                                            {item.productNameEng} × {item.quantity}
+                                                            {getLocalizedText(item, language, 'name')} × {item.quantity}
                                                         </Text>
                                                         <Text color="gray.600">${item.unitPrice.toFixed(2)}</Text>
                                                     </HStack>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AuthController from './AuthController';
 
-const API_BASE_URL = 'https://obvious-july-literally-plastic.trycloudflare.com/api/v1';
+const API_BASE_URL = 'https://bedford-proposition-preferences-notebooks.trycloudflare.com/api/v1';
 
 const API = axios.create({
     baseURL: API_BASE_URL,
