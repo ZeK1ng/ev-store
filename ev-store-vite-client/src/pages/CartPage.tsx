@@ -333,63 +333,91 @@ const CartPage = () => {
 
                     <Stack gap={4}>
                         {cartItems.length > 0 && cartItems.map((item, index) => (
-                            <Flex
-                                key={index}
-                                align="flex-start"
-                                justify="space-between"
-                                flexDirection={{ base: 'column', md: 'row' }}
-                                p={{ base: 2, md: 4 }}
-                                bg="bg.muted" borderRadius="lg"
-                                gap={4}
+                            <RouterLink
+                                to={`/product/${item.productId}`}
+                                style={{
+                                    display: 'block',
+                                    textDecoration: 'none'
+                                }}
                             >
-                                <HStack gap={4} align="center">
-                                    <CachedImage imageId={item.mainImageId} alt={getLocalizedText(item, language, 'name')} width="80px" height="80px" objectFit="cover" borderRadius="md" />
-                                    <Box>
-                                        <Text fontWeight="bold">{getLocalizedText(item, language, 'name')}</Text>
-                                        <Text fontSize="sm" color="gray.500" lineClamp={2}>{getLocalizedText(item, language, 'description')}</Text>
-                                    </Box>
-                                </HStack>
 
-                                <HStack gap={4} alignSelf={{ base: 'end', md: 'center' }}>
-                                    <Field.Root id={`quantity-${item.productId}`} invalid={false}>
-                                        <NumberInput.Root defaultValue={String(item.quantity)} unstyled spinOnPress={false}
-                                            min={1} max={50} step={1}
-                                            onValueChange={(e) => {
-                                                const val = parseInt(e.value);
-                                                if (!isNaN(val) && val >= 1) {
-                                                    updateQuantity(item.productId, val);
-                                                }
-                                            }}
+                                <Flex
+                                    key={index}
+                                    align="flex-start"
+                                    justify="space-between"
+                                    flexDirection={{ base: 'column', md: 'row' }}
+                                    p={{ base: 2, md: 4 }}
+                                    bg="bg.muted" borderRadius="lg"
+                                    gap={4}
+                                    _hover={{ shadow: 'lg', transition: 'all 0.2s' }}
+                                    cursor="pointer"
+                                >
+                                    <HStack gap={4} align="center">
+
+                                        <Box
+                                            display="flex"
+                                            alignItems="center"
+                                            gap="1rem"
+                                            p={2}
+                                            borderRadius="md"
+                                            cursor="pointer"
                                         >
-                                            <HStack gap="2">
-                                                <NumberInput.DecrementTrigger asChild>
-                                                    <IconButton variant="outline" size="sm">
-                                                        <LuMinus />
-                                                    </IconButton>
-                                                </NumberInput.DecrementTrigger>
-                                                <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
-                                                <NumberInput.IncrementTrigger asChild>
-                                                    <IconButton variant="outline" size="sm">
-                                                        <LuPlus />
-                                                    </IconButton>
-                                                </NumberInput.IncrementTrigger>
-                                            </HStack>
-                                        </NumberInput.Root>
-                                    </Field.Root>
+                                            <CachedImage
+                                                imageId={item.mainImageId}
+                                                alt={getLocalizedText(item, language, 'name')}
+                                                width="80px"
+                                                height="80px"
+                                                objectFit="cover"
+                                                borderRadius="md"
+                                            />
+                                            <Box>
+                                                <Text fontWeight="bold">{getLocalizedText(item, language, 'name')}</Text>
+                                                <Text fontSize="sm" color="gray.500" lineClamp={2}>{getLocalizedText(item, language, 'description')}</Text>
+                                            </Box>
+                                        </Box>
+                                    </HStack>
 
-                                    <Text fontWeight="bold">${(item.price * item.quantity).toFixed(2)}</Text>
+                                    <HStack gap={4} alignSelf={{ base: 'end', md: 'center' }}>
+                                        <Field.Root id={`quantity-${item.productId}`} invalid={false}>
+                                            <NumberInput.Root defaultValue={String(item.quantity)} unstyled spinOnPress={false}
+                                                min={1} max={50} step={1}
+                                                onValueChange={(e) => {
+                                                    const val = parseInt(e.value);
+                                                    if (!isNaN(val) && val >= 1) {
+                                                        updateQuantity(item.productId, val);
+                                                    }
+                                                }}
+                                            >
+                                                <HStack gap="2">
+                                                    <NumberInput.DecrementTrigger asChild>
+                                                        <IconButton variant="outline" size="sm">
+                                                            <LuMinus />
+                                                        </IconButton>
+                                                    </NumberInput.DecrementTrigger>
+                                                    <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
+                                                    <NumberInput.IncrementTrigger asChild>
+                                                        <IconButton variant="outline" size="sm">
+                                                            <LuPlus />
+                                                        </IconButton>
+                                                    </NumberInput.IncrementTrigger>
+                                                </HStack>
+                                            </NumberInput.Root>
+                                        </Field.Root>
 
-                                    <IconButton
-                                        aria-label="Remove item"
-                                        size="sm"
-                                        colorScheme="red"
-                                        variant="outline"
-                                        onClick={() => removeItem(item.productId)}
-                                    >
-                                        <FaTrash />
-                                    </IconButton>
-                                </HStack>
-                            </Flex>
+                                        <Text fontWeight="bold">${(item.price * item.quantity).toFixed(2)}</Text>
+
+                                        <IconButton
+                                            aria-label="Remove item"
+                                            size="sm"
+                                            colorScheme="red"
+                                            variant="outline"
+                                            onClick={() => removeItem(item.productId)}
+                                        >
+                                            <FaTrash />
+                                        </IconButton>
+                                    </HStack>
+                                </Flex>
+                            </RouterLink>
                         ))}
 
                         {cartItems.length === 0 && (

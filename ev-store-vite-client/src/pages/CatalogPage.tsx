@@ -28,10 +28,11 @@ import {
     createListCollection,
     Center,
     Spinner,
+    Link,
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { LuShoppingCart } from "react-icons/lu";
 import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
@@ -230,7 +231,7 @@ const CatalogPage = () => {
 
                 setCategories(categoriesData);
                 setSliderRange([0, maxPrice]);
-                
+
                 if (!searchParams.get('minPrice') && !searchParams.get('maxPrice')) {
                     setSelRange([0, maxPrice]);
                 }
@@ -251,7 +252,7 @@ const CatalogPage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             if (initialLoading) return; // Don't fetch products until initial data is loaded
-            
+
             setLoading(true);
             try {
                 const params = new URLSearchParams({
@@ -327,7 +328,7 @@ const CatalogPage = () => {
                         {t('priceFilterTitle')}
                     </Text>
                     <Box>
-                        <Slider.Root 
+                        <Slider.Root
                             px={4}
                             min={sliderRange[0]}
                             max={sliderRange[1]}
@@ -349,7 +350,7 @@ const CatalogPage = () => {
                             </Slider.Control>
                         </Slider.Root>
                     </Box>
-                    
+
                     <Text fontWeight="bold" fontSize="xl" my="4">
                         {t('categoryFilterTitle')}
                     </Text>
@@ -472,34 +473,55 @@ const CatalogPage = () => {
                         <>
                             <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
                                 {products.map((product) => (
-                                    <Card.Root overflow="hidden" key={product.productId} w="100%" bg="whiteAlpha.100">
-                                        <CachedImage imageId={product.mainImageId} alt={getLocalizedText(product, language, 'name')} width="full" height="200px" objectFit="cover" shadow="sm" />
-
-                                        <Card.Body gap="2">
-                                            <Card.Title>{getLocalizedText(product, language, 'name')}</Card.Title>
-                                            <Card.Description lineClamp={2}>{getLocalizedText(product, language, 'description')}</Card.Description>
-                                            <Text textStyle="2xl" fontWeight="medium">
-                                                {product.price.toFixed(2)}
-                                            </Text>
-                                        </Card.Body>
-
-                                        <Card.Footer gap="2" flexShrink={0} pt="4">
-                                            <Button
-                                                variant="solid"
-                                                bg="#9CE94F"
-                                                color="gray.950"
-                                                onClick={() => addToCart(product.productId)}
+                                    <Box key={product.productId}>
+                                        <RouterLink
+                                            to={`/product/${product.productId}`}
+                                            style={{
+                                                display: 'block',
+                                                textDecoration: 'none'
+                                            }}
+                                        >
+                                            <Card.Root
+                                                overflow="hidden"
+                                                w="100%"
+                                                bg="whiteAlpha.100"
+                                                _hover={{ shadow: 'lg', transition: 'all 0.2s' }}
+                                                cursor="pointer"
                                             >
-                                                <LuShoppingCart />
-                                                {t('addToCart')}
-                                            </Button>
-                                            <Button variant="ghost">
-                                                <Link to={`/product/${product.productId}`}>
-                                                    {t('learnMore')}
-                                                </Link>
-                                            </Button>
-                                        </Card.Footer>
-                                    </Card.Root>
+                                                <CachedImage
+                                                    imageId={product.mainImageId}
+                                                    alt={getLocalizedText(product, language, 'name')}
+                                                    width="full"
+                                                    height="200px"
+                                                    objectFit="cover"
+                                                    shadow="sm"
+                                                />
+
+                                                <Card.Body gap="2">
+                                                    <Card.Title>{getLocalizedText(product, language, 'name')}</Card.Title>
+                                                    <Card.Description lineClamp={2}>{getLocalizedText(product, language, 'description')}</Card.Description>
+                                                    <Text textStyle="2xl" fontWeight="medium">
+                                                        ${product.price.toFixed(2)}
+                                                    </Text>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="solid"
+                                                        bg="#9CE94F"
+                                                        color="gray.950"
+                                                        _hover={{ opacity: 0.7 }}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            addToCart(product.productId);
+                                                        }}
+                                                        width="full"
+                                                    >
+                                                        <LuShoppingCart /> {t('addToCart')}
+                                                    </Button>
+                                                </Card.Body>
+                                            </Card.Root>
+                                        </RouterLink>
+                                    </Box>
                                 ))}
                             </SimpleGrid>
 

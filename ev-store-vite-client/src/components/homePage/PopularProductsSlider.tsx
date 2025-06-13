@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { LuShoppingCart } from 'react-icons/lu'
 import API from '@/utils/AxiosAPI';
 import { addItemToCart } from "@/utils/helpers";
@@ -185,58 +185,69 @@ const PopularProductsSlider = ({
             >
                 {products.map((product) => (
                     <Box
-                        h="100%"
                         key={product.productId}
                         scrollSnapAlign="start"
                         flex={{ base: '0 0 300px', md: '0 0 27%' }}
-
                     >
-                        <Card.Root
-                            h="100%"
-                            display="flex"
-                            flexDirection="column"
-                            overflow="hidden"
-                            bg="whiteAlpha.100"
+                        <RouterLink
+                            to={`/product/${product.productId}`}
+                            style={{
+                                display: 'block',
+                                height: '100%',
+                                textDecoration: 'none'
+                            }}
                         >
-                            <Box h="200px" flexShrink={0}>
-                                <CachedImage imageId={product.mainImageId} width="100%" height="200px" objectFit="cover" />
-                            </Box>
+                            <Card.Root
+                                w="100%"
+                                h="100%"
+                                bg="whiteAlpha.100"
+                                display="flex"
+                                flexDirection="column"
+                                overflow="hidden"
+                                _hover={{ shadow: 'lg', transition: 'all 0.2s' }}
+                                cursor="pointer"
+                            >
+                                <CachedImage
+                                    imageId={product.mainImageId}
+                                    alt={getLocalizedText(product, language, 'name')}
+                                    width="full"
+                                    height="200px"
+                                    objectFit="cover"
+                                    shadow="sm"
+                                />
 
-                            <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">
-                                <Box minH="48px" display="flex" alignItems="center">
-                                    <Text fontSize="lg" fontWeight="medium" lineClamp={2}>
-                                        {getLocalizedText(product, language, 'name')}
+                                <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">
+                                    <Box minH="48px" display="flex" alignItems="center">
+                                        <Text fontSize="lg" fontWeight="medium" lineClamp={2}>
+                                            {getLocalizedText(product, language, 'name')}
+                                        </Text>
+                                    </Box>
+                                    <Box flex="1" minH="72px">
+                                        <Text fontSize="sm" color="gray.500" lineClamp={2}>
+                                            {getLocalizedText(product, language, 'description')}
+                                        </Text>
+                                    </Box>
+                                    <Text textStyle="2xl" fontWeight="medium">
+                                        {product.price.toFixed(2)}
                                     </Text>
-                                </Box>
-                                <Box flex="1" minH="72px">
-                                    <Text fontSize="sm" color="gray.500" lineClamp={2}>
-                                        {getLocalizedText(product, language, 'description')}
-                                    </Text>
-                                </Box>
-                                <Text textStyle="2xl" fontWeight="medium" mt="auto" pt="2">
-                                    {product.price.toFixed(2)}
-                                </Text>
-                            </Card.Body>
-
-                            <Card.Footer gap="2" flexShrink={0} pt="4">
-                                <Button
-                                    variant="solid"
-                                    bg="#9CE94F"
-                                    color="gray.950"
-                                    onClick={() => addToCart(product.productId)}
-                                    flex="1"
-                                >
-                                    <LuShoppingCart /> {t('popularProducts.addToCart')}
-                                </Button>
-                                <Button
-                                    flex="1"
-                                    variant="ghost"
-                                    onClick={() => navigate(`/product/${product.productId}`)}
-                                >
-                                    {t('popularProducts.learnMoreLabel')}
-                                </Button>
-                            </Card.Footer>
-                        </Card.Root>
+                                    <Button
+                                        size="sm"
+                                        variant="solid"
+                                        bg="#9CE94F"
+                                        color="gray.950"
+                                        _hover={{ opacity: 0.7 }}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            addToCart(product.productId);
+                                        }}
+                                        width="full"
+                                    >
+                                        <LuShoppingCart /> {t('popularProducts.addToCart')}
+                                    </Button>
+                                </Card.Body>
+                            </Card.Root>
+                        </RouterLink>
                     </Box>
                 ))}
             </Flex>
