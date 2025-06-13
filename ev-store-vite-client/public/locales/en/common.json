@@ -33,5 +33,19 @@
         "aboutUs": "About Us",
         "catalog": "Catalog",
         "contactUs": "Contact Us"
+    },
+    "addToCart": "Add to Cart",
+    "addToCartSuccess": "Product added to cart successfully",
+    "addToCartError": "Error adding product to cart",
+    "breadcrumb": {
+        "catalog": "Catalog"
+    },
+    "slider": {
+        "title": "Popular Products",
+        "similarProducts": "Similar Products",
+        "seeAllLabel": "See All",
+        "addToCart": "Add to Cart",
+        "addToCartSuccess": "Product added to cart successfully",
+        "addToCartError": "Error adding product to cart"
     }
 }

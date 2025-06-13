@@ -14,5 +14,6 @@
     "noResultsSuggestions": "Try adjusting your search or filter options.",
     "noResultsSuggestions2": "You can also check our latest arrivals.",
     "addToCart": "Add to Cart",
-    "learnMore": "Learn More"
+    "addToCartSuccess": "Product added to cart successfully",
+    "addToCartError": "Error adding product to cart"
 }

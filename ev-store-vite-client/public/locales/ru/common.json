@@ -33,5 +33,19 @@
         "aboutUs": "О нас",
         "catalog": "Каталог",
         "contactUs": "Связаться с нами"
+    },
+    "addToCart": "Добавить",
+    "addToCartSuccess": "Товар успешно добавлен в корзину",
+    "addToCartError": "Ошибка добавления товара в корзину",
+    "breadcrumb": {
+        "catalog": "Каталог"
+    },
+    "slider": {
+        "title": "Популярные товары",
+        "similarProducts": "Похожие товары",
+        "seeAllLabel": "Смотреть все",
+        "addToCart": "Добавить",
+        "addToCartSuccess": "Товар успешно добавлен в корзину",
+        "addToCartError": "Ошибка добавления товара в корзину"
     }
 }

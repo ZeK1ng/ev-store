@@ -1,8 +1,6 @@
 import { Select, Portal, createListCollection } from '@chakra-ui/react'
 import { Language, useLanguage } from '@/contexts/LanguageContext'
 
-
-
 const LangSwitcher = () => {
   const { language, setLanguage } = useLanguage()
 
@@ -25,7 +23,6 @@ const LangSwitcher = () => {
       onValueChange={(e) => {
         const newLang = e.value[0] as Language;
         setLanguage(newLang);
-        localStorage.setItem('ev-language', newLang);
       }}
     >
       <Select.HiddenSelect />

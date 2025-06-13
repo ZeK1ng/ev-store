@@ -55,7 +55,7 @@ const PopularProductsSlider = ({
     isPopular = false
 }: PopularProductsSliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null)
-    const { t } = useTranslation('home')
+    const { t } = useTranslation('common')
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
@@ -119,18 +119,18 @@ const PopularProductsSlider = ({
             try {
                 await API.post(`/cart/add?productId=${productId}&quantity=1`)
                 toaster.success({
-                    title: t('popularProducts.addToCartSuccess')
+                    title: t('slider.addToCartSuccess')
                 })
             } catch (error) {
                 console.error('Error adding to cart:', error)
                 toaster.error({
-                    title: t('popularProducts.addToCartError')
+                    title: t('slider.addToCartError')
                 })
             }
         } else {
             addItemToCart(productId, 1)
             toaster.success({
-                title: t('popularProducts.addToCartSuccess')
+                title: t('slider.addToCartSuccess')
             })
         }
     }
@@ -151,7 +151,7 @@ const PopularProductsSlider = ({
         <Box py={12}>
             <Flex justify="space-between" align="center" mb={4}>
                 <Heading size={{ base: '2xl', md: '4xl' }} textAlign='left'>
-                    {isPopular ? t('popularProducts.title') : t('popularProducts.similarProducts')}
+                    {isPopular ? t('slider.title') : t('slider.similarProducts')}
                 </Heading>
                 {showScrollButtons && (
                     <Flex>
@@ -243,7 +243,7 @@ const PopularProductsSlider = ({
                                         }}
                                         width="full"
                                     >
-                                        <LuShoppingCart /> {t('popularProducts.addToCart')}
+                                        <LuShoppingCart /> {t('slider.addToCart')}
                                     </Button>
                                 </Card.Body>
                             </Card.Root>
@@ -264,7 +264,7 @@ const PopularProductsSlider = ({
                             }
                         }}
                     >
-                        {t('popularProducts.seeAllLabel')}
+                        {t('slider.seeAllLabel')}
                     </Button>
                 </Flex>
             )}

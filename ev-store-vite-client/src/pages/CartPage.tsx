@@ -335,6 +335,7 @@ const CartPage = () => {
                         {cartItems.length > 0 && cartItems.map((item, index) => (
                             <RouterLink
                                 to={`/product/${item.productId}`}
+                                key={index}
                                 style={{
                                     display: 'block',
                                     textDecoration: 'none'
@@ -342,7 +343,6 @@ const CartPage = () => {
                             >
 
                                 <Flex
-                                    key={index}
                                     align="flex-start"
                                     justify="space-between"
                                     flexDirection={{ base: 'column', md: 'row' }}
@@ -390,13 +390,13 @@ const CartPage = () => {
                                             >
                                                 <HStack gap="2">
                                                     <NumberInput.DecrementTrigger asChild>
-                                                        <IconButton variant="outline" size="sm">
+                                                        <IconButton variant="outline" size="sm" _hover={{ bg: 'gray.500', color: 'white' }} >
                                                             <LuMinus />
                                                         </IconButton>
                                                     </NumberInput.DecrementTrigger>
                                                     <NumberInput.ValueText textAlign="center" fontSize="lg" minW="3ch" />
                                                     <NumberInput.IncrementTrigger asChild>
-                                                        <IconButton variant="outline" size="sm">
+                                                        <IconButton variant="outline" size="sm" _hover={{ bg: 'gray.500', color: 'white' }}>
                                                             <LuPlus />
                                                         </IconButton>
                                                     </NumberInput.IncrementTrigger>
@@ -411,7 +411,12 @@ const CartPage = () => {
                                             size="sm"
                                             colorScheme="red"
                                             variant="outline"
-                                            onClick={() => removeItem(item.productId)}
+                                            _hover={{ bg: 'red.500', color: 'white' }}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                removeItem(item.productId);
+                                            }}
                                         >
                                             <FaTrash />
                                         </IconButton>

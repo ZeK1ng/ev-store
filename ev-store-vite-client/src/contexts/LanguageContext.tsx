@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export type Language = 'en' | 'ka' | 'ru';
 
@@ -22,14 +23,25 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  const [language, setLanguage] = useState<Language>(() => {
+  const { i18n } = useTranslation();
+  
+  const [language, setLanguageState] = useState<Language>(() => {
     const savedLang = localStorage.getItem('ev-language') as Language;
     return savedLang || 'en';
   });
 
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    i18n.changeLanguage(lang);
+    localStorage.setItem('ev-language', lang);
+  };
+
   useEffect(() => {
-    localStorage.setItem('ev-language', language);
-  }, [language]);
+    const savedLang = localStorage.getItem('ev-language') as Language;
+    if (savedLang && savedLang !== i18n.language) {
+      i18n.changeLanguage(savedLang);
+    }
+  }, []);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

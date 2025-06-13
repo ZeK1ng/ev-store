@@ -29,12 +29,6 @@
         "seeAllLabel": "ყველა პროდუქტი",
         "learnMoreLabel": "მეტი ინფორმაცია"
     },
-    "popularProducts": {
-        "title": "პოპულარული პროდუქტები",
-        "seeAllLabel": "ყველა პროდუქტი",
-        "learnMoreLabel": "დეტალურად",
-        "addToCart": "დამატება"
-    },
     "faq": {
         "title": "ხშირად დასმული კითხვები",
         "items": [

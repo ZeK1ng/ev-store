@@ -16,7 +16,7 @@ import {
     Breadcrumb,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { LuMinus, LuPlus } from 'react-icons/lu';
+import { LuMinus, LuPlus, LuShoppingCart } from 'react-icons/lu';
 import PopularProductsSlider from '@/components/homePage/PopularProductsSlider';
 import { useTranslation } from "react-i18next";
 import API from '@/utils/AxiosAPI';
@@ -31,12 +31,12 @@ interface FormValues {
     quantity: number;
 }
 
-  interface Category {
+interface Category {
     id: number;
     name: string;
     description: string;
     parentCategoryName: string;
-  }
+}
 
 interface Product {
     productId: number;
@@ -57,7 +57,7 @@ interface Product {
 }
 
 const ProductDetailsPage = () => {
-    const { t } = useTranslation('product');
+    const { t } = useTranslation('common');
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -220,9 +220,9 @@ const ProductDetailsPage = () => {
                         <Text>{getLocalizedText(product, language, 'description')}</Text>
 
                         <Field.Root>
-                            <NumberInput.Root 
+                            <NumberInput.Root
                                 value={String(quantity)}
-                                min={1} 
+                                min={1}
                                 step={1}
                                 onValueChange={(e) => setValue('quantity', Number(e.value))}
                             >
@@ -248,9 +248,9 @@ const ProductDetailsPage = () => {
                             color="gray.950"
                             size="lg"
                             onClick={handleAddToCart}
-                            disabled={product.stockAmount === 0}
+                            _hover={{ opacity: 0.7 }}
                         >
-                            {product.stockAmount === 0 ? t('details.outOfStock') : t('details.addToCart')}
+                            <LuShoppingCart /> {t('addToCart')}
                         </Button>
                     </Stack>
                 </Box>

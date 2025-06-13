@@ -286,13 +286,21 @@ const CatalogPage = () => {
                     title: t('addToCartSuccess')
                 })
             } catch (error) {
-                console.error('Error adding to cart:', error)
-                toaster.success({
-                    title: t('addToCartSuccess')
+                toaster.error({
+                    title: t('addToCartError')
                 })
             }
         } else {
-            addItemToCart(productId, 1)
+            try {
+                addItemToCart(productId, 1)
+                toaster.success({
+                    title: t('addToCartSuccess')
+                })
+            } catch (error) {
+                toaster.error({
+                    title: t('addToCartError')
+                })
+            }
         }
 
     }
