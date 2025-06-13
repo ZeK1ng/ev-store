@@ -470,7 +470,7 @@ const CatalogPage = () => {
                             <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
                                 {products.map((product) => (
                                     <Card.Root overflow="hidden" key={product.productId} w="100%" bg="whiteAlpha.100">
-                                        <CachedImage imageId={product.mainImageId} alt={product.nameENG} w="full" h="200px" objectFit="cover" shadow="sm" />
+                                        <CachedImage imageId={product.mainImageId} alt={product.nameENG} width="full" height="200px" objectFit="cover" shadow="sm" />
 
                                         <Card.Body gap="2">
                                             <Card.Title>{product.nameENG}</Card.Title>

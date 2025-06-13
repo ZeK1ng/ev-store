@@ -166,8 +166,8 @@ const ProductDetailsPage = () => {
                         imageId={activeImage || product.mainImageId}
                         alt={product.nameENG}
                         objectFit="cover"
-                        h={{ base: '300px', md: '400px' }}
-                        w="full"
+                        height={{ base: '300px', md: '400px' }}
+                        width="full"
                         borderRadius="md"
                     />
 

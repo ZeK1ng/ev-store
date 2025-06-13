@@ -4,7 +4,6 @@ import {
     Flex,
     Heading,
     Button,
-    Image,
     Text,
     Card,
     IconButton,
@@ -13,13 +12,12 @@ import {
 } from '@chakra-ui/react'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { LuShoppingCart } from 'react-icons/lu'
 import API from '@/utils/AxiosAPI';
 import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
-import { getImageUrl } from "@/utils/helpers";
 import CachedImage from "@/utils/CachedImage";
 
 interface Product {
@@ -198,7 +196,7 @@ const PopularProductsSlider = ({
                             bg="whiteAlpha.100"
                         >
                             <Box h="200px" flexShrink={0}>
-                                <CachedImage imageId={product.mainImageId} />
+                                <CachedImage imageId={product.mainImageId} width="100%" height="200px" objectFit="cover" />
                             </Box>
 
                             <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">

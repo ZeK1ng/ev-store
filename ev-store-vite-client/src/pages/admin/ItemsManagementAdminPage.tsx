@@ -458,7 +458,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </FileUpload.Root>
                         {existingItem && !isCreate && (
                             <Box mt={2}>
-                                <CachedImage imageId={existingItem.mainImageId} w="200px" borderRadius="md" />
+                                <CachedImage imageId={existingItem.mainImageId} width="200px" borderRadius="md" />
                             </Box>
                         )}
                     </Field.Root>

@@ -235,14 +235,7 @@ const ItemsAdminPage = () => {
                 <Stack gap={5}>
                     {filteredItems.length > 0 && filteredItems.map(item => (
                         <Card.Root key={item.productId} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
-                            <Image
-                                objectFit="cover"
-                                h="200px"
-                                w={{ base: '100%', md: '200px' }}
-                                src={getImageUrl(item.mainImageId)}
-                                shadow="sm"
-                                alt={item.nameENG}
-                            />
+                            <CachedImage imageId={item.mainImageId} alt={item.nameENG} width="100%" aspectRatio="1" borderRadius="md" />
                             <Box flex="1">
                                 <Card.Body>
                                     <Card.Title mb="2" fontSize={{ base: 'lg', md: 'xl' }}>{item.nameENG}</Card.Title>
