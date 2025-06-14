@@ -31,12 +31,13 @@ import {
     Drawer,
     CloseButton,
     Badge,
-    useMediaQuery
+    useMediaQuery,
+    InputGroup
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
 import { Link as RouterLink } from 'react-router-dom';
-import { LuShoppingCart, LuPackageSearch, LuStar } from "react-icons/lu";
+import { LuShoppingCart, LuPackageSearch, LuStar, LuSearch } from "react-icons/lu";
 import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
@@ -186,7 +187,7 @@ const CatalogPage = () => {
         Number(searchParams.get('maxPrice')) || 0
     ])
     const [sliderRange, setSliderRange] = useState<number[]>([0, 0])
-    const [sortDirection, setSortDirection] = useState(searchParams.get('sort') || 'asc')
+    const [sortDirection, setSortDirection] = useState(searchParams.get('sort') || 'desc')
     const [page, setPage] = useState(Number(searchParams.get('page')) || 0)
     const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
 
@@ -329,18 +330,18 @@ const CatalogPage = () => {
 
     return (
         <Box p={{ base: 4, md: 8 }}>
-            <Heading size="lg" mb="6">
-                {t('title')}
-            </Heading>
-
             <Flex direction={{ base: "column", md: "row" }} align="start" gap="8" >
                 <Box bg="bg.muted" borderRadius="md" minW="260px" w="100%" maxW="320px" p={4} flex="1" display={{ base: "none", md: "block" }}>
-                    <Text fontWeight="bold" fontSize="xl" mb="4">
+                    <Text fontWeight="bold" fontSize="lg" mb="4" color="gray.500">
+                        {t('filtersTitle')} ({totalProducts})
+                    </Text>
+
+                    <Text fontWeight="bold" fontSize="md" mb="4">
                         {t('priceFilterTitle')}
                     </Text>
                     <Box>
                         <Slider.Root
-                            px={4}
+                            px={2}
                             min={sliderRange[0]}
                             max={sliderRange[1]}
                             value={selRange}
@@ -348,8 +349,8 @@ const CatalogPage = () => {
                             onValueChange={(e) => setSelRange(e.value)}>
                             <Slider.ValueText>
                                 <HStack justify="space-between">
-                                    <Text fontSize="sm">{selRange[0]}</Text>
-                                    <Text fontSize="sm">{selRange[1]}</Text>
+                                    <Text fontSize="sm">{selRange[0]} ₾</Text>
+                                    <Text fontSize="sm">{selRange[1]} ₾</Text>
                                 </HStack>
                             </Slider.ValueText>
                             <Slider.Control>
@@ -361,7 +362,7 @@ const CatalogPage = () => {
                         </Slider.Root>
                     </Box>
 
-                    <Text fontWeight="bold" fontSize="xl" my="4">
+                    <Text fontWeight="bold" fontSize="md" my="4">
                         {t('categoryFilterTitle')}
                     </Text>
                     <Box overflowY="auto">
@@ -396,18 +397,19 @@ const CatalogPage = () => {
                 <Box flex="1" w="100%">
                     <Flex direction={{ base: "column", md: "row" }} justify="space-between" align="center" gap="4" mb="6">
                         <Field.Root flex="1" maxW={{ base: "100%", md: "400px" }}>
-                            <Field.Label>
-                                {t('searchLabel')}
-                            </Field.Label>
-                            <Input
-                                placeholder={t('searchPlaceholder')}
-                                size="md"
-                                onChange={e => {
-                                    setSearch(e.target.value);
-                                    setPage(0);
-                                }}
-                                value={search}
-                            />
+                            <InputGroup startElement={<LuSearch />}>
+                                <Input
+
+                                    placeholder={t('searchPlaceholder')}
+                                    size="md"
+                                    onChange={e => {
+                                        setSearch(e.target.value);
+                                        setPage(0);
+                                    }}
+                                    value={search}
+                                />
+                            </InputGroup>
+
                         </Field.Root>
                         <Field.Root w={{ base: "100%", md: "250px" }}>
                             <Field.Label>
@@ -429,7 +431,7 @@ const CatalogPage = () => {
                                 <Select.HiddenSelect />
                                 <Select.Control>
                                     <Select.Trigger>
-                                        <Select.ValueText placeholder="Select category" />
+                                        <Select.ValueText />
                                     </Select.Trigger>
                                     <Select.IndicatorGroup>
                                         <Select.Indicator />
@@ -548,23 +550,12 @@ const CatalogPage = () => {
                                     <EmptyState.Title>
                                         {t('noResultsTitle')}
                                     </EmptyState.Title>
-                                    <EmptyState.Description>
-                                        {t('noResultsDescription')}
-                                    </EmptyState.Description>
                                 </VStack>
-                                <List.Root variant="marker">
-                                    <List.Item>
-                                        {t('noResultsSuggestions')}
-                                    </List.Item>
-                                    <List.Item>
-                                        {t('noResultsSuggestions2')}
-                                    </List.Item>
-                                </List.Root>
                             </EmptyState.Content>
                         </EmptyState.Root>
                     ) : (
                         <>
-                            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={{base: 2, md: 4, lg: 6}}>
+                            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={{ base: 2, md: 4, lg: 6 }}>
                                 {products.map((product) => (
                                     <Box key={product.productId}>
                                         <RouterLink
@@ -593,16 +584,16 @@ const CatalogPage = () => {
 
                                                 <Card.Body gap="1" p={4}>
                                                     <Card.Title lineClamp={1}>{getLocalizedText(product, language, 'name')}</Card.Title>
-                                                        <HStack gap={2}>
-                                                            <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{product.categoryName}</Badge>
-                                                            {
-                                                                product.isPopular && (
-                                                                    <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="green">
-                                                                        <LuStar /> {t('popular')}
-                                                                    </Badge>
-                                                                )
-                                                            }
-                                                        </HStack>
+                                                    <HStack gap={2}>
+                                                        <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{product.categoryName}</Badge>
+                                                        {
+                                                            product.isPopular && (
+                                                                <Badge size="sm" p={2} borderRadius="md" textAlign="center" bg="#C9ECAA" color="green.800">
+                                                                    <LuStar /> {t('popular')}
+                                                                </Badge>
+                                                            )
+                                                        }
+                                                    </HStack>
                                                     <Text textStyle="2xl" fontWeight="medium">
                                                         {product.price.toFixed(2)} ₾
                                                     </Text>

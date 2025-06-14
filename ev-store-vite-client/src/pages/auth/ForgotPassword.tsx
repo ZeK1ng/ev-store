@@ -133,10 +133,10 @@ const ForgotPasswordPage = () => {
                         {t('forgotPassword.verifyPin.title')}
                     </Heading>
                     <Text mb={6}>
-                        {t('forgotPassword.verifyPin.description')}
+                        {t('forgotPassword.verifyPin.description').replace('{email}', email)}
                     </Text>
 
-                    <PinInput.Root mb={4} size="lg"
+                    <PinInput.Root mb={4}
                         otp onValueComplete={(details) => setVerificationPin(details.valueAsString)}>
                         <PinInput.HiddenInput />
                         <PinInput.Control>
@@ -183,16 +183,10 @@ const ForgotPasswordPage = () => {
                     <Heading mb={4}>
                         {t('forgotPassword.newPassword.title')}
                     </Heading>
-                    <Text mb={6}>
-                        {t('forgotPassword.newPassword.description')}
-                    </Text>
 
                     <Box as="form" width="full" onSubmit={handleSubmitNewPassword(onNewPwdSubmit)}>
                         <Stack gap={5}>
                             <Field.Root id="new-password" invalid={!!errorsNewPassword.newPassword}>
-                                <Field.Label fontWeight="medium" fontSize="sm">
-                                    {t('forgotPassword.newPassword.label')}
-                                </Field.Label>
                                 <InputGroup startElement={<LuKeyRound />}>
                                     <PasswordInput
                                         size="lg"
@@ -207,9 +201,6 @@ const ForgotPasswordPage = () => {
                             </Field.Root>
 
                             <Field.Root id="confirm-password" invalid={!!errorsNewPassword.confirmPassword}>
-                                <Field.Label fontWeight="medium" fontSize="sm">
-                                    {t('forgotPassword.newPassword.confirmLabel')}
-                                </Field.Label>
                                 <InputGroup startElement={<LuKeyRound />}>
                                     <PasswordInput
                                         size="lg"
@@ -255,7 +246,7 @@ const ForgotPasswordPage = () => {
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
                 <Container maxW="lg" width="full" bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" py={{ base: 6, md: 8 }}>
-                    <Stack gap={8}>
+                    <Stack gap={6}>
                         <Stack gap={2}>
                             <Heading as="h1" size="xl" fontWeight="bold">
                                 {t('forgotPassword.title')}
@@ -268,9 +259,6 @@ const ForgotPasswordPage = () => {
                         <Box as="form" onSubmit={handleSubmit(onSubmit)} width="full">
                             <Stack gap={5}>
                                 <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('forgotPassword.email')}
-                                    </Field.Label>
                                     <InputGroup startElement={<LuMail />}>
                                         <Input
                                             size="lg"

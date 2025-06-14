@@ -238,7 +238,7 @@ const ProductDetailsPage = () => {
                                 </Badge>
                                 {
                                     product.isPopular && (
-                                        <Badge size="lg" p={2} borderRadius="md" colorPalette="green" w="max-content">
+                                        <Badge size="lg" p={2} borderRadius="md" bg="#C9ECAA" color="green.800" w="max-content">
                                             <LuStar /> {t('popular')}
                                         </Badge>
                                     )
@@ -263,7 +263,7 @@ const ProductDetailsPage = () => {
                             <LuCopy /> code: {product.itemCode}
                         </IconButton>
 
-                        <Text fontSize="2xl" fontWeight="bold" color="green.500">
+                        <Text fontSize="2xl" fontWeight="bold">
                             {product.price} ₾
                         </Text>
                         <Text whiteSpace="pre-wrap">{getLocalizedText(product, language, 'description')}</Text>
@@ -276,7 +276,7 @@ const ProductDetailsPage = () => {
                                             variant="surface"
                                             size="sm"
                                             width="max-content"
-                                            colorPalette="green"
+                                            colorPalette="red"
                                         >
                                             <HStack gap={2}>
                                                 <LuYoutube />

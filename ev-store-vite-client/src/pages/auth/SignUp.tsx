@@ -141,10 +141,10 @@ const SignupPage = () => {
                         {t('signup.verify.title')}
                     </Heading>
                     <Text mb={2}>
-                        {t('signup.verify.description')}
+                        {t('signup.verify.description').replace('{email}', formValues?.email || '')}
                     </Text>
 
-                    <PinInput.Root mb={4} size="lg"
+                    <PinInput.Root mb={4}
                         otp onValueComplete={(details) => setVerificationPin(details.valueAsString)}>
                         <PinInput.HiddenInput />
                         <PinInput.Control>
@@ -190,9 +190,6 @@ const SignupPage = () => {
                             <Heading as="h1" size="xl" fontWeight="bold">
                                 {t('signup.title')}
                             </Heading>
-                            <Text>
-                                {t('signup.description')}
-                            </Text>
                         </Stack>
 
                         <Box as="form" onSubmit={handleSubmit(onSubmit)} width="full">
@@ -200,9 +197,6 @@ const SignupPage = () => {
                                 <Flex gap={4}>
                                     <Box flex={1}>
                                         <Field.Root id="firstName" invalid={!!errors.firstName}>
-                                            <Field.Label fontWeight="medium" fontSize="sm">
-                                                {t('signup.firstName')}
-                                            </Field.Label>
                                             <InputGroup startElement={<LuUser />}>
                                                 <Input
                                                     size="lg"
@@ -216,9 +210,6 @@ const SignupPage = () => {
                                     </Box>
                                     <Box flex={1}>
                                         <Field.Root id="lastName" invalid={!!errors.lastName}>
-                                            <Field.Label fontWeight="medium" fontSize="sm">
-                                                {t('signup.lastName')}
-                                            </Field.Label>
                                             <InputGroup startElement={<LuUser />}>
                                                 <Input
                                                     size="lg"
@@ -234,9 +225,6 @@ const SignupPage = () => {
 
 
                                 <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('signup.email')}
-                                    </Field.Label>
                                     <InputGroup startElement={<LuMail />}>
                                         <Input
                                             size="lg"
@@ -251,9 +239,6 @@ const SignupPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="phone" invalid={!!errors.phone}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('signup.phone')}
-                                    </Field.Label>
                                     <InputGroup startElement={<LuPhone />}>
                                         <Input
                                             size="lg"
@@ -281,14 +266,8 @@ const SignupPage = () => {
                                         <Accordion.ItemContent>
                                             <Accordion.ItemBody>
                                                 <Separator />
-                                                <Stack gap={2} p={2}>
-                                                    <Text fontSize="sm" color="fg.muted">
-                                                        {t('signup.address.description')}
-                                                    </Text>
+                                                <Stack gap={4} p={4} pb={0}>
                                                     <Field.Root id="city" invalid={false}>
-                                                        <Field.Label fontWeight="medium" fontSize="sm">
-                                                            {t('signup.address.city')}
-                                                        </Field.Label>
                                                         <InputGroup >
                                                             <Input
                                                                 size="lg"
@@ -298,11 +277,7 @@ const SignupPage = () => {
                                                             />
                                                         </InputGroup>
                                                     </Field.Root>
-
                                                     <Field.Root id="address" invalid={false}>
-                                                        <Field.Label fontWeight="medium" fontSize="sm">
-                                                            {t('signup.address.address')}
-                                                        </Field.Label>
                                                         <InputGroup>
                                                             <Input
                                                                 size="lg"
@@ -319,9 +294,6 @@ const SignupPage = () => {
                                 </Accordion.Root>
 
                                 <Field.Root id="password" invalid={!!errors.password}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('signup.password')}
-                                    </Field.Label>
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
                                             size="lg"
@@ -336,9 +308,6 @@ const SignupPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="confirmPassword" invalid={!!errors.confirmPassword}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('signup.confirmPassword')}
-                                    </Field.Label>
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
                                             placeholder={t('signup.confirmPasswordPlaceholder')}
@@ -356,7 +325,7 @@ const SignupPage = () => {
                                     <Alert.Indicator />
                                     <Alert.Title>{apiError}</Alert.Title>
                                 </Alert.Root>}
-                                <Button 
+                                <Button
                                     type="submit"
                                     width="full"
                                     size="lg"

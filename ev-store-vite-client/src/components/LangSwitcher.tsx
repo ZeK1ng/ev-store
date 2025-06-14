@@ -6,19 +6,18 @@ const LangSwitcher = () => {
 
   const langs = createListCollection({
     items: [
-      { label: "ქართული", value: "ka" },
-      { label: "English", value: "en" },
-      { label: "Русский", value: "ru" },
+      { label: "GEO", value: "ka" },
+      { label: "ENG", value: "en" },
+      { label: "RUS", value: "ru" },
     ],
   })
-  
 
   return (
     <Select.Root
       collection={langs}
       size={{ base: "lg", md: "xs" }}
       value={[language]}
-      width={{ base: "100%", md: "120px" }}
+      width={{ base: "100%", md: "70px" }}
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
         const newLang = e.value[0] as Language;
@@ -28,7 +27,7 @@ const LangSwitcher = () => {
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger>
-          <Select.ValueText placeholder="Select Lang" />
+          <Select.ValueText />
         </Select.Trigger>
         <Select.IndicatorGroup>
           <Select.Indicator />

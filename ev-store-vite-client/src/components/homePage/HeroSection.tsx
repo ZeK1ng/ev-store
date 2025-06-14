@@ -5,60 +5,73 @@ import {
     Text,
     Button,
     Image,
-    useBreakpointValue,
+    Container,
+    Highlight,
 } from '@chakra-ui/react'
-import { FaArrowRight } from 'react-icons/fa'
+import { LuArrowRight } from 'react-icons/lu'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 const HeroSection = () => {
-    const isMd = useBreakpointValue({ base: false, md: true })
     const { t } = useTranslation('home')
+    const navigate = useNavigate()
 
     return (
-        <Flex
-            direction={{ base: 'column', md: 'row' }}
-            align="center"
-            gap={{ base: 8, md: 0 }}
-        >
-            <Box flex={1} textAlign={{ base: 'center', md: 'left' }}>
-                <Heading size={{ base: '3xl', md: '5xl' }} mb={4}>
-                    {t('hero.title')}
-                </Heading>
-                <Text fontSize="2xl" mb={6}>
-                    {t('hero.description')}
-                </Text>
-                <Button size="lg">
-                    {t('hero.buttonLabel')} <FaArrowRight />
-                </Button>
-            </Box>
-
-            <Flex flex={1} justify="center" align="center" position="relative">
-                {isMd && (
-                    <>
+        <Box as="section" py={12}>
+            <Container maxW="container.xl" px={0}>
+                <Flex
+                    direction={{ base: 'column', md: 'row' }}
+                    align="center"
+                    justify="space-between"
+                    gap={8}
+                >
+                    <Box flex="1" textAlign={{ base: 'center', md: 'left' }}>
+                        <Heading
+                            as="h1"
+                            size="4xl"
+                            mb={6}
+                            fontWeight="bold"
+                            fontFamily="heading"
+                        >
+                            <Highlight
+                                query={['ელექტრომობილების']}
+                                styles={{ px: "0.5", bg: "#9CE94F", color: "white" }}
+                            >
+                                {t('hero.title')}
+                            </Highlight>
+                        </Heading>
+                        <Text
+                            fontSize="xl"
+                            color="gray.600"
+                            mb={8}
+                            maxW="600px"
+                            mx={{ base: 'auto', md: '0' }}
+                        >
+                            {t('hero.description')}
+                        </Text>
+                        <Button
+                            size="lg"
+                            onClick={() => navigate('/catalog')}
+                        >
+                            {t('hero.catalogButton')}
+                            <Box as="span">
+                                <LuArrowRight />
+                            </Box>
+                        </Button>
+                    </Box>
+                    <Box flex="1" display="flex" justifyContent="center">
                         <Image
-                            src="https://placehold.co/300x250"
-                            alt="Feature"
-                            borderRadius="md"
-                            position="absolute"
-                            bottom="0"
-                            left="100px"
+                            src="https://plus.unsplash.com/premium_photo-1715639312136-56a01f236440?q=80&w=3840&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            maxW="100%"
+                            h="auto"
+                            borderRadius="xl"
+                            boxShadow="2xl"
                             objectFit="cover"
                         />
-                        <Image
-                            src="https://placehold.co/400x300"
-                            alt="Feature"
-                            borderRadius="md"
-                            position="absolute"
-                            top="-100px"
-                            right="0"
-                            objectFit="cover"
-                            zIndex="1"
-                        />
-
-                    </>
-                )}
-            </Flex>
-        </Flex>
+                    </Box>
+                </Flex>
+            </Container>
+        </Box>
     )
 }
 

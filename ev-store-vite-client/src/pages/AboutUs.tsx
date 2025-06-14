@@ -1,6 +1,5 @@
 import {
     Box,
-    Breadcrumb,
     Flex,
     Heading,
     Text,
@@ -9,7 +8,6 @@ import {
     Icon,
     Center
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import { FaBolt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next'
 
@@ -17,18 +15,6 @@ const AboutUs = () => {
     const { t } = useTranslation('about');
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
-            <Breadcrumb.Root mb={4}>
-                <Breadcrumb.List>
-                    <Breadcrumb.Item>
-                        <Link to="/">{t('breadcrumb.home')}</Link>
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Separator />
-                    <Breadcrumb.Item >
-                        <Breadcrumb.CurrentLink>{t('breadcrumb.current')}</Breadcrumb.CurrentLink>
-                    </Breadcrumb.Item>
-                </Breadcrumb.List>
-            </Breadcrumb.Root>
-
             <Flex
                 direction={{ base: 'column', md: 'row' }}
                 align="center"

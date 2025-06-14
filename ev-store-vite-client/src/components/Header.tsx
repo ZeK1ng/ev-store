@@ -71,9 +71,6 @@ const Header = () => {
                     <RouterLink to="/catalog">
                         {t('header.catalog')}
                     </RouterLink>
-                    <RouterLink to="/about-us">
-                        {t('header.aboutUs')}
-                    </RouterLink>
                     <RouterLink to="/contact-us">
                         {t('header.contact')}
                     </RouterLink>
@@ -191,10 +188,6 @@ const Header = () => {
                                                         {t('header.catalog')}
                                                     </RouterLink>
                                                     <Separator />
-                                                    <RouterLink to="/about-us" onClick={() => store.setOpen(false)}>
-                                                        {t('header.aboutUs')}
-                                                    </RouterLink>
-                                                    <Separator />
                                                     <RouterLink to="/contact-us" onClick={() => store.setOpen(false)}>
                                                         {t('header.contact')}
                                                     </RouterLink>
@@ -247,7 +240,6 @@ const Header = () => {
                                                             </Button>
                                                         )
                                                     }
-
                                                     <LangSwitcher />
                                                 </VStack>
                                             </Drawer.Body>

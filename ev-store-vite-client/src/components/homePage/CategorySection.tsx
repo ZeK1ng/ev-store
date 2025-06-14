@@ -77,7 +77,6 @@ const CategorySection = ({ category, showSubcategories = 4 }: CategorySectionPro
                   <Icon
                     as={getCategoryIcon(subcategory.name, category.name)}
                     boxSize={8}
-                    color="#9CE94F"
                   />
                   <Heading as="h3" size="md" textAlign="left">
                     {subcategory.name}

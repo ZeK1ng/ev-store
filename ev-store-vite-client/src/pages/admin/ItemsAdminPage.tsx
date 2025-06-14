@@ -153,7 +153,7 @@ const ItemsAdminPage = () => {
     }
 
     return (
-        <Box p={8} maxW="800px" mx="auto" h="100dvh">
+        <Box p={8} maxW="800px" mx="auto">
             {apiError && (
                 <Alert.Root status="error" mb={4}>
                     <Alert.Indicator />
@@ -234,7 +234,7 @@ const ItemsAdminPage = () => {
                     </EmptyState.Content>
                 </EmptyState.Root>
             ) : (
-                <Stack gap={5}>
+                <Stack gap={5} >
                     {filteredItems.length > 0 && filteredItems.map(item => (
                         <Card.Root key={item.productId} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
                             <CachedImage 
@@ -493,7 +493,6 @@ const ItemsAdminPage = () => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                 setCurrentPage(details.page - 1);
                             }}
-                            mt="6"
                             justifySelf="center"
                         >
                             <ButtonGroup variant="ghost" size="sm">

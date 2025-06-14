@@ -162,7 +162,7 @@ const PopularProductsSlider = ({
         <Box py={hidePandings ? 0 : 12}>
             <Flex justify={hideTitle && showScrollButtons ? 'flex-end' : 'space-between'} align="center">
                 {!hideTitle && (
-                    <Heading size={{ base: '2xl', md: '4xl' }} textAlign='left' mt={12}>
+                    <Heading size={{ base: 'xl', md: '2xl' }} textAlign='left' mt={12}>
                         {isPopular ? t('slider.title') : t('slider.similarProducts')}
                     </Heading>
                 )}

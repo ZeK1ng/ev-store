@@ -149,7 +149,7 @@ const ProfilePage = () => {
                 py={{ base: 8, md: 12 }}
                 px={{ base: 6, sm: 8, md: 12, lg: 16 }}
             >
-                <Box bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" p={6} maxW="800px" w="full" h="max-content">
+                <Box bg="whiteAlpha.50" borderRadius="lg" shadow="2xl" p={6} maxW="768px" w="full" h="max-content">
                     <Heading textAlign="center" mb={6}>{t('profile.title')}</Heading>
                     <Separator mb={6} />
                     <Stack gap={4}>
@@ -234,6 +234,8 @@ const ProfilePage = () => {
                             size="lg"
                             mt={4}
                             w="full"
+                            bg="#9CE94F"
+                            color="gray.950"
                             onClick={handleSave}
                             disabled={!isDirty || updateLoading}
                             loading={updateLoading}

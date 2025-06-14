@@ -22,7 +22,6 @@ import {
     ButtonGroup,
     Spinner,
     Center,
-    FormatNumber,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
@@ -328,10 +327,6 @@ const CartPage = () => {
 
             <Flex direction={{ base: 'column', lg: 'row' }} gap={8}>
                 <Box flex={2} borderRadius="md" border="xs" borderColor="border.emphasized" p={6} h="max-content">
-                    <Heading size="lg" mb={4}>
-                        {t('cart.title')}
-                    </Heading>
-
                     <Stack gap={4}>
                         {cartItems.length > 0 && cartItems.map((item, index) => (
                             <RouterLink
@@ -354,7 +349,6 @@ const CartPage = () => {
                                     cursor="pointer"
                                 >
                                     <HStack gap={4} align="center">
-
                                         <Box
                                             display="flex"
                                             alignItems="center"
@@ -366,6 +360,10 @@ const CartPage = () => {
                                             <CachedImage
                                                 imageId={item.mainImageId}
                                                 alt={getLocalizedText(item, language, 'name')}
+                                                minW="80px"
+                                                minH="80px"
+                                                maxW="80px"
+                                                maxH="80px"
                                                 width="80px"
                                                 height="80px"
                                                 objectFit="cover"
@@ -502,9 +500,6 @@ const CartPage = () => {
                             {!AuthController.isLoggedIn() && (
                                 <>
                                     <Field.Root id="name" invalid={!!errors.name}>
-                                        <Field.Label>
-                                            {t('reservation.name')} *
-                                        </Field.Label>
                                         <Input
                                             placeholder={t('reservation.namePlaceholder')}
                                             {...register('name', { required: t('reservation.nameError') })}
@@ -514,9 +509,6 @@ const CartPage = () => {
                                         )}
                                     </Field.Root>
                                     <Field.Root id="email" invalid={!!errors.email}>
-                                        <Field.Label>
-                                            {t('reservation.email')} *
-                                        </Field.Label>
                                         <Input
                                             placeholder={t('reservation.emailPlaceholder')}
                                             type="email"
@@ -532,9 +524,6 @@ const CartPage = () => {
                             )}
 
                             <Field.Root id="mobile" invalid={!!errors.mobile}>
-                                <Field.Label>
-                                    {t('reservation.mobile')} *
-                                </Field.Label>
                                 <Input
                                     defaultValue={userData?.mobile || ''}
                                     placeholder={t('reservation.mobilePlaceholder')}
@@ -546,9 +535,6 @@ const CartPage = () => {
                             </Field.Root>
 
                             <Field.Root id="city" invalid={!!errors.city}>
-                                <Field.Label>
-                                    {t('reservation.city')} *
-                                </Field.Label>
                                 <Input
                                     defaultValue={userData?.city || ''}
                                     placeholder={t('reservation.cityPlaceholder')}
@@ -560,9 +546,6 @@ const CartPage = () => {
                             </Field.Root>
 
                             <Field.Root id="address" invalid={!!errors.address}>
-                                <Field.Label>
-                                    {t('reservation.address')} *
-                                </Field.Label>
                                 <Input
                                     defaultValue={userData?.address || ''}
                                     placeholder={t('reservation.addressPlaceholder')}
@@ -574,9 +557,6 @@ const CartPage = () => {
                             </Field.Root>
 
                             <Field.Root id="specialInstructions" invalid={false}>
-                                <Field.Label>
-                                    {t('reservation.specialRequests')}
-                                </Field.Label>
                                 <Textarea
                                     placeholder={t('reservation.specialRequestsPlaceholder')}
                                     {...register('specialInstructions')}

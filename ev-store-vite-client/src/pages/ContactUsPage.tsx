@@ -25,15 +25,10 @@ const ContactUsPage = () => {
   return (
     <Box py={{ base: 8, md: 12 }}>
       <Container maxW="container.lg">
-        <Heading as="h1" size="xl" textAlign="center" mb={4}>
+        <Heading as="h1" size="2xl" textAlign="center" mb={12}>
           {t('contact.title')}
         </Heading>
-        <Text fontSize="lg" textAlign="center" mb={6}>
-          {t('contact.description')}
-        </Text>
-
         <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
-          {/* Phone Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
               <Center mb={4}>
@@ -62,7 +57,6 @@ const ContactUsPage = () => {
             </VStack>
           </Box>
 
-          {/* Email Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
               <Center mb={4}>
@@ -90,7 +84,6 @@ const ContactUsPage = () => {
             </VStack>
           </Box>
 
-          {/* Address Card */}
           <Box p={6} textAlign="center" bg="whiteAlpha.200" borderRadius="lg" shadow="md">
             <VStack gap={4}>
               <Center mb={4}>
@@ -120,9 +113,6 @@ const ContactUsPage = () => {
         </SimpleGrid>
 
         <Box borderRadius="lg" overflow="hidden">
-          <Heading size="md" p={6}>
-            {t('contact.mapTitle')}
-          </Heading>
           <iframe
             src={googleMapsEmbedUrl}
             width="100%"
