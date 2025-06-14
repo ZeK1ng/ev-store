@@ -45,14 +45,17 @@ const Footer = () => {
                         <Heading size="sm" fontWeight="bold">
                             {t('footer.quickLinks')}
                         </Heading>
-                        <Link color="white" to={t('footer.category1url')}>
+                        <Link color="white" to={t('footer.category1url')} target='_blank'>
                             {t('footer.category1name')}
                         </Link>
-                        <Link color="white" to={t('footer.category2url')}>
+                        <Link color="white" to={t('footer.category2url')} target='_blank'>
                             {t('footer.category2name')}
                         </Link>
-                        <Link color="white" to={t('footer.category3url')}>
+                        <Link color="white" to={t('footer.category3url')} target='_blank'>
                             {t('footer.category3name')}
+                        </Link>
+                        <Link color="white" to={t('footer.category4url')} target='_blank'>
+                            {t('footer.category4name')}
                         </Link>
                     </VStack>
 

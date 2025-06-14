@@ -125,7 +125,6 @@ const CategoryTree = ({
                                 onChange={() => onCategorySelect(category.id)}
                                 checked={selectedCategories.includes(category.id)}
                                 variant="solid"
-                                colorPalette="green"
                             >
                                 <Checkbox.HiddenInput />
                                 <Checkbox.Control />
@@ -354,7 +353,7 @@ const CatalogPage = () => {
                             </Slider.ValueText>
                             <Slider.Control>
                                 <Slider.Track>
-                                    <Slider.Range bg="#9CE94F" />
+                                    <Slider.Range />
                                 </Slider.Track>
                                 <Slider.Thumbs />
                             </Slider.Control>
@@ -491,7 +490,7 @@ const CatalogPage = () => {
                                                         </Slider.ValueText>
                                                         <Slider.Control>
                                                             <Slider.Track>
-                                                                <Slider.Range bg="#9CE94F" />
+                                                                <Slider.Range />
                                                             </Slider.Track>
                                                             <Slider.Thumbs />
                                                         </Slider.Control>
