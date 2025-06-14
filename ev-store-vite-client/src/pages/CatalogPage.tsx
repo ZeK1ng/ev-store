@@ -30,7 +30,8 @@ import {
     Spinner,
     Drawer,
     CloseButton,
-    Badge
+    Badge,
+    useMediaQuery
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
@@ -189,7 +190,7 @@ const CatalogPage = () => {
     const [page, setPage] = useState(Number(searchParams.get('page')) || 0)
     const [expandedCats, setExpandedCats] = useState<Set<number>>(new Set())
 
-    const pageSize = 10
+    const pageSize = useMediaQuery(['(min-width: 992px)'])[0] ? 9 : 6
 
     const updateUrlParams = (updates: Record<string, string | number | boolean | null>) => {
         const newParams = new URLSearchParams(searchParams);
@@ -273,6 +274,7 @@ const CatalogPage = () => {
                 console.error('Error fetching products:', error);
             } finally {
                 setLoading(false);
+                window.scrollTo(0, 0);
             }
         };
 
@@ -407,7 +409,7 @@ const CatalogPage = () => {
                                 value={search}
                             />
                         </Field.Root>
-                        <Field.Root w={{ base: "100%", sm: "250px" }}>
+                        <Field.Root w={{ base: "100%", md: "250px" }}>
                             <Field.Label>
                                 {t('sortByLabel')}
                             </Field.Label>
@@ -562,7 +564,7 @@ const CatalogPage = () => {
                         </EmptyState.Root>
                     ) : (
                         <>
-                            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap="6">
+                            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={{base: 2, md: 4, lg: 6}}>
                                 {products.map((product) => (
                                     <Box key={product.productId}>
                                         <RouterLink
@@ -588,9 +590,8 @@ const CatalogPage = () => {
                                                     shadow="sm"
                                                 />
 
-                                                <Card.Body gap="2">
+                                                <Card.Body gap="1" p={4}>
                                                     <Card.Title>{getLocalizedText(product, language, 'name')}</Card.Title>
-                                                    <Card.Description >
                                                         <HStack gap={2}>
                                                             <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{product.categoryName}</Badge>
                                                             {
@@ -601,7 +602,6 @@ const CatalogPage = () => {
                                                                 )
                                                             }
                                                         </HStack>
-                                                    </Card.Description>
                                                     <Text textStyle="2xl" fontWeight="medium">
                                                         {product.price.toFixed(2)}
                                                     </Text>

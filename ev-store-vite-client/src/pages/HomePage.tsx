@@ -1,95 +1,53 @@
 import { Box } from '@chakra-ui/react'
 import HeroSection from '@/components/homePage/HeroSection'
-import FeaturesSection from '@/components/homePage/FeaturesSection'
-import FeaturedIChargersSection, { FeaturedItem } from '@/components/homePage/FeaturedChargersSection'
-import FeaturedOBDSection, { FeaturedOBDItem } from '@/components/homePage/FeaturedOBDSection'
-import PopularProductsSlider from '@/components/homePage/PopularProductsSlider'
+import CategorySection from '@/components/homePage/CategorySection'
 import FAQSection from '@/components/homePage/FAQSection'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useState } from 'react'
+import API from '@/utils/AxiosAPI'
+import PopularProductsSlider from '@/components/homePage/PopularProductsSlider'
 
-const dummyDataCharger: [FeaturedItem, FeaturedItem, FeaturedItem, FeaturedItem] = [
-  {
-    id: '1',
-    title: 'EV adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/150x150',
-  },
-  {
-    id: '2',
-    title: 'EV adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/120x120',
-  },
-  {
-    id: '3',
-    title: 'EV adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/120x120',
-  },
-  {
-    id: '4',
-    title: 'EV adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/150x150',
-  },
-]
-
-const dummyDataOBD: [FeaturedOBDItem, FeaturedOBDItem, FeaturedOBDItem, FeaturedOBDItem, FeaturedOBDItem] = [
-  {
-    id: '1',
-    title: 'OBD adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/150x150',
-  },
-  {
-    id: '2',
-    title: 'OBD adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/120x120',
-  },
-  {
-    id: '3',
-    title: 'OBD adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/120x120',
-  },
-  {
-    id: '4',
-    title: 'OBD adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/150x150',
-  },
-  {
-    id: '5',
-    title: 'OBD adapters',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-    imageUrl: 'https://placehold.co/150x150',
-  },
-]
-
+interface Category {
+  id: number
+  name: string
+  description: string
+  children: Category[]
+}
 
 const HomePage = () => {
   const { t } = useTranslation('home')
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await API.get('/category/all')
+        const data = response.data
+        setCategories(data)
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      }
+    }
+
+    fetchCategories()
+  }, [])
 
   return (
-    <Box textAlign="center">
+    <Box textAlign="center" p={{ base: 4, md: 8 }}>
       <HeroSection />
-      <FeaturesSection />
-      <FeaturedIChargersSection
-        title={t('featuredEVItems.title')}
-        seeAllLabel={t('featuredEVItems.seeAllLabel')}
-        learnMoreLabel={t('featuredEVItems.learnMoreLabel')}
-        onSeeAll={() => console.log('See all clicked')}
-        items={dummyDataCharger}
-      />
-      <FeaturedOBDSection 
-        title={t('featuredOBDItems.title')}
-        seeAllLabel={t('featuredOBDItems.seeAllLabel')}
-        learnMoreLabel={t('featuredOBDItems.learnMoreLabel')}
-        onSeeAll={() => console.log('See all clicked')}
-        items={dummyDataOBD}
-      />
-      <PopularProductsSlider isPopular={true}/>
+
+      {categories.map((category) => (
+        <CategorySection
+          key={category.id}
+          category={category}
+          showSubcategories={
+            category.name === 'EV Chargers' ? 2 :
+            category.name === 'EV Adapters' ? 4 :
+            undefined
+          }
+        />
+      ))}
+
       <FAQSection />
     </Box>
   )

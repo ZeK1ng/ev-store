@@ -17,7 +17,7 @@ const FAQSection = () => {
     const faqItems = t('faq.items', { returnObjects: true }) as FAQItem[]
 
     return (
-        <Box px={{ base: 4, md: 16 }} py={12}>
+        <Box py={12}>
             <Heading as="h2" size={{base: '2xl', md: '4xl'}} mb={6} textAlign={{base: 'left', md: 'center'}}>
                 {t('faq.title')}
             </Heading>

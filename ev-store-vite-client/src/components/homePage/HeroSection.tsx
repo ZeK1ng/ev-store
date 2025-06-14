@@ -18,8 +18,6 @@ const HeroSection = () => {
         <Flex
             direction={{ base: 'column', md: 'row' }}
             align="center"
-            px={{ base: 4, md: 16 }}
-            py={16}
             gap={{ base: 8, md: 0 }}
         >
             <Box flex={1} textAlign={{ base: 'center', md: 'left' }}>
