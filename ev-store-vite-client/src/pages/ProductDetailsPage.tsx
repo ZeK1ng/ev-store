@@ -224,7 +224,14 @@ const ProductDetailsPage = () => {
                 <Box flex={1}>
                     <Stack gap={4}>
                         <HStack justify="space-between" align="center">
-                            <Heading size="xl">{getLocalizedText(product, language, 'name')}</Heading>
+                            <Heading size="xl">
+                                {getLocalizedText(product, language, 'name')}
+                                {product.comingSoon && (
+                                    <Badge size="sm" colorPalette="red" ml={2}>
+                                        {t('comingSoon')}
+                                    </Badge>
+                                )}
+                            </Heading>
                             <HStack gap={2}>
                                 <Badge size="lg" p={2} borderRadius="md" colorPalette="yellow">
                                     {product.categoryName}
@@ -259,7 +266,7 @@ const ProductDetailsPage = () => {
                         <Text fontSize="2xl" fontWeight="bold" color="green.500">
                             {product.price} ₾
                         </Text>
-                        <Text>{getLocalizedText(product, language, 'description')}</Text>
+                        <Text whiteSpace="pre-wrap">{getLocalizedText(product, language, 'description')}</Text>
 
                         {product.tutorialLink && (
                             <Box mt={4}>

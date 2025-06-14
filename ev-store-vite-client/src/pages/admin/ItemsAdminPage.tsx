@@ -324,16 +324,22 @@ const ItemsAdminPage = () => {
                                                                     <DataList.ItemValue>{item.nameRUS}</DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
-                                                                    <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
-                                                                    <DataList.ItemValue>{item.descriptionENG}</DataList.ItemValue>
+                                                                    <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Text whiteSpace="pre-wrap">{item.descriptionGE}</Text>
+                                                                    </DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
-                                                                    <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
-                                                                    <DataList.ItemValue>{item.descriptionGE}</DataList.ItemValue>
+                                                                    <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Text whiteSpace="pre-wrap">{item.descriptionENG}</Text>
+                                                                    </DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
                                                                     <DataList.ItemLabel>Description (RU)</DataList.ItemLabel>
-                                                                    <DataList.ItemValue>{item.descriptionRUS}</DataList.ItemValue>
+                                                                    <DataList.ItemValue>
+                                                                        <Text whiteSpace="pre-wrap">{item.descriptionRUS}</Text>
+                                                                    </DataList.ItemValue>
                                                                 </DataList.Item>
                                                             </SimpleGrid>
                                                             <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
