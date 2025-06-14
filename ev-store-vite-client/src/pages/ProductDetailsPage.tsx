@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
     Box,
     Flex,
@@ -155,7 +155,7 @@ const ProductDetailsPage = () => {
             <Breadcrumb.Root mb={6}>
                 <Breadcrumb.List>
                     <Breadcrumb.Item>
-                        <Link to="/catalog">{t('breadcrumb.catalog')}</Link>
+                        <Breadcrumb.Link href="/catalog">{t('breadcrumb.catalog')}</Breadcrumb.Link>
                     </Breadcrumb.Item>
                     {categoryPath.flatMap((category, index) => [
                         <Breadcrumb.Separator key={`sep-${index}`} />,
@@ -163,7 +163,7 @@ const ProductDetailsPage = () => {
                             {index === categoryPath.length - 1 ? (
                                 <Breadcrumb.CurrentLink>{category.name}</Breadcrumb.CurrentLink>
                             ) : (
-                                <Link to={`/catalog?categories=${category.id}`}>{category.name}</Link>
+                                <Breadcrumb.Link href={`/catalog?categories=${category.id}`}>{category.name}</Breadcrumb.Link>
                             )}
                         </Breadcrumb.Item>
                     ])}
