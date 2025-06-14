@@ -5,6 +5,7 @@ import {
   LuBatteryCharging,
   LuCable,
 } from 'react-icons/lu'
+import FeaturesSection from './FeaturesSection'
 import { PiChargingStation } from "react-icons/pi";
 import { TbPlugConnectedX, TbRecharging } from "react-icons/tb";
 import { useTranslation } from 'react-i18next'
@@ -23,7 +24,7 @@ interface CategorySectionProps {
 
 const getCategoryIcon = (categoryName: string, parentCategoryName: string) => {
   const iconMap: { [key: string]: any } = {
-    "Portable Chargers": LuBatteryCharging, 
+    "Portable Chargers": LuBatteryCharging,
     "Wall-Mounted Chargers": PiChargingStation,
     "EV Adapters": TbRecharging,
     "EV Cables": LuCable,
@@ -38,6 +39,11 @@ const CategorySection = ({ category, showSubcategories = 4 }: CategorySectionPro
 
   return (
     <Box pt={8}>
+      {
+        category.name === 'EV Adapters' && (
+          <FeaturesSection />
+        )
+      }
       <VStack gap={4} alignItems="stretch">
         <Box>
           <Heading as="h2" size="3xl" textAlign="left">
@@ -48,7 +54,7 @@ const CategorySection = ({ category, showSubcategories = 4 }: CategorySectionPro
           </Text>
         </Box>
 
-        <SimpleGrid columns={{ base: 1, md: 2, lg: showSubcategories || 2 }} gap={{base: 2, md: 4, lg: 6}}>
+        <SimpleGrid columns={{ base: 1, md: 2, lg: showSubcategories || 2 }} gap={{ base: 2, md: 4, lg: 6 }}>
           {category.children.slice(0, showSubcategories).map((subcategory) => (
             <RouterLink
               key={subcategory.id}
@@ -61,7 +67,7 @@ const CategorySection = ({ category, showSubcategories = 4 }: CategorySectionPro
                 borderRadius="lg"
                 _hover={{
                   shadow: 'md',
-                  bg: 'gray.50',
+                  bg: 'bg.muted',
                   transform: 'translateY(-2px)',
                   transition: 'all 0.2s'
                 }}

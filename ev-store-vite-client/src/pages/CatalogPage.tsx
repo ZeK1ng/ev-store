@@ -64,6 +64,7 @@ interface Product {
     price: number;
     mainImageId: number;
     isPopular: boolean;
+    comingSoon: boolean;
 }
 
 interface ProductResponse {
@@ -585,12 +586,13 @@ const CatalogPage = () => {
                                                     alt={getLocalizedText(product, language, 'name')}
                                                     width="full"
                                                     height="200px"
-                                                    objectFit="cover"
+                                                    objectFit="contain"
                                                     shadow="sm"
+                                                    comingSoon={product.comingSoon}
                                                 />
 
                                                 <Card.Body gap="1" p={4}>
-                                                    <Card.Title>{getLocalizedText(product, language, 'name')}</Card.Title>
+                                                    <Card.Title lineClamp={1}>{getLocalizedText(product, language, 'name')}</Card.Title>
                                                         <HStack gap={2}>
                                                             <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{product.categoryName}</Badge>
                                                             {
@@ -602,7 +604,7 @@ const CatalogPage = () => {
                                                             }
                                                         </HStack>
                                                     <Text textStyle="2xl" fontWeight="medium">
-                                                        {product.price.toFixed(2)}
+                                                        {product.price.toFixed(2)} ₾
                                                     </Text>
                                                     <Button
                                                         size="sm"

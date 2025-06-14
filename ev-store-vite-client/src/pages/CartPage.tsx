@@ -22,6 +22,7 @@ import {
     ButtonGroup,
     Spinner,
     Center,
+    FormatNumber,
 } from '@chakra-ui/react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FaTrash } from 'react-icons/fa';
@@ -254,7 +255,7 @@ const CartPage = () => {
 
     if (loading) {
         return (
-            <Center minH="90vh">
+            <Center minH="90vh" px={{ base: 4, md: 8 }} py={8}>
                 <Spinner size="xl" borderWidth="4px" />
             </Center>
         );
@@ -262,7 +263,7 @@ const CartPage = () => {
 
     if (error) {
         return (
-            <Center minH="90vh">
+            <Center minH="90vh" px={{ base: 4, md: 8 }} py={8}>
                 <Stack gap={8} maxW="lg" w="full">
                     <EmptyState.Root>
                         <EmptyState.Content>
@@ -289,7 +290,7 @@ const CartPage = () => {
 
     if (reservationSuccess) {
         return (
-            <Center minH="90vh">
+            <Center minH="90vh" px={{ base: 4, md: 8 }} py={8}>
                 <VStack gap={6}>
                     <LuClipboardCheck color="#9CE94F" size="60px" />
                     <Heading size="lg">{t('reservation.successTitle')}</Heading>
@@ -586,7 +587,7 @@ const CartPage = () => {
                                 <Text>
                                     {t('reservation.totalAmount')}
                                 </Text>
-                                <Text>${cartTotalPrice.toFixed(2)}</Text>
+                                <Text>{cartTotalPrice.toFixed(2)} ₾</Text>
                             </Flex>
 
                             <Text fontSize="xs" color="gray.500">

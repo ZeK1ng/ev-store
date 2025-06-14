@@ -6,15 +6,15 @@
         "buttonLabel": "Explore More"
     },
     "features": {
-        "FaBolt": {
+        "BiPackage": {
             "title": "Charge your car faster",
             "description": "Speed up your EV charging with high-performance tools"
         },
-        "FaCog": {
+        "BiSupport": {
             "title": "Find the perfect tools",
             "description": "Get professional-grade EV tools tailored to your needs"
         },
-        "FaLightbulb": {
+        "TbHours24": {
             "title": "Simplify your EV service",
             "description": "Everything you need to keep your EV running smoothly"
         }

@@ -61,6 +61,7 @@ interface Product {
     isPopular: boolean;
     tutorialLink: string;
     itemCode: string;
+    comingSoon: boolean;
 }
 
 const ProductDetailsPage = () => {
@@ -175,10 +176,11 @@ const ProductDetailsPage = () => {
                     <CachedImage
                         imageId={activeImage || product.mainImageId}
                         alt={getLocalizedText(product, language, 'name')}
-                        objectFit="cover"
+                        objectFit="contain"
                         height={{ base: '300px', md: '400px' }}
                         width="full"
                         borderRadius="md"
+                        comingSoon={product.comingSoon}
                     />
 
                     {product.imageIds.length > 0 && (
@@ -211,6 +213,7 @@ const ProductDetailsPage = () => {
                                     <CachedImage
                                         imageId={imageId}
                                         alt={`${getLocalizedText(product, language, 'name')} thumbnail ${idx + 1}`}
+                                        comingSoon={product.comingSoon}
                                     />
                                 </IconButton>
                             ))}
@@ -254,7 +257,7 @@ const ProductDetailsPage = () => {
                         </IconButton>
 
                         <Text fontSize="2xl" fontWeight="bold" color="green.500">
-                            ${product.price}
+                            {product.price} ₾
                         </Text>
                         <Text>{getLocalizedText(product, language, 'description')}</Text>
 
@@ -284,7 +287,7 @@ const ProductDetailsPage = () => {
                                                 <Dialog.Body>
                                                     <AspectRatio ratio={16 / 9}>
                                                         <iframe
-                                                            src={`https://www.youtube.com/embed/EzTxYQmU8OE?si=XEuXa4GrbOVNUfIB`}
+                                                            src={`https://${product.tutorialLink}`}
                                                             allowFullScreen
                                                             style={{ borderRadius: '0.375rem' }}
                                                             title="Product Tutorial"

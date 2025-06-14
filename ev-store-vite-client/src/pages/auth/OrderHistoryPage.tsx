@@ -157,7 +157,7 @@ const OrderHistoryPage = () => {
                                                     {statusLabel[order.orderStatus]}
                                                 </Badge>
                                                 <Text fontWeight="bold" fontSize="xl">
-                                                    ${order.totalPrice.toFixed(2)}
+                                                    {order.totalPrice.toFixed(2)} ₾
                                                 </Text>
                                             </VStack>
                                         </HStack>
@@ -171,7 +171,7 @@ const OrderHistoryPage = () => {
                                                         <Text>
                                                             {getLocalizedText(item, language, 'name')} × {item.quantity}
                                                         </Text>
-                                                        <Text color="gray.600">${item.unitPrice.toFixed(2)}</Text>
+                                                        <Text color="gray.600">{item.unitPrice.toFixed(2)} ₾</Text>
                                                     </HStack>
                                                 ))}
                                             </Box>
