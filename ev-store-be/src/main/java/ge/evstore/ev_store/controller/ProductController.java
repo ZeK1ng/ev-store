@@ -39,7 +39,7 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
             @RequestParam(required = false, defaultValue = "0") final int page,
             @RequestParam(required = false, defaultValue = "10") final int size,
-            @RequestParam(required = false, defaultValue = "id") final String sortBy,
+            @RequestParam(required = false, defaultValue = "price") final String sortBy,
             @RequestParam(required = false, defaultValue = "asc") final String direction,
             @RequestParam(required = false) final Long productId,
             @RequestParam(required = false) final String name,
