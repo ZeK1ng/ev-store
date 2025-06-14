@@ -47,5 +47,8 @@
         "addToCart": "Add to Cart",
         "addToCartSuccess": "Product added to cart successfully",
         "addToCartError": "Error adding product to cart"
-    }
+    },
+    "popular": "Popular",
+    "copied": "Copied",
+    "itemCodeCopied": "Item code copied to clipboard"
 }

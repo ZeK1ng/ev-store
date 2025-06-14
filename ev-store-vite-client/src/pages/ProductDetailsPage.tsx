@@ -14,9 +14,15 @@ import {
     Spinner,
     Center,
     Breadcrumb,
+    Badge,
+    AspectRatio,
+    Dialog,
+    Portal,
+    CloseButton,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { LuMinus, LuPlus, LuShoppingCart } from 'react-icons/lu';
+import { LuCopy, LuMinus, LuPlus, LuShoppingCart, LuStar } from 'react-icons/lu';
+import { LuYoutube } from 'react-icons/lu';
 import PopularProductsSlider from '@/components/homePage/PopularProductsSlider';
 import { useTranslation } from "react-i18next";
 import API from '@/utils/AxiosAPI';
@@ -54,6 +60,7 @@ interface Product {
     imageIds: number[];
     isPopular: boolean;
     tutorialLink: string;
+    itemCode: string;
 }
 
 const ProductDetailsPage = () => {
@@ -213,11 +220,86 @@ const ProductDetailsPage = () => {
 
                 <Box flex={1}>
                     <Stack gap={4}>
-                        <Heading size="xl">{getLocalizedText(product, language, 'name')}</Heading>
+                        <HStack justify="space-between" align="center">
+                            <Heading size="xl">{getLocalizedText(product, language, 'name')}</Heading>
+                            <HStack gap={2}>
+                                <Badge size="lg" p={2} borderRadius="md" colorPalette="yellow">
+                                    {product.categoryName}
+                                </Badge>
+                                {
+                                    product.isPopular && (
+                                        <Badge size="lg" p={2} borderRadius="md" colorPalette="green" w="max-content">
+                                            <LuStar /> {t('popular')}
+                                        </Badge>
+                                    )
+                                }
+                            </HStack>
+
+                        </HStack>
+                        <IconButton
+                            aria-label="Copy item ID"
+                            size="sm"
+                            p={2}
+                            variant="outline"
+                            w="max-content"
+                            onClick={() => {
+                                navigator.clipboard.writeText(product.itemCode);
+                                toaster.success({
+                                    title: t('copied'),
+                                    description: t('itemCodeCopied')
+                                });
+                            }}
+                        >
+                            <LuCopy /> code: {product.itemCode}
+                        </IconButton>
+
                         <Text fontSize="2xl" fontWeight="bold" color="green.500">
                             ${product.price}
                         </Text>
                         <Text>{getLocalizedText(product, language, 'description')}</Text>
+
+                        {product.tutorialLink && (
+                            <Box mt={4}>
+                                <Dialog.Root>
+                                    <Dialog.Trigger asChild>
+                                        <Button
+                                            variant="surface"
+                                            size="sm"
+                                            width="max-content"
+                                            colorPalette="green"
+                                        >
+                                            <HStack gap={2}>
+                                                <LuYoutube />
+                                                <Text>{t('watchTutorial')}</Text>
+                                            </HStack>
+                                        </Button>
+                                    </Dialog.Trigger>
+                                    <Portal>
+                                        <Dialog.Backdrop />
+                                        <Dialog.Positioner>
+                                            <Dialog.Content maxW="800px" width="90vw">
+                                                <Dialog.Header>
+                                                    <Dialog.Title>{t('productTutorial')}</Dialog.Title>
+                                                </Dialog.Header>
+                                                <Dialog.Body>
+                                                    <AspectRatio ratio={16 / 9}>
+                                                        <iframe
+                                                            src={`https://www.youtube.com/embed/EzTxYQmU8OE?si=XEuXa4GrbOVNUfIB`}
+                                                            allowFullScreen
+                                                            style={{ borderRadius: '0.375rem' }}
+                                                            title="Product Tutorial"
+                                                        />
+                                                    </AspectRatio>
+                                                </Dialog.Body>
+                                                <Dialog.CloseTrigger asChild>
+                                                    <CloseButton size="sm" position="absolute" right={2} top={2} />
+                                                </Dialog.CloseTrigger>
+                                            </Dialog.Content>
+                                        </Dialog.Positioner>
+                                    </Portal>
+                                </Dialog.Root>
+                            </Box>
+                        )}
 
                         <Field.Root>
                             <NumberInput.Root

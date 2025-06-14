@@ -15,5 +15,6 @@
     "noResultsSuggestions2": "You can also check our latest arrivals.",
     "addToCart": "Add to Cart",
     "addToCartSuccess": "Product added to cart successfully",
-    "addToCartError": "Error adding product to cart"
+    "addToCartError": "Error adding product to cart",
+    "popular": "Popular"
 }

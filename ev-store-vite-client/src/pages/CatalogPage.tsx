@@ -30,11 +30,12 @@ import {
     Spinner,
     Drawer,
     CloseButton,
+    Badge
 } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { FaChevronRight, FaChevronLeft, FaChevronDown, FaSearch } from 'react-icons/fa'
 import { Link as RouterLink } from 'react-router-dom';
-import { LuShoppingCart, LuPackageSearch } from "react-icons/lu";
+import { LuShoppingCart, LuPackageSearch, LuStar } from "react-icons/lu";
 import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
 import { toaster } from "@/components/ui/toaster";
@@ -61,6 +62,7 @@ interface Product {
     categoryName: string;
     price: number;
     mainImageId: number;
+    isPopular: boolean;
 }
 
 interface ProductResponse {
@@ -588,9 +590,20 @@ const CatalogPage = () => {
 
                                                 <Card.Body gap="2">
                                                     <Card.Title>{getLocalizedText(product, language, 'name')}</Card.Title>
-                                                    <Card.Description lineClamp={2}>{getLocalizedText(product, language, 'description')}</Card.Description>
+                                                    <Card.Description >
+                                                        <HStack gap={2}>
+                                                            <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{product.categoryName}</Badge>
+                                                            {
+                                                                product.isPopular && (
+                                                                    <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="green">
+                                                                        <LuStar /> {t('popular')}
+                                                                    </Badge>
+                                                                )
+                                                            }
+                                                        </HStack>
+                                                    </Card.Description>
                                                     <Text textStyle="2xl" fontWeight="medium">
-                                                        ${product.price.toFixed(2)}
+                                                        {product.price.toFixed(2)}
                                                     </Text>
                                                     <Button
                                                         size="sm"
