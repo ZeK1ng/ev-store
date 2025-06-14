@@ -29,7 +29,7 @@ import {
     Link
 } from '@chakra-ui/react'
 import { FaPlus, FaEye, FaEdit, FaLayerGroup, FaTrashAlt, FaArrowLeft, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { LuPackageSearch } from "react-icons/lu";
+import { LuCopy, LuPackageSearch } from "react-icons/lu";
 import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
 import { debounce } from "lodash";
@@ -51,6 +51,7 @@ interface Item {
     mainImageId: number
     imageIds: number[]
     tutorialLink: string
+    itemCode: string
 }
 
 const ItemsAdminPage = () => {
@@ -59,14 +60,14 @@ const ItemsAdminPage = () => {
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
     const [apiError, setApiError] = useState<string | null>(null);
     const [searchName, setSearchName] = useState<string>('');
-    const [searchId, setSearchId] = useState<string>('');
+    const [searchItemCode, setSearchItemCode] = useState<string>('');
     const [totalItems, setTotalItems] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
     const pageSize = 10;
 
     const [filteredItems, setFilteredItems] = useState<Item[]>([]);
 
-    const fetchItems = async (name: string = '', productId: string = '', page: number = 0) => {
+    const fetchItems = async (name: string = '', itemCode: string = '', page: number = 0) => {
         try {
             setIsLoading(true);
             setApiError(null);
@@ -75,7 +76,7 @@ const ItemsAdminPage = () => {
                 size: pageSize.toString(),
                 direction: 'asc',
                 ...(name && { name }),
-                ...(productId && { productId })
+                ...(itemCode && { itemCode })
             });
 
             const response = await API.get(`/product?${params.toString()}`);
@@ -94,8 +95,8 @@ const ItemsAdminPage = () => {
     };
 
     const debouncedSearch = useCallback(
-        debounce((name: string, productId: string) => {
-            fetchItems(name, productId, 0);
+        debounce((name: string, itemCode: string) => {
+            fetchItems(name, itemCode, 0);
             setCurrentPage(0);
         }, 500),
         []
@@ -103,21 +104,21 @@ const ItemsAdminPage = () => {
 
     const handleNameSearch = (value: string) => {
         setSearchName(value);
-        debouncedSearch(value, searchId);
+        debouncedSearch(value, searchItemCode);
     };
 
-    const handleIdSearch = (value: string) => {
-        setSearchId(value);
+    const handleItemCodeSearch = (value: string) => {
+        setSearchItemCode(value);
         debouncedSearch(searchName, value);
     };
 
     useEffect(() => {
-        fetchItems(searchName, searchId, currentPage);
+        fetchItems(searchName, searchItemCode, currentPage);
     }, [currentPage]);
 
     useEffect(() => {
         setFilteredItems(items);
-    }, [searchName, searchId, items]);
+    }, [searchName, searchItemCode, items]);
 
     const handleDelete = async (id: string) => {
         try {
@@ -181,10 +182,10 @@ const ItemsAdminPage = () => {
                     </Field.Root>
                     <Field.Root flex="1">
                         <Input
-                            placeholder="Search by ID"
+                            placeholder="Search by CODE"
                             size="md"
-                            value={searchId}
-                            onChange={(e) => handleIdSearch(e.target.value)}
+                            value={searchItemCode}
+                            onChange={(e) => handleItemCodeSearch(e.target.value)}
                         />
                     </Field.Root>
                     <Button asChild w={{ base: '100%', md: 'auto' }}>
@@ -206,7 +207,7 @@ const ItemsAdminPage = () => {
                                 No Items Found
                             </EmptyState.Title>
                             <EmptyState.Description>
-                                {searchName || searchId
+                                {searchName || searchItemCode
                                     ? 'No items match your search criteria'
                                     : 'Start by creating your first item to add to your catalog'}
                             </EmptyState.Description>
@@ -235,18 +236,36 @@ const ItemsAdminPage = () => {
                 <Stack gap={5}>
                     {filteredItems.length > 0 && filteredItems.map(item => (
                         <Card.Root key={item.productId} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
-                            <CachedImage imageId={item.mainImageId} alt={item.nameENG} width={{ base: '100%', md: '200px' }} height="200px" objectFit="cover"/>
+                            <CachedImage imageId={item.mainImageId} alt={item.nameENG} width={{ base: '100%', md: '200px' }} height="200px" objectFit="cover" />
                             <Box flex="1">
                                 <Card.Body>
                                     <Card.Title mb="2" fontSize={{ base: 'lg', md: 'xl' }}>{item.nameENG}</Card.Title>
-                                    <Card.Description fontSize={{ base: 'sm', md: 'md' }} lineClamp={2}>
-                                        {item.descriptionENG}
+                                    <Card.Description fontSize={{ base: 'sm', md: 'md' }} >
+                                        <IconButton
+                                            aria-label="Copy item ID"
+                                            size="sm"
+                                            p={2}
+                                            variant="outline"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(item.itemCode);
+                                                toaster.success({
+                                                    title: 'Copied',
+                                                    description: 'Item code copied to clipboard'
+                                                });
+                                            }}
+                                        >
+                                            <LuCopy /> code: {item.itemCode}
+                                        </IconButton>
                                     </Card.Description>
                                     <SimpleGrid columns={{ base: 2, md: 4 }} gap={2} mt="4">
                                         <Badge size="md" p={2} borderRadius="md" textAlign="center">Price: {item.price} $</Badge>
                                         <Badge size="md" p={2} borderRadius="md" textAlign="center">Qty: {item.stockAmount}</Badge>
                                         <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{item.categoryName}</Badge>
-                                        <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="green">Popular: {item.isPopular ? 'Yes' : 'No'}</Badge>
+                                        {
+                                            item.isPopular && (
+                                                <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="green">Popular</Badge>
+                                            )
+                                        }
                                     </SimpleGrid>
                                 </Card.Body>
                                 <Card.Footer justifyContent={{ base: 'center', md: 'flex-end' }} flexWrap="wrap" gap={2}>
@@ -267,7 +286,9 @@ const ItemsAdminPage = () => {
                                             <Dialog.Positioner>
                                                 <Dialog.Content>
                                                     <Dialog.Header>
-                                                        <Dialog.Title>Item Details</Dialog.Title>
+                                                        <Dialog.Title>
+                                                            ID - {item.productId} | Code - {item.itemCode}
+                                                        </Dialog.Title>
                                                         <Dialog.CloseTrigger asChild>
                                                             <CloseButton size="sm" />
                                                         </Dialog.CloseTrigger>

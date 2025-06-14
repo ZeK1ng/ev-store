@@ -36,7 +36,7 @@ interface Category {
     id: string;
     name: string;
     description: string;
-    parentCategoryId?: string;
+    parentCategoryName?: string;
 }
 
 interface ItemFormValues {
@@ -53,6 +53,7 @@ interface ItemFormValues {
     imagesFiles: FileList;
     isPopular: boolean;
     tutorialLink: string;
+    itemCode: string;
 }
 
 interface Item extends Omit<ItemFormValues, 'mainImageFile' | 'imagesFiles'> {
@@ -136,7 +137,8 @@ const ItemsManagementAdminPage: React.FC = () => {
                 stockAmount: item.stockAmount,
                 price: item.price,
                 categoryId: item.categoryId,
-                isPopular: item.isPopular
+                isPopular: item.isPopular,
+                itemCode: item.itemCode
             });
         } catch (error) {
             setApiError('Error fetching item');
@@ -212,7 +214,8 @@ const ItemsManagementAdminPage: React.FC = () => {
                 isPopular: data.isPopular,
                 mainImageId: mainImageId,
                 imageIds: additionalImageIds,
-                tutorialLink: data.tutorialLink
+                tutorialLink: data.tutorialLink,
+                itemCode: data.itemCode
             };
 
             if (isCreate) {
@@ -244,9 +247,9 @@ const ItemsManagementAdminPage: React.FC = () => {
     const existingCategories = createListCollection({
         items: categories.map(cat => ({
             id: cat.id,
-            value: cat.name,
+            value: cat.parentCategoryName ? cat.parentCategoryName + ' -- ' + cat.name + ' -- ' + cat.id : cat.name + ' -- ' + cat.id,
             description: cat.description,
-            parentId: cat.parentCategoryId || ''
+            parentCategoryName: cat.parentCategoryName || ''
         }))
     });
 
@@ -372,7 +375,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Select.Root
                             collection={existingCategories}
                             width="100%"
-                            defaultValue={[String(existingItem?.categoryId)]}
+                            defaultValue={existingItem?.categoryId ? [String(existingItem?.categoryId)] : []}
                             onValueChange={e => setValue('categoryId', e.items[0]?.id)}
                         >
                             <Select.HiddenSelect />
@@ -424,9 +427,17 @@ const ItemsManagementAdminPage: React.FC = () => {
                             </NumberInput.Root>
                             {errors.stockAmount && <Field.ErrorText>{errors.stockAmount.message}</Field.ErrorText>}
                         </Field.Root>
+
+                        <Field.Root id="itemCode" invalid={!!errors.itemCode}>
+                            <Field.Label>Item Code*</Field.Label>
+                            <Input
+                                defaultValue={existingItem?.itemCode}
+                                placeholder="Enter item code"
+                                {...register('itemCode', { required: 'Item Code is Required' })}
+                            />
+                            {errors.itemCode && <Field.ErrorText>{errors.itemCode.message}</Field.ErrorText>}
+                        </Field.Root>
                     </HStack>
-
-
 
                     <Field.Root id="isPopular">
                         <Checkbox.Root

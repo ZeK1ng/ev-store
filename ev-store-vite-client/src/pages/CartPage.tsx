@@ -372,7 +372,9 @@ const CartPage = () => {
                                             />
                                             <Box>
                                                 <Text fontWeight="bold">{getLocalizedText(item, language, 'name')}</Text>
-                                                <Text fontSize="sm" color="gray.500" lineClamp={2}>{getLocalizedText(item, language, 'description')}</Text>
+                                                <HStack>
+                                                    <Text fontSize="sm" color="gray.500" lineClamp={3}>{getLocalizedText(item, language, 'description')}</Text>
+                                                </HStack>
                                             </Box>
                                         </Box>
                                     </HStack>
@@ -433,7 +435,7 @@ const CartPage = () => {
                                             </NumberInput.Root>
                                         </Field.Root>
 
-                                        <Text fontWeight="bold">${(item.price * item.quantity).toFixed(2)}</Text>
+                                        <Text fontWeight="bold">{(item.price * item.quantity).toFixed(2)}</Text>
 
                                         <IconButton
                                             aria-label="Remove item"

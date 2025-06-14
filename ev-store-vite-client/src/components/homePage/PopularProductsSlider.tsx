@@ -8,12 +8,14 @@ import {
     Card,
     IconButton,
     Center,
-    Spinner
+    Spinner,
+    Badge,
+    HStack
 } from '@chakra-ui/react'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { LuShoppingCart } from 'react-icons/lu'
+import { LuShoppingCart, LuStar } from 'react-icons/lu'
 import API from '@/utils/AxiosAPI';
 import { addItemToCart } from "@/utils/helpers";
 import AuthController from "@/utils/AuthController";
@@ -33,7 +35,8 @@ interface Product {
     categoryId: number;
     categoryName: string;
     price: number;
-    mainImageId: number;
+    mainImageId: number;    
+    isPopular: boolean;
 }
 
 interface ProductResponse {
@@ -217,16 +220,21 @@ const PopularProductsSlider = ({
                                 />
 
                                 <Card.Body gap="2" flex="1" display="flex" flexDirection="column" minH="180px">
-                                    <Box minH="48px" display="flex" alignItems="center">
-                                        <Text fontSize="lg" fontWeight="medium" lineClamp={2}>
-                                            {getLocalizedText(product, language, 'name')}
-                                        </Text>
-                                    </Box>
-                                    <Box flex="1" minH="72px">
-                                        <Text fontSize="sm" color="gray.500" lineClamp={2}>
-                                            {getLocalizedText(product, language, 'description')}
-                                        </Text>
-                                    </Box>
+                                    <Card.Title>
+                                        {getLocalizedText(product, language, 'name')}
+                                    </Card.Title>
+                                    <HStack>
+                                        <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">
+                                            {product.categoryName}
+                                        </Badge>
+                                        {
+                                            product.isPopular && (
+                                                <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="green">
+                                                    <LuStar /> {t('popular')}
+                                                </Badge>
+                                            )
+                                        }
+                                    </HStack>
                                     <Text textStyle="2xl" fontWeight="medium">
                                         {product.price.toFixed(2)}
                                     </Text>
