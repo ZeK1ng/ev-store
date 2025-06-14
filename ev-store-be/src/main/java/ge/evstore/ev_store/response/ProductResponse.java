@@ -38,6 +38,7 @@ public class ProductResponse {
     private Boolean isPopular;
 
     private String tutorialLink;
+    private Boolean comingSoon;
 
     public static ProductResponse from(final Product product, final List<Long> imageIds) {
         return ProductResponse.builder()
@@ -57,6 +58,7 @@ public class ProductResponse {
                 .tutorialLink(product.getTutorialLink())
                 .imageIds(imageIds)
                 .itemCode(product.getItemCode())
+                .comingSoon(product.getComingSoon())
                 .build();
     }
 }

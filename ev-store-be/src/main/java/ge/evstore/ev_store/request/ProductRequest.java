@@ -24,4 +24,5 @@ public class ProductRequest {
     private Boolean isPopular;
     private String itemCode;
     private String tutorialLink;
+    private Boolean comingSoon;
 }

@@ -51,6 +51,8 @@ public class Product {
     private String imageIds;
 
     private Boolean isPopular;
+
+    private Boolean comingSoon;
     
     public void update(final Product product) {
         final ModelMapper modelMapper = new ModelMapper();
@@ -71,6 +73,7 @@ public class Product {
                 .tutorialLink(productRequest.getTutorialLink())
                 .mainImageId(productRequest.getMainImageId())
                 .itemCode(productRequest.getItemCode())
+                .comingSoon(productRequest.getComingSoon())
                 .build();
     }
 }

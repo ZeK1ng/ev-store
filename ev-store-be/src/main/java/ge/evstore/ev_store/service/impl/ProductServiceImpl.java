@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<ProductResponse> getAllProducts(final int page, final int size, final String sortBy, final String direction, final String name, final String categoryId, final Double minPrice, final Double maxPrice, final Boolean inStock, final Boolean isPopular, final Long productId,
-                                                final String itemCode) {
+                                                final String itemCode, final Boolean comingSoon) {
         log.info("getAllProducts called with: page={}, size={}, sortBy:{}, direction: {}, name: {}, caregoryId:{}, minPrice:{}, maxPrice:{}, inStock:{}, isPopular:{}", page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular);
         final Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         final Pageable pageable = PageRequest.of(page, size, sort);
@@ -115,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
                     cb.le(root.get("price"), maxPrice));
         }
 
-        if(itemCode != null && !itemCode.isBlank()){
+        if (itemCode != null && !itemCode.isBlank()) {
             spec = spec.and((root, query, cb) ->
                     cb.equal(root.get("itemCode"), itemCode));
         }
@@ -127,6 +127,11 @@ public class ProductServiceImpl implements ProductService {
         if (isPopular != null && isPopular) {
             spec = spec.and((root, query, cb) ->
                     cb.equal(root.get("isPopular"), true));
+        }
+
+        if (comingSoon != null && comingSoon) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("comingSoon"), true));
         }
 
         final Page<Product> all = productRepository.findAll(spec, pageable);
