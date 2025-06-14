@@ -90,7 +90,9 @@ public class AdminServiceImpl implements AdminService {
                 .map(existingProduct -> {
                     final Product updatedProduct = Product.fromProductRequest(productRequest);
                     updatedProduct.setImageIds(jsonListConverter.convertToDatabaseColumn(productRequest.getImageIds()));
-                    updatedProduct.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElse(null));
+                    if (productRequest.getCategoryId() != null && !productRequest.getCategoryId().equals(existingProduct.getCategory().getId())) {
+                        updatedProduct.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElse(existingProduct.getCategory()));
+                    }
                     existingProduct.update(updatedProduct);
                     return productRepository.save(existingProduct);
                 })
