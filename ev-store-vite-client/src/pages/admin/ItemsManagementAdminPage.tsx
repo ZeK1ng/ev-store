@@ -31,9 +31,8 @@ import API from '@/utils/AxiosAPI';
 import { toaster } from "@/components/ui/toaster";
 import CachedImage from "@/utils/CachedImage"
 
-
 interface Category {
-    id: string;
+    id: number;
     name: string;
     description: string;
     parentCategoryName?: string;
@@ -48,7 +47,7 @@ interface ItemFormValues {
     descriptionRUS: string;
     stockAmount: number;
     price: number;
-    categoryId: string;
+    categoryId: number;
     mainImageFile: FileList;
     imagesFiles: FileList;
     isPopular: boolean;
@@ -60,7 +59,6 @@ interface Item extends Omit<ItemFormValues, 'mainImageFile' | 'imagesFiles'> {
     id: string;
     mainImageId: number;
     imageIds: number[];
-    category: Category;
 }
 
 const FileUploadList: React.FC = () => {
@@ -247,9 +245,8 @@ const ItemsManagementAdminPage: React.FC = () => {
     const existingCategories = createListCollection({
         items: categories.map(cat => ({
             id: cat.id,
-            value: cat.parentCategoryName ? cat.parentCategoryName + ' -- ' + cat.name + ' -- ' + cat.id : cat.name + ' -- ' + cat.id,
-            description: cat.description,
-            parentCategoryName: cat.parentCategoryName || ''
+            value: String(cat.id),
+            label: cat.parentCategoryName ? cat.parentCategoryName + ' -- ' + cat.name : cat.name,
         }))
     });
 
@@ -366,7 +363,12 @@ const ItemsManagementAdminPage: React.FC = () => {
                             startElement="https://"
                             startElementProps={{ color: "fg.muted" }}
                         >
-                            <Input ps="7ch" placeholder="something.com" {...register('tutorialLink')} />
+                            <Input
+                                ps="7ch"
+                                placeholder="something.com"
+                                {...register('tutorialLink')}
+                                defaultValue={existingItem?.tutorialLink}
+                            />
                         </InputGroup>
                     </Field.Root>
 
@@ -375,8 +377,8 @@ const ItemsManagementAdminPage: React.FC = () => {
                         <Select.Root
                             collection={existingCategories}
                             width="100%"
-                            defaultValue={existingItem?.categoryId ? [String(existingItem?.categoryId)] : []}
-                            onValueChange={e => setValue('categoryId', e.items[0]?.id)}
+                            defaultValue={existingItem?.categoryId ? [String(existingItem?.categoryId)] : undefined}
+                            onValueChange={e => setValue('categoryId', Number(e.items[0]?.id))}
                         >
                             <Select.HiddenSelect />
                             <Select.Control>
@@ -392,7 +394,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                                     <Select.Content>
                                         {existingCategories.items.map((opt) => (
                                             <Select.Item item={opt} key={opt.id}>
-                                                {opt.value}
+                                                <Select.ItemText>{opt.label}</Select.ItemText>
                                                 <Select.ItemIndicator />
                                             </Select.Item>
                                         ))}
@@ -469,7 +471,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                         </FileUpload.Root>
                         {existingItem && !isCreate && (
                             <Box mt={2}>
-                                <CachedImage imageId={existingItem.mainImageId} width="200px" borderRadius="md" />
+                                <CachedImage imageId={existingItem.mainImageId} width="200px" height="200px" objectFit="cover" borderRadius="md" />
                             </Box>
                         )}
                     </Field.Root>

@@ -258,7 +258,7 @@ const ItemsAdminPage = () => {
                                         </IconButton>
                                     </Card.Description>
                                     <SimpleGrid columns={{ base: 2, md: 4 }} gap={2} mt="4">
-                                        <Badge size="md" p={2} borderRadius="md" textAlign="center">Price: {item.price} $</Badge>
+                                        <Badge size="md" p={2} borderRadius="md" textAlign="center">Price: {item.price}</Badge>
                                         <Badge size="md" p={2} borderRadius="md" textAlign="center">Qty: {item.stockAmount}</Badge>
                                         <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{item.categoryName}</Badge>
                                         {
