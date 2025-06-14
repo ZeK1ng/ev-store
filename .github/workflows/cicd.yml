@@ -87,7 +87,6 @@ jobs:
             -e EV_STORE_DATASOURCE_URL=${{ secrets.EV_STORE_DATASOURCE_URL }} \
             -e EV_STORE_DATASOURCE_USERNAME=${{ secrets.EV_STORE_DATASOURCE_USERNAME }} \
             -e EV_STORE_DATASOURCE_PASSWORD=${{ secrets.EV_STORE_DATASOURCE_PASSWORD }} \
-            -e EV_STORE_EMAIL_ADDRESS=${{ secrets.EV_STORE_EMAIL_ADDRESS }} \
             -p 8080:8080 \
             -p 443:443 \
             -p 5005:5005 \
