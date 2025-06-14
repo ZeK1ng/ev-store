@@ -19,15 +19,15 @@
             "description": "Everything you need to keep your EV running smoothly"
         }
     },
-    "featuredEVItems": {
-        "title": "EV Chargers",
-        "seeAllLabel": "See All",
-        "learnMoreLabel": "Learn More"
-    },
-    "featuredOBDItems": {
-        "title": "OBD Tools",
-        "seeAllLabel": "See All",
-        "learnMoreLabel": "Learn More"
+    "categorySection": {
+        "ev_chargers": "EV Chargers",
+        "ev_chargers_description": "Portable chargers, wall-mounted chargers, and EV cables",
+        "ev_adapters": "EV Adapters",
+        "ev_adapters_description": "EV adapters, EV cables, and EV connectors",
+        "ev_connectors": "EV Connectors",
+        "ev_connectors_description": "EV connectors, EV cables, and EV adapters",
+        "ev_cables": "EV Cables",
+        "ev_cables_description": "EV cables, EV adapters, and EV connectors"
     },
     "faq": {
         "title": "Frequently Asked Questions",

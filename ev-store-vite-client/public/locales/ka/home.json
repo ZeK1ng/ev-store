@@ -19,15 +19,15 @@
             "description": "ყველაფერი, რაც გჭირდებათ თქვენი EV-ის მოსახერხებელი, საიმედო და უპრობლემო დამუხტვისთვის."
         }
     },
-    "featuredEVItems": {
-        "title": "დამტენები",
-        "seeAllLabel": "ყველა პროდუქტი",
-        "learnMoreLabel": "მეტი ინფორმაცია"
-    },
-    "featuredOBDItems": {
-        "title": "OBD ხელსაწყოები",
-        "seeAllLabel": "ყველა პროდუქტი",
-        "learnMoreLabel": "მეტი ინფორმაცია"
+    "categorySection": {
+        "ev_chargers": "დამტენები",
+        "ev_chargers_description": "პორტაბილური დამტენები, დამტენები და კაბელები",
+        "ev_adapters": "ადაპტერები",
+        "ev_adapters_description": "ადაპტერები, კაბელები და აქსესუარები",
+        "ev_connectors": "აქსესუარები",
+        "ev_connectors_description": "აქსესუარები, კაბელები და ადაპტერები",
+        "ev_cables": "კაბელები",
+        "ev_cables_description": "კაბელები, ადაპტერები და აქსესუარები"
     },
     "faq": {
         "title": "ხშირად დასმული კითხვები",

@@ -19,15 +19,15 @@
             "description": "Все, что вам нужно для удобной, надежной и беспроблемной зарядки вашего электромобиля."
         }
     },
-    "featuredEVItems": {
-        "title": "Зарядные устройства EV",
-        "seeAllLabel": "Смотреть все",
-        "learnMoreLabel": "Узнать больше"
-    },
-    "featuredOBDItems": {
-        "title": "Инструменты OBD",
-        "seeAllLabel": "Смотреть все",
-        "learnMoreLabel": "Узнать больше"
+    "categorySection": {
+        "ev_chargers": "Зарядные устройства EV",
+        "ev_chargers_description": "Портативные зарядные устройства, настенные зарядные устройства и кабели",
+        "ev_adapters": "Адаптеры",
+        "ev_adapters_description": "Адаптеры, кабели и аксессуары",
+        "ev_connectors": "Аксессуары",
+        "ev_connectors_description": "Аксессуары, кабели и адаптеры",
+        "ev_cables": "Кабели",
+        "ev_cables_description": "Кабели, адаптеры и аксессуары"
     },
     "faq": {
         "title": "Часто задаваемые вопросы",

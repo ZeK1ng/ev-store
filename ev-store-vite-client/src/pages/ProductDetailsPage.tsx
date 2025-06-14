@@ -338,7 +338,7 @@ const ProductDetailsPage = () => {
                 </Box>
             </Flex>
 
-            <PopularProductsSlider categoryId={product.categoryId} currentProductId={product.productId} showAll={false} />
+            <PopularProductsSlider categoryId={product.categoryId} currentProductId={product.productId} />
         </Box>
     );
 };

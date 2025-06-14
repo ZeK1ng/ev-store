@@ -1,4 +1,4 @@
-import { Box, Heading, SimpleGrid, VStack, HStack, Icon } from '@chakra-ui/react'
+import { Box, Heading, SimpleGrid, VStack, HStack, Icon, Text } from '@chakra-ui/react'
 import PopularProductsSlider from './PopularProductsSlider'
 import { Link as RouterLink } from 'react-router-dom'
 import {
@@ -7,7 +7,7 @@ import {
 } from 'react-icons/lu'
 import { PiChargingStation } from "react-icons/pi";
 import { TbPlugConnectedX, TbRecharging } from "react-icons/tb";
-
+import { useTranslation } from 'react-i18next'
 
 interface Category {
   id: number
@@ -34,13 +34,18 @@ const getCategoryIcon = (categoryName: string, parentCategoryName: string) => {
 }
 
 const CategorySection = ({ category, showSubcategories = 4 }: CategorySectionProps) => {
+  const { t } = useTranslation('home')
+
   return (
     <Box pt={8}>
       <VStack gap={4} alignItems="stretch">
         <Box>
-          <Heading as="h2" size="xl" textAlign="left">
-            {category.name}
+          <Heading as="h2" size="3xl" textAlign="left">
+            {t(`categorySection.${category.name.toLocaleLowerCase().replace(" ", "_")}`)}
           </Heading>
+          <Text fontSize="md" textAlign="left" color="gray.500">
+            {t(`categorySection.${category.name.toLocaleLowerCase().replace(" ", "_")}_description`)}
+          </Text>
         </Box>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: showSubcategories || 2 }} gap={{base: 2, md: 4, lg: 6}}>

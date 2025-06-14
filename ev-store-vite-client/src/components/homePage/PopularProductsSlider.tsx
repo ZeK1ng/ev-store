@@ -165,7 +165,7 @@ const PopularProductsSlider = ({
                         {isPopular ? t('slider.title') : t('slider.similarProducts')}
                     </Heading>
                 )}
-                
+
             </Flex>
 
             <Flex ref={sliderRef} overflowX="auto" gap={4} py={4}
@@ -217,7 +217,7 @@ const PopularProductsSlider = ({
                                             {product.categoryName}
                                         </Badge>
                                         {
-                                            isPopular && (
+                                            product.isPopular && (
                                                 <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="green">
                                                     <LuStar /> {t('popular')}
                                                 </Badge>
@@ -248,9 +248,8 @@ const PopularProductsSlider = ({
                     </Box>
                 ))}
             </Flex>
-            {showAll && (
-                <Flex justify="center" align="center">
-                    {showScrollButtons && (
+            <Flex justify="center" align="center">
+                {showScrollButtons && (
                     <Flex >
                         <IconButton
                             aria-label="Scroll left"
@@ -269,8 +268,7 @@ const PopularProductsSlider = ({
                         </IconButton>
                     </Flex>
                 )}
-                </Flex>
-            )}
+            </Flex>
         </Box>
     )
 }
