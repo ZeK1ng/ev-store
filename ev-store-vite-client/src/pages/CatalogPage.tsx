@@ -246,7 +246,7 @@ const CatalogPage = () => {
         };
 
         fetchInitialData();
-    }, [searchParams]);
+    }, []);
 
     useEffect(() => {
         const fetchProducts = async () => {
