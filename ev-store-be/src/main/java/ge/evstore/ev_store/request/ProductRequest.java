@@ -22,5 +22,6 @@ public class ProductRequest {
     private Long mainImageId;
     private List<Long> imageIds;
     private Boolean isPopular;
+    private String itemCode;
     private String tutorialLink;
 }

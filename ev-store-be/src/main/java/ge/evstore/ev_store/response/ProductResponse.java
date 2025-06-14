@@ -24,6 +24,8 @@ public class ProductResponse {
 
     private Double price;
 
+    private String itemCode;
+
     private Integer stockAmount;
 
     private String categoryName;
@@ -54,6 +56,7 @@ public class ProductResponse {
                 .isPopular(product.getIsPopular())
                 .tutorialLink(product.getTutorialLink())
                 .imageIds(imageIds)
+                .itemCode(product.getItemCode())
                 .build();
     }
 }

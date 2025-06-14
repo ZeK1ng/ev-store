@@ -46,6 +46,8 @@ public class Product {
 
     private Long mainImageId;
 
+    private String itemCode;
+
     private String imageIds;
 
     private Boolean isPopular;
@@ -68,6 +70,7 @@ public class Product {
                 .isPopular(productRequest.getIsPopular())
                 .tutorialLink(productRequest.getTutorialLink())
                 .mainImageId(productRequest.getMainImageId())
+                .itemCode(productRequest.getItemCode())
                 .build();
     }
 }

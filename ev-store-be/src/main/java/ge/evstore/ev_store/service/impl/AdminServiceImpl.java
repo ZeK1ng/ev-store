@@ -46,6 +46,20 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public Product addProduct(final ProductRequest productRequest, final String accessToken) throws AccessDeniedException {
         log.info("Adding new product: {}", productRequest);
+        updateMaxPrice(productRequest);
+
+        final List<Long> imageIds = productRequest.getImageIds();
+        String imageIdsColumnValue = null;
+        if (imageIds != null && !imageIds.isEmpty()) {
+            imageIdsColumnValue = jsonListConverter.convertToDatabaseColumn(imageIds);
+        }
+        final Product product = Product.fromProductRequest(productRequest);
+        product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElse(null));
+        product.setImageIds(imageIdsColumnValue);
+        return productRepository.save(product);
+    }
+
+    private void updateMaxPrice(final ProductRequest productRequest) {
         final List<MaxPriceEasySaver> maxPriceSaver = maxPriceSaverRepository.findAll();
         if (maxPriceSaver.isEmpty()) {
             final MaxPriceEasySaver maxPriceEasySaver = new MaxPriceEasySaver();
@@ -60,16 +74,6 @@ public class AdminServiceImpl implements AdminService {
                 log.info("Max price updated: {}", maxPriceEasySaver.getMaxPrice());
             }
         }
-
-        final List<Long> imageIds = productRequest.getImageIds();
-        String imageIdsColumnValue = null;
-        if (imageIds != null && !imageIds.isEmpty()) {
-            imageIdsColumnValue = jsonListConverter.convertToDatabaseColumn(imageIds);
-        }
-        final Product product = Product.fromProductRequest(productRequest);
-        product.setCategory(categoryRepository.findById(productRequest.getCategoryId()).orElse(null));
-        product.setImageIds(imageIdsColumnValue);
-        return productRepository.save(product);
     }
 
 
