@@ -47,9 +47,10 @@ public class ProductController {
             @RequestParam(required = false) final Double minPrice,
             @RequestParam(required = false) final Double maxPrice,
             @RequestParam(required = false) final Boolean inStock,
-            @RequestParam(required = false) final Boolean isPopular
+            @RequestParam(required = false) final Boolean isPopular,
+            @RequestParam(required = false) final String itemCode
     ) {
-        final Page<ProductResponse> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular, productId);
+        final Page<ProductResponse> products = productService.getAllProducts(page, size, sortBy, direction, name, categoryId, minPrice, maxPrice, inStock, isPopular, productId, itemCode);
         return ResponseEntity.ok(products);
     }
 }
