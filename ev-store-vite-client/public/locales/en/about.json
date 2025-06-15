@@ -1,19 +1,19 @@
 {
   "title": "About EV Store",
-  "paragraph1": "Launched in 2022, EV Store is your dedicated online source for reliable electric vehicle charging solutions and accessories. We started with a passion for making EV ownership easier and more convenient.",
-  "paragraph2": "We are continuously expanding our selection of high-quality EV chargers, adapters, and essential accessories. Our commitment is to empower EV drivers with the dependable tools they need for a seamless charging experience.",
+  "paragraph1": "EV-STORE is a modern online platform dedicated to providing high-quality chargers, adapters, and accessories for electric vehicles in Georgia. Our goal is to support the growth of green transportation and make EV products easily accessible for everyone",
+  "paragraph2": "We offer a wide range of certified EV products, fast delivery, and excellent customer support, including phone consultations and video guides to help you choose the right solution for your electric vehicle",
   "features": {
     "charge_faster": {
-      "title": "Charge Your EV Faster",
-      "description": "Speed up your EV charging time with our high-performance solutions."
+      "title": "Your Experienced Partner",
+      "description": "Get expert consultation and support in selecting and using EV charging solutions."
     },
     "find_tools": {
-      "title": "Find the Perfect Adapters & Tools",
-      "description": "Get quality EV charging adapters and tools tailored to your vehicle and needs."
+      "title": "Certified and Guaranteed Products",
+      "description": "All our products are certified, factory-tested, and backed by warranty."
     },
     "simplify_charging": {
-      "title": "Simplify Your EV Charging",
-      "description": "Everything you need for convenient, reliable, and hassle-free EV charging."
+      "title": "Order the Best Solution for You",
+      "description": "Our team will help you choose the ideal product at the best price, with guaranteed quality and value."
     }
   },
   "contact": {

@@ -178,7 +178,7 @@ const PopularProductsSlider = ({
                     <Box
                         key={product.productId}
                         scrollSnapAlign="start"
-                        flex={{ base: '0 0 300px', md: '0 0 27%' }}
+                        flex={{ base: '0 0 300px', md: '0 0 33%', lg: '0 0 27%' }}
                     >
                         <RouterLink
                             to={`/product/${product.productId}`}

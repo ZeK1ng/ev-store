@@ -1,8 +1,8 @@
 {
     "hero": {
-        "title": "Experience the Power of Electric – The Future of Driving",
-        "description": "Ready to make a change? Find your perfect EV now!",
-        "buttonLabel": "Explore More"
+        "title": "Trusted EV Charging Solutions",
+        "description": "Discover high-quality EV chargers, adapters, cables, and connectors",
+        "buttonLabel": "Go to Catalog"
     },
     "features": {
         "BiPackage": {
@@ -20,42 +20,39 @@
     },
     "categorySection": {
         "ev_chargers": "EV Chargers",
-        "ev_chargers_description": "A wide selection of portable and wall-mounted chargers compatible with all EV types, offering flexible and reliable charging at home or on the go.",
+        "ev_chargers_description": "Portable and wall-mounted chargers for all EVs",
         "ev_adapters": "EV Adapters",
-        "ev_adapters_description": "High-quality adapters that enable connections between different plug types and vehicles — perfect for ensuring charging compatibility anywhere.",
-        "ev_connectors": "EV Connectors",
-        "ev_connectors_description": "Professional-grade sockets and plugs, including industrial and household types, for building safe and efficient EV charging setups.",
+        "ev_adapters_description": "Adapters for connecting different plugs and EVs",
         "ev_cables": "EV Cables",
-        "ev_cables_description": "Durable and safe charging cables in various lengths and plug types, suitable for both home and public charging stations."
+        "ev_cables_description": "Charging cables for home and public stations",
+        "ev_connectors": "EV Connectors",
+        "ev_connectors_description": "Sockets and plugs for safe EV charging setups"
     },
     "faq": {
         "title": "Frequently Asked Questions",
         "items": [
             {
                 "value": "q1",
-                "title": "How can I track my EV charger order?",
-                "text": "Once your order ships, you will receive a tracking number by email. Use that number on our carrier’s site or in your account dashboard for real-time updates."
+                "title": "How can I make a payment?",
+                "text": "You can use a bank transfer to the provided account number at Bank of Georgia or TBC Bank. Please consult with us at the given phone number before making a purchase."
             },
             {
                 "value": "q2",
-                "title": "What is your return policy?",
-                "text": "We offer a 30-day no-questions-asked return on all accessories. Contact support, ship the item back in original condition, and get a full refund."
+                "title": "How reliable is the offered product quality?",
+                "text": "All products are certified and factory-tested. You can also test the device you intend to purchase at our store. Quality is guaranteed."
             },
             {
                 "value": "q3",
-                "title": "Do you offer international shipping?",
-                "text": "Yes! We ship to most countries. Shipping costs and delivery times vary—please see our Shipping & Delivery page for details."
+                "title": "Do you deliver to regions?",
+                "text": "Yes, delivery to regions is possible upon prior agreement. Express delivery is also available."
             },
             {
                 "value": "q4",
-                "title": "How do I find the right adapter for my EV?",
-                "text": "Each product page includes a compatibility chart. You can also use our Fitment Calculator by entering your vehicle make, model, and year."
-            },
-            {
-                "value": "q5",
-                "title": "What payment methods do you accept?",
-                "text": "We accept all major credit cards, PayPal, and Apple Pay. For bulk or corporate orders, please contact sales@evstore.com."
+                "title": "Do you have branches in regions?",
+                "text": "At this stage, we only have a store in Tbilisi. In the future, we plan to open new stores in major cities."
             }
         ]
-    }
+    },
+    "viewAllCategory": "View All",
+    "mobileSelectCategory": "Select Category"
 }

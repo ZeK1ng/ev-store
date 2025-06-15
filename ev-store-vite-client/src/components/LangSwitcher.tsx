@@ -1,8 +1,9 @@
-import { Select, Portal, createListCollection } from '@chakra-ui/react'
+import { Select, Portal, createListCollection, HStack, Button, useBreakpointValue } from '@chakra-ui/react'
 import { Language, useLanguage } from '@/contexts/LanguageContext'
 
 const LangSwitcher = () => {
   const { language, setLanguage } = useLanguage()
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   const langs = createListCollection({
     items: [
@@ -12,12 +13,31 @@ const LangSwitcher = () => {
     ],
   })
 
+  if (isMobile) {
+    return (
+      <HStack gap={2}>
+        {langs.items.map((lang) => (
+          <Button
+            key={lang.value}
+            size="sm"
+            variant={language === lang.value ? "solid" : "outline"}
+            colorScheme="blue"
+            onClick={() => setLanguage(lang.value as Language)}
+            p={2}
+          >
+            {lang.label}
+          </Button>
+        ))}
+      </HStack>
+    )
+  }
+
   return (
     <Select.Root
       collection={langs}
-      size={{ base: "lg", md: "xs" }}
+      size="xs"
       value={[language]}
-      width={{ base: "100%", md: "70px" }}
+      width="70px"
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
         const newLang = e.value[0] as Language;

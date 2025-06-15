@@ -38,12 +38,12 @@ const AboutUs = () => {
 
                 <Box flex={1}>
                     <Image
-                        src="https://placehold.co/1000x1000"
+                        src="/images/about-us.png"
                         alt="EV Store journey"
                         borderRadius="md"
                         objectFit="cover"
                         w="full"
-                        h={{ base: 'auto', md: '300px' }}
+                        h={{ base: 'auto', md: '350px' }}
                     />
                 </Box>
             </Flex>

@@ -22,7 +22,7 @@ const HeroSection = () => {
             top={{ base: '80px', md: '75px' }}
             left="0"
             right="0"
-            height="400px"
+            height="300px"
             overflow="hidden"
             display="flex"
             alignItems="center"
@@ -69,7 +69,7 @@ const HeroSection = () => {
                 >
                     <Heading
                         as="h1"
-                        size="4xl"
+                        size={{ base: '2xl', md: '4xl' }}
                         mb={6}
                         fontWeight="bold"
                         fontFamily="heading"
@@ -78,9 +78,9 @@ const HeroSection = () => {
                         {t('hero.title')}
                     </Heading>
                     <Text
-                        fontSize="xl"
+                        fontSize={{ base: 'md', md: 'xl' }}
                         mb={8}
-                        maxW="600px"
+                        maxW="700px"
                         color="whiteAlpha.900"
                     >
                         {t('hero.description')}

@@ -19,7 +19,7 @@ const FeaturesSection = () => {
         "TbHours24": TbHours24,
     }
     return (
-        <Box px={{ base: 4, md: 16 }} py={12}>
+        <Box py={12}>
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={10}>
                 {(['BiPackage', 'BiSupport', 'TbHours24'] as Array<keyof typeof iconsMap>).map((item, index) => (
                     <Box

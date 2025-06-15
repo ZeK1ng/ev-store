@@ -33,10 +33,10 @@ const HomePage = () => {
   return (
     <Box textAlign="center" px={{ base: 4, md: 8 }} pb={{ base: 4, md: 8 }}>
       <HeroSection />
-      
-      <Box 
-        mt="400px"
-        textAlign="center" 
+
+      <Box
+        mt="300px"
+        textAlign="center"
         px={{ base: 4, md: 8 }}
         pb={{ base: 4, md: 8 }}
       >
@@ -46,8 +46,8 @@ const HomePage = () => {
             category={category}
             showSubcategories={
               category.name === 'EV Chargers' ? 2 :
-              category.name === 'EV Adapters' ? 4 :
-              undefined
+                category.name === 'EV Adapters' ? 4 :
+                  undefined
             }
           />
         ))}

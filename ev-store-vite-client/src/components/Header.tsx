@@ -43,7 +43,7 @@ const Header = () => {
     }
 
     return (
-        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl" h={{ base: '80px', md: '75px' }}>
+        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl" >
             <Flex
                 as="header"
                 boxSizing="border-box"
@@ -53,8 +53,8 @@ const Header = () => {
                 px={{ base: 4, md: 8 }}
                 py={4}
                 maxW="1296px"
-                w="100%"
-                borderBottomWidth="1px">
+                h={{ base: '80px', md: '75px' }}
+                w="100%">
                 <Flex align="center">
                     <Link href="/">
                         <Image src={
