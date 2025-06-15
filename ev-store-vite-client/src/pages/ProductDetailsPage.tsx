@@ -362,7 +362,7 @@ const ProductDetailsPage = () => {
                                 w="full"
                                 variant="outline"
                                 colorPalette="teal"
-                                onClick={() => window.location.href = 'tel:+995568698300'}
+                                onClick={() => window.location.href = 'tel:+995568574455'}
                             >
                                 <LuPhone />
                             </Button>
@@ -372,7 +372,7 @@ const ProductDetailsPage = () => {
                                 bg="#25D366"
                                 color="white"
                                 variant="outline"
-                                onClick={() => window.open('https://wa.me/+995568698300', '_blank')}
+                                onClick={() => window.open('https://wa.me/+995568574455', '_blank')}
                             >
                                 <FaWhatsapp />
                             </Button>
@@ -382,7 +382,7 @@ const ProductDetailsPage = () => {
                                 bg="#7360f2"
                                 color="white"
                                 variant="outline"
-                                onClick={() => window.open('viber://chat?number=+995568698300', '_blank')}
+                                onClick={() => window.open('viber://chat?number=+995568574455', '_blank')}
                             >
                                 <FaViber />
                             </Button>

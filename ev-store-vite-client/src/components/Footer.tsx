@@ -36,7 +36,7 @@ const Footer = () => {
                             </IconButton>
 
                             <IconButton aria-label="WhatsApp" variant="surface" size="xs">
-                                <Link to={`https://wa.me/995568698300`} target='_blank'>
+                                <Link to={`https://wa.me/995568574455`} target='_blank'>
                                     <MdOutlineWhatsapp />
                                 </Link>
                             </IconButton>
