@@ -5,6 +5,7 @@
         "backToHome": "Back to Home Page"
     },
     "header": {
+        "menu": "Menu",
         "home": "Home",
         "catalog": "Catalog",
         "aboutUs": "About Us",
