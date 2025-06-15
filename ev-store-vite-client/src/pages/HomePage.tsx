@@ -2,10 +2,8 @@ import { Box } from '@chakra-ui/react'
 import HeroSection from '@/components/homePage/HeroSection'
 import CategorySection from '@/components/homePage/CategorySection'
 import FAQSection from '@/components/homePage/FAQSection'
-import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import API from '@/utils/AxiosAPI'
-import PopularProductsSlider from '@/components/homePage/PopularProductsSlider'
 
 interface Category {
   id: number
@@ -15,7 +13,6 @@ interface Category {
 }
 
 const HomePage = () => {
-  const { t } = useTranslation('home')
   const [categories, setCategories] = useState<Category[]>([])
 
   useEffect(() => {
@@ -33,22 +30,29 @@ const HomePage = () => {
   }, [])
 
   return (
-    <Box textAlign="center" p={{ base: 4, md: 8 }}>
+    <Box textAlign="center" px={{ base: 4, md: 8 }} pb={{ base: 4, md: 8 }}>
       <HeroSection />
+      
+      <Box 
+        mt="400px"
+        textAlign="center" 
+        px={{ base: 4, md: 8 }}
+        pb={{ base: 4, md: 8 }}
+      >
+        {categories.map((category) => (
+          <CategorySection
+            key={category.id}
+            category={category}
+            showSubcategories={
+              category.name === 'EV Chargers' ? 2 :
+              category.name === 'EV Adapters' ? 4 :
+              undefined
+            }
+          />
+        ))}
 
-      {categories.map((category) => (
-        <CategorySection
-          key={category.id}
-          category={category}
-          showSubcategories={
-            category.name === 'EV Chargers' ? 2 :
-            category.name === 'EV Adapters' ? 4 :
-            undefined
-          }
-        />
-      ))}
-
-      <FAQSection />
+        <FAQSection />
+      </Box>
     </Box>
   )
 }

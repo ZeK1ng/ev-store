@@ -43,7 +43,7 @@ const Header = () => {
     }
 
     return (
-        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl">
+        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl" h={{ base: '80px', md: '75px' }}>
             <Flex
                 as="header"
                 boxSizing="border-box"

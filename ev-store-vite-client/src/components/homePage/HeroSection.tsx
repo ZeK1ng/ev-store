@@ -4,9 +4,9 @@ import {
     Heading,
     Text,
     Button,
-    Image,
     Container,
     Highlight,
+    Image,
 } from '@chakra-ui/react'
 import { LuArrowRight } from 'react-icons/lu'
 import { useTranslation } from 'react-i18next'
@@ -17,58 +17,91 @@ const HeroSection = () => {
     const navigate = useNavigate()
 
     return (
-        <Box as="section" py={12}>
-            <Container maxW="container.xl" px={0}>
+        <Box
+            as="section"
+            position="absolute"
+            top={{ base: '80px', md: '75px' }}
+            left="0"
+            right="0"
+            height="400px"
+            overflow="hidden"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+        >
+            <Box
+                position="absolute"
+                top="0"
+                left="0"
+                right="0"
+                bottom="0"
+                zIndex="0"
+            >
+                <Image
+                    src="/images/hero-section.png"
+                    w="100%"
+                    h="100%"
+                    objectFit="cover"
+                    objectPosition="center"
+                />
+                <Box
+                    position="absolute"
+                    top="0"
+                    left="0"
+                    right="0"
+                    bottom="0"
+                    bg="blackAlpha.700"
+                />
+            </Box>
+
+            <Container
+                maxW="container.xl"
+                position="relative"
+                zIndex="1"
+                px={4}
+            >
                 <Flex
-                    direction={{ base: 'column', md: 'row' }}
+                    direction="column"
                     align="center"
-                    justify="space-between"
-                    gap={8}
+                    justify="center"
+                    textAlign="center"
+                    color="white"
+                    py={20}
                 >
-                    <Box flex="1" textAlign={{ base: 'center', md: 'left' }}>
-                        <Heading
-                            as="h1"
-                            size="4xl"
-                            mb={6}
-                            fontWeight="bold"
-                            fontFamily="heading"
-                        >
-                            <Highlight
-                                query={['ელექტრომობილების']}
-                                styles={{ px: "0.5", bg: "#9CE94F", color: "white" }}
-                            >
-                                {t('hero.title')}
-                            </Highlight>
-                        </Heading>
-                        <Text
-                            fontSize="xl"
-                            color="gray.600"
-                            mb={8}
-                            maxW="600px"
-                            mx={{ base: 'auto', md: '0' }}
-                        >
-                            {t('hero.description')}
-                        </Text>
-                        <Button
-                            size="lg"
-                            onClick={() => navigate('/catalog')}
-                        >
-                            {t('hero.catalogButton')}
-                            <Box as="span">
-                                <LuArrowRight />
-                            </Box>
-                        </Button>
-                    </Box>
-                    <Box flex="1" display="flex" justifyContent="center">
-                        <Image
-                            src="https://plus.unsplash.com/premium_photo-1715639312136-56a01f236440?q=80&w=3840&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            maxW="100%"
-                            h="auto"
-                            borderRadius="xl"
-                            boxShadow="2xl"
-                            objectFit="cover"
-                        />
-                    </Box>
+                    <Heading
+                        as="h1"
+                        size="4xl"
+                        mb={6}
+                        fontWeight="bold"
+                        fontFamily="heading"
+                        maxW="900px"
+                    >
+                        {t('hero.title')}
+                    </Heading>
+                    <Text
+                        fontSize="xl"
+                        mb={8}
+                        maxW="600px"
+                        color="whiteAlpha.900"
+                    >
+                        {t('hero.description')}
+                    </Text>
+                    <Button
+                        size="lg"
+                        onClick={() => navigate('/catalog')}
+                        bg="white"
+                        color="black"
+                        _hover={{
+                            bg: 'whiteAlpha.900',
+                            transform: 'translateY(-2px)',
+                        }}
+                        transition="all 0.2s"
+                    >
+                        {t('hero.catalogButton')}
+                        <Box as="span" ml={2}>
+                            <LuArrowRight />
+                        </Box>
+                    </Button>
                 </Flex>
             </Container>
         </Box>
