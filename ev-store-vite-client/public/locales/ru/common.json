@@ -1,7 +1,7 @@
 {
     "404": {
         "title": "404 Страница не найдена",
-        "description": "Упс! Страница, которую вы ищете, не существует или была перемещена.",
+        "description": "Страница, которую вы ищете, не существует",
         "backToHome": "Вернуться на главную"
     },
     "header": {
@@ -15,43 +15,44 @@
         "logout": "Выйти",
         "login": "Войти",
         "logoutError": "Ошибка выхода",
-        "logoutErrorDescription": "Произошла ошибка при попытке выйти. Пожалуйста, попробуйте позже."
+        "logoutErrorDescription": "Не удалось выйти из системы. Пожалуйста, попробуйте позже."
     },
     "footer": {
-        "phoneNumber": "+995568574455",
-        "emailAddress": "yourstore@gmail.com",
-        "quickLinks": "Быстрые ссылки",
+        "phoneNumber": "+995 568 57 44 55",
+        "emailAddress": "info@evstore.ge",
+        "quickLinks": "Быстрая навигация",
         "category1url": "/catalog?categories=11",
-        "category1name": "Категория 1",
+        "category1name": "Зарядные устройства",
         "category2url": "/catalog?categories=22",
-        "category2name": "Категория 2",
+        "category2name": "Адаптеры",
         "category3url": "/catalog?categories=30",
-        "category3name": "Категория 3",
+        "category3name": "Разъемы",
         "category4url": "/catalog?categories=35",
-        "category4name": "Категория 4",
-        "address": "123 Ваша Магазин Улица, Город, Страна",
-        "phone": "(+995) 568-698-300",
-        "email": "yourstore@gmail.com",
+        "category4name": "Аксессуары",
+        "address": "9а, проспект Давида Гурамишвили",
+        "phone": "(+995) 568 57 44 55",
+        "email": "info@evstore.ge",
         "aboutUs": "О нас",
         "catalog": "Каталог",
-        "contactUs": "Связаться с нами"
+        "contactUs": "Контакты"
     },
-    "addToCart": "Добавить",
-    "addToCartSuccess": "Товар успешно добавлен в корзину",
-    "addToCartError": "Ошибка добавления товара в корзину",
     "breadcrumb": {
         "catalog": "Каталог"
     },
+    "addToCart": "Добавить",
+    "addToCartSuccess": "Товар добавлен в корзину",
+    "addToCartError": "Не удалось добавить товар в корзину",
     "slider": {
         "title": "Популярные товары",
         "similarProducts": "Похожие товары",
-        "seeAllLabel": "Смотреть все",
+        "seeAllLabel": "Все товары",
         "addToCart": "Добавить",
-        "addToCartSuccess": "Товар успешно добавлен в корзину",
-        "addToCartError": "Ошибка добавления товара в корзину"
+        "addToCartSuccess": "Товар добавлен в корзину",
+        "addToCartError": "Не удалось добавить товар в корзину"
     },
-    "popular": "Популярный",
+    "popular": "Популярное",
     "copied": "Скопировано",
     "itemCodeCopied": "Код товара скопирован",
-    "comingSoon": "Скоро"
+    "comingSoon": "Скоро",
+    "watchTutorial": "Видеоинструкция"
 }

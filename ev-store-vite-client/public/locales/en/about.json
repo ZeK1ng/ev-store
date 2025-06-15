@@ -1,8 +1,4 @@
 {
-  "breadcrumb": {
-    "home": "Home",
-    "current": "About Us"
-  },
   "title": "About EV Store",
   "paragraph1": "Launched in 2022, EV Store is your dedicated online source for reliable electric vehicle charging solutions and accessories. We started with a passion for making EV ownership easier and more convenient.",
   "paragraph2": "We are continuously expanding our selection of high-quality EV chargers, adapters, and essential accessories. Our commitment is to empower EV drivers with the dependable tools they need for a seamless charging experience.",
@@ -22,17 +18,14 @@
   },
   "contact": {
     "title": "Get in Touch",
-    "description": "Have questions or need assistance? Our support team is here to help you with all your EV charging needs.",
     "phone": "Phone",
     "phoneButton": "Call Us",
-    "phoneNumber": "+995 568 69 83 00",
+    "phoneNumber": "+995 568 57 44 55",
     "email": "Email",
     "emailButton": "Email Us",
-    "emailAddress": "evstoresuppot@gmail.com",
+    "emailAddress": "info@evstore.ge",
     "address": "Address",
-    "addressName": "9a, David Guramishvili Ave",
-    "addressCity": "Tbilisi, Georgia",
-    "mapTitle": "Find Us on the Map",
+    "addressName": "9a, David Guramishvili Avenue",
     "mapButton": "View on Map"
   }
 }
