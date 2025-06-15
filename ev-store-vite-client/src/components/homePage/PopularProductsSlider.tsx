@@ -89,6 +89,7 @@ const PopularProductsSlider = ({
                 const params = new URLSearchParams({
                     page: '0',
                     size: '10',
+                    direction: 'desc'
                 });
 
                 if (categoryId) {

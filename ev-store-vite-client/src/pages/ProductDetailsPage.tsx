@@ -177,7 +177,7 @@ const ProductDetailsPage = () => {
             </Breadcrumb.Root>
 
             <Grid
-                templateColumns={{ base: '1fr', lg: '2fr 3fr 2fr' }}
+                templateColumns={{ base: '1fr', lg: '3fr 3fr 2fr' }}
                 gap={8}
             >
                 <GridItem>
@@ -314,7 +314,7 @@ const ProductDetailsPage = () => {
                 </GridItem>
 
                 <GridItem>
-                    <Stack gap={4} bg="bg.subtle" border="1px" borderColor="gray.200" p={4} borderRadius="md" shadow="lg">
+                    <Stack gap={5} bg="bg.subtle" border="1px" borderColor="gray.200" p={4} borderRadius="md" shadow="lg">
                         <Text fontSize="2xl" fontWeight="bold">
                             {product.price} ₾
                         </Text>
@@ -354,35 +354,39 @@ const ProductDetailsPage = () => {
                         >
                             <LuShoppingCart /> {t('addToCart')}
                         </Button>
+                        
+                        <Grid templateColumns="1fr 1fr 1fr" gap={4}>
 
-                        <Button
-                            w="full"
-                            variant="outline"
-                            colorPalette="green"
-                            onClick={() => window.location.href = 'tel:+995568698300'}
-                        >
-                            <LuPhone />{t('callUs')}
-                        </Button>
 
-                        <Button
-                            w="full"
-                            bg="#25D366"
-                            color="white"
-                            variant="outline"
-                            onClick={() => window.open('https://wa.me/995568698300', '_blank')}
-                        >
-                            <FaWhatsapp /> WhatsApp
-                        </Button>
+                            <Button
+                                w="full"
+                                variant="outline"
+                                colorPalette="teal"
+                                onClick={() => window.location.href = 'tel:+995568698300'}
+                            >
+                                <LuPhone />
+                            </Button>
 
-                        <Button
-                            w="full"
-                            bg="#7360f2"
-                            color="white"
-                            variant="outline"
-                            onClick={() => window.open('viber://chat?number=995568698300', '_blank')}
-                        >
-                            <FaViber /> Viber
-                        </Button>
+                            <Button
+                                w="full"
+                                bg="#25D366"
+                                color="white"
+                                variant="outline"
+                                onClick={() => window.open('https://wa.me/+995568698300', '_blank')}
+                            >
+                                <FaWhatsapp />
+                            </Button>
+
+                            <Button
+                                w="full"
+                                bg="#7360f2"
+                                color="white"
+                                variant="outline"
+                                onClick={() => window.open('viber://chat?number=+995568698300', '_blank')}
+                            >
+                                <FaViber />
+                            </Button>
+                        </Grid>
                     </Stack>
                 </GridItem>
             </Grid>
