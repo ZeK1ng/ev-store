@@ -85,6 +85,7 @@ const OrderHistoryPage = () => {
             }
         };
         fetchOrders();
+        window.scrollTo(0, 0);
     }, []);
 
     if (isLoading || orders === null) {

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
     Box,
-    Flex,
     Heading,
     Text,
     Stack,
@@ -205,6 +204,8 @@ const ProductDetailsPage = () => {
                                 alt={getLocalizedText(product, language, 'name')}
                                 height={{ base: '300px', md: '400px' }}
                                 width="full"
+                                bg="bg.emphasized"
+                                objectFit="contain"
                                 comingSoon={product.comingSoon}
                             />
                         </Box>

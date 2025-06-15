@@ -64,6 +64,7 @@ const ProfilePage = () => {
 
     useEffect(() => {
         fetchUserData();
+        window.scrollTo(0, 0);
     }, []);
 
     useEffect(() => {
@@ -109,7 +110,7 @@ const ProfilePage = () => {
     if (loading) {
         return (
             <Center minH="90vh">
-                <Spinner size="xl" borderWidth="4px"/>
+                <Spinner size="xl" borderWidth="4px" />
             </Center>
         );
     }

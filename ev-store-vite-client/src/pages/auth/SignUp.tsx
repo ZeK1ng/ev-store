@@ -1,4 +1,4 @@
-import { useState, } from 'react';
+import { useEffect, useState, } from 'react';
 import API from '@/utils/AxiosAPI';
 import AuthController from '@/utils/AuthController';
 import {
@@ -41,6 +41,10 @@ interface SignupFormValues {
 const SignupPage = () => {
     const { t } = useTranslation('auth');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     if (AuthController.isLoggedIn()) {
         navigate('/');

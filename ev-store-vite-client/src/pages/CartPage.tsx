@@ -123,6 +123,7 @@ const CartPage = () => {
         if (AuthController.isLoggedIn()) {
             fetchUserData();
         }
+        window.scrollTo(0, 0);
         fetchCartData();
     }, []);
 

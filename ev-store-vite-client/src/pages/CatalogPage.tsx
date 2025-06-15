@@ -275,10 +275,10 @@ const CatalogPage = () => {
                 console.error('Error fetching products:', error);
             } finally {
                 setLoading(false);
-                window.scrollTo(0, 0);
             }
         };
 
+        window.scrollTo(0, 0);
         fetchProducts();
     }, [page, pageSize, sortDirection, search, selCats, selRange, initialLoading]);
 
@@ -412,9 +412,6 @@ const CatalogPage = () => {
 
                         </Field.Root>
                         <Field.Root w={{ base: "100%", md: "250px" }}>
-                            <Field.Label>
-                                {t('sortByLabel')}
-                            </Field.Label>
                             <Select.Root
                                 collection={createListCollection({
                                     items: [

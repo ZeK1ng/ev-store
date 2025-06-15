@@ -49,7 +49,7 @@ const CategorySection = ({ category, showSubcategories = 4 }: CategorySectionPro
           <Heading as="h2" size="3xl" textAlign="left">
             {t(`categorySection.${category.name.toLocaleLowerCase().replace(" ", "_")}`)}
           </Heading>
-          <Text fontSize="md" textAlign="left" color="gray.500">
+          <Text fontSize="md" textAlign="left" color="gray.500" maxW="768px">
             {t(`categorySection.${category.name.toLocaleLowerCase().replace(" ", "_")}_description`)}
           </Text>
         </Box>

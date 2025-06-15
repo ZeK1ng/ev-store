@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 const ContactUsPage = () => {
   const { t } = useTranslation('about')
@@ -21,6 +22,10 @@ const ContactUsPage = () => {
 
   const googleMapsEmbedUrl =
     'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2975.923744735644!2d44.78949057686309!3d41.76530187125435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40446de3589026f3%3A0xc590bb066828d470!2sYourStore.ge!5e0!3m2!1sen!2sge!4v1748774812053!5m2!1sen!2sge'
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Box py={{ base: 8, md: 12 }}>

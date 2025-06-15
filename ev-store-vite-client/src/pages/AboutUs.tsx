@@ -10,9 +10,13 @@ import {
 } from '@chakra-ui/react';
 import { FaBolt } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react';
 
 const AboutUs = () => {
     const { t } = useTranslation('about');
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <Box px={{ base: 4, md: 16 }} py={12}>
             <Flex

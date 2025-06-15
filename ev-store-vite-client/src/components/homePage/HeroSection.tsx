@@ -5,7 +5,6 @@ import {
     Text,
     Button,
     Container,
-    Highlight,
     Image,
 } from '@chakra-ui/react'
 import { LuArrowRight } from 'react-icons/lu'
@@ -97,7 +96,7 @@ const HeroSection = () => {
                         }}
                         transition="all 0.2s"
                     >
-                        {t('hero.catalogButton')}
+                        {t('hero.buttonLabel')}
                         <Box as="span" ml={2}>
                             <LuArrowRight />
                         </Box>

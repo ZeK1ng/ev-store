@@ -3,7 +3,6 @@
     "filtersTitle": "Filter",
     "priceFilterTitle": "Price",
     "categoryFilterTitle": "Category",
-    "sortByLabel": "Sort",
     "sortByPriceAsc": "Price: Low to High",
     "sortByPriceDesc": "Price: High to Low",
     "noResultsTitle": "No matching products found",
