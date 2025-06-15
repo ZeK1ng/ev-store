@@ -13,7 +13,7 @@ import {
     HStack
 } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { LuShoppingCart, LuStar, LuArrowRight, LuArrowLeft } from 'react-icons/lu'
 import API from '@/utils/AxiosAPI';
 import { addItemToCart } from "@/utils/helpers";
@@ -47,7 +47,6 @@ interface ProductResponse {
 interface PopularProductsSliderProps {
     categoryId?: number;
     currentProductId?: number;
-    showAll?: boolean;
     isPopular?: boolean;
     hidePandings?: boolean;
     hideTitle?: boolean;
@@ -56,14 +55,12 @@ interface PopularProductsSliderProps {
 const PopularProductsSlider = ({
     categoryId,
     currentProductId,
-    showAll = true,
     isPopular = false,
     hidePandings = false,
     hideTitle = false
 }: PopularProductsSliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation('common')
-    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [showScrollButtons, setShowScrollButtons] = useState(false);
