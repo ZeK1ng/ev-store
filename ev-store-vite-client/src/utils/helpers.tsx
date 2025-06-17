@@ -1,5 +1,5 @@
 export const getImageUrl = (imageId: number): string => {
-    return `https://determination-treasurer-barriers-consistency.trycloudflare.com/api/v1/image?imageId=${imageId}`;
+    return `https://bat-adelaide-modern-springer.trycloudflare.com/api/v1/image?imageId=${imageId}`;
 };
 
 export const addItemToCart = (productId: number, quantity: number) => {
