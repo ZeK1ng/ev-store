@@ -23,7 +23,7 @@ public class CleanupService {
         log.info("Deleted {} unverified users", deletedCount);
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // every day at midnight
+    @Scheduled(cron = "0 20 0 * * *") // every day at midnight
     public void removeNotUsedImages() {
         final int deleted = imageService.deleteOrphanImages();
         log.info("Deleted {} orphan images", deleted);
