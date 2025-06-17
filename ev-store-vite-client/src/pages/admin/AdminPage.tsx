@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import {
     Box,
     SimpleGrid,
@@ -11,7 +11,10 @@ import {
 import { FaSitemap, FaLayerGroup, FaChartBar } from "react-icons/fa";
 
 
-const AdminPage: React.FC = () => {
+const AdminPage = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <Box p={8} h="100dvh">
             <SimpleGrid columns={{ base: 1, md: 2 }} gap={8}>

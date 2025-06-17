@@ -13,7 +13,7 @@ import {
     HStack
 } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { LuShoppingCart, LuStar, LuArrowRight, LuArrowLeft } from 'react-icons/lu'
 import API from '@/utils/AxiosAPI';
 import { addItemToCart } from "@/utils/helpers";
@@ -36,6 +36,7 @@ interface Product {
     price: number;
     mainImageId: number;
     isPopular: boolean;
+    comingSoon: boolean;
 }
 
 interface ProductResponse {
@@ -46,7 +47,6 @@ interface ProductResponse {
 interface PopularProductsSliderProps {
     categoryId?: number;
     currentProductId?: number;
-    showAll?: boolean;
     isPopular?: boolean;
     hidePandings?: boolean;
     hideTitle?: boolean;
@@ -55,14 +55,12 @@ interface PopularProductsSliderProps {
 const PopularProductsSlider = ({
     categoryId,
     currentProductId,
-    showAll = true,
     isPopular = false,
     hidePandings = false,
     hideTitle = false
 }: PopularProductsSliderProps) => {
     const sliderRef = useRef<HTMLDivElement>(null)
     const { t } = useTranslation('common')
-    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [showScrollButtons, setShowScrollButtons] = useState(false);
@@ -91,6 +89,7 @@ const PopularProductsSlider = ({
                 const params = new URLSearchParams({
                     page: '0',
                     size: '10',
+                    direction: 'desc'
                 });
 
                 if (categoryId) {
@@ -161,7 +160,7 @@ const PopularProductsSlider = ({
         <Box py={hidePandings ? 0 : 12}>
             <Flex justify={hideTitle && showScrollButtons ? 'flex-end' : 'space-between'} align="center">
                 {!hideTitle && (
-                    <Heading size={{ base: '2xl', md: '4xl' }} textAlign='left' mt={12}>
+                    <Heading size={{ base: 'xl', md: '2xl' }} textAlign='left' mt={12}>
                         {isPopular ? t('slider.title') : t('slider.similarProducts')}
                     </Heading>
                 )}
@@ -179,7 +178,7 @@ const PopularProductsSlider = ({
                     <Box
                         key={product.productId}
                         scrollSnapAlign="start"
-                        flex={{ base: '0 0 300px', md: '0 0 27%' }}
+                        flex={{ base: '0 0 300px', md: '0 0 33%', lg: '0 0 27%' }}
                     >
                         <RouterLink
                             to={`/product/${product.productId}`}
@@ -204,12 +203,13 @@ const PopularProductsSlider = ({
                                     alt={getLocalizedText(product, language, 'name')}
                                     width="full"
                                     height="200px"
-                                    objectFit="cover"
+                                    objectFit="contain"
                                     shadow="sm"
+                                    comingSoon={product.comingSoon}
                                 />
 
                                 <Card.Body gap="1" p={4} flex="1" display="flex" flexDirection="column">
-                                    <Card.Title textAlign="left">
+                                    <Card.Title textAlign="left" lineClamp={1}>
                                         {getLocalizedText(product, language, 'name')}
                                     </Card.Title>
                                     <HStack justify="flex-start">
@@ -225,7 +225,7 @@ const PopularProductsSlider = ({
                                         }
                                     </HStack>
                                     <Text textStyle="2xl" fontWeight="medium" textAlign="left">
-                                        {product.price.toFixed(2)}
+                                        {product.price.toFixed(2)} ₾
                                     </Text>
                                     <Button
                                         size="sm"

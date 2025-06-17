@@ -51,6 +51,7 @@ interface ItemFormValues {
     mainImageFile: FileList;
     imagesFiles: FileList;
     isPopular: boolean;
+    comingSoon: boolean;
     tutorialLink: string;
     itemCode: string;
 }
@@ -136,6 +137,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                 price: item.price,
                 categoryId: item.categoryId,
                 isPopular: item.isPopular,
+                comingSoon: item.comingSoon,
                 itemCode: item.itemCode
             });
         } catch (error) {
@@ -210,6 +212,7 @@ const ItemsManagementAdminPage: React.FC = () => {
                 stockAmount: data.stockAmount,
                 categoryId: data.categoryId,
                 isPopular: data.isPopular,
+                comingSoon: data.comingSoon,
                 mainImageId: mainImageId,
                 imageIds: additionalImageIds,
                 tutorialLink: data.tutorialLink,
@@ -449,6 +452,16 @@ const ItemsManagementAdminPage: React.FC = () => {
                             <Checkbox.HiddenInput />
                             <Checkbox.Control />
                             <Checkbox.Label>Mark as Popular</Checkbox.Label>
+                        </Checkbox.Root>
+                    </Field.Root>
+                    <Field.Root id="comingSoon">
+                        <Checkbox.Root
+                            defaultChecked={existingItem?.comingSoon}
+                            onCheckedChange={(details) => setValue('comingSoon', Boolean(details.checked))}
+                        >
+                            <Checkbox.HiddenInput />
+                            <Checkbox.Control />
+                            <Checkbox.Label>Coming Soon</Checkbox.Label>
                         </Checkbox.Root>
                     </Field.Root>
 

@@ -48,6 +48,7 @@ interface Item {
     stockAmount: number
     categoryName: string
     isPopular: boolean
+    comingSoon: boolean
     mainImageId: number
     imageIds: number[]
     tutorialLink: string
@@ -152,7 +153,7 @@ const ItemsAdminPage = () => {
     }
 
     return (
-        <Box p={8} maxW="800px" mx="auto" h="100dvh">
+        <Box p={8} maxW="800px" mx="auto">
             {apiError && (
                 <Alert.Root status="error" mb={4}>
                     <Alert.Indicator />
@@ -233,13 +234,27 @@ const ItemsAdminPage = () => {
                     </EmptyState.Content>
                 </EmptyState.Root>
             ) : (
-                <Stack gap={5}>
+                <Stack gap={5} >
                     {filteredItems.length > 0 && filteredItems.map(item => (
                         <Card.Root key={item.productId} overflow="hidden" size="sm" flexDirection={{ base: 'column', md: 'row' }}>
-                            <CachedImage imageId={item.mainImageId} alt={item.nameENG} width={{ base: '100%', md: '200px' }} height="200px" objectFit="cover" />
+                            <CachedImage 
+                                imageId={item.mainImageId} 
+                                alt={item.nameENG} 
+                                width={{ base: '100%', md: '200px' }} 
+                                height="200px" 
+                                objectFit="cover"
+                                comingSoon={item.comingSoon}
+                            />
                             <Box flex="1">
                                 <Card.Body>
-                                    <Card.Title mb="2" fontSize={{ base: 'lg', md: 'xl' }}>{item.nameENG}</Card.Title>
+                                    <Card.Title mb="2" fontSize={{ base: 'lg', md: 'xl' }} >
+                                        {item.nameENG}
+                                        {item.comingSoon && (
+                                            <Badge size="sm" colorPalette="red" ml={2}>
+                                                Coming Soon
+                                            </Badge>
+                                        )}
+                                    </Card.Title>
                                     <Card.Description fontSize={{ base: 'sm', md: 'md' }} >
                                         <IconButton
                                             aria-label="Copy item ID"
@@ -258,12 +273,12 @@ const ItemsAdminPage = () => {
                                         </IconButton>
                                     </Card.Description>
                                     <SimpleGrid columns={{ base: 2, md: 4 }} gap={2} mt="4">
-                                        <Badge size="md" p={2} borderRadius="md" textAlign="center">Price: {item.price}</Badge>
-                                        <Badge size="md" p={2} borderRadius="md" textAlign="center">Qty: {item.stockAmount}</Badge>
-                                        <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{item.categoryName}</Badge>
+                                        <Badge size="sm" p={2} borderRadius="md" textAlign="center">Price: {item.price} ₾</Badge>
+                                        <Badge size="sm" p={2} borderRadius="md" textAlign="center">Qty: {item.stockAmount}</Badge>
+                                        <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="yellow">{item.categoryName}</Badge>
                                         {
                                             item.isPopular && (
-                                                <Badge size="md" p={2} borderRadius="md" textAlign="center" colorPalette="green">Popular</Badge>
+                                                <Badge size="sm" p={2} borderRadius="md" textAlign="center" colorPalette="green">Popular</Badge>
                                             )
                                         }
                                     </SimpleGrid>
@@ -309,23 +324,29 @@ const ItemsAdminPage = () => {
                                                                     <DataList.ItemValue>{item.nameRUS}</DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
-                                                                    <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
-                                                                    <DataList.ItemValue>{item.descriptionENG}</DataList.ItemValue>
+                                                                    <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Text whiteSpace="pre-wrap">{item.descriptionGE}</Text>
+                                                                    </DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
-                                                                    <DataList.ItemLabel>Description (GE)</DataList.ItemLabel>
-                                                                    <DataList.ItemValue>{item.descriptionGE}</DataList.ItemValue>
+                                                                    <DataList.ItemLabel>Description (EN)</DataList.ItemLabel>
+                                                                    <DataList.ItemValue>
+                                                                        <Text whiteSpace="pre-wrap">{item.descriptionENG}</Text>
+                                                                    </DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
                                                                     <DataList.ItemLabel>Description (RU)</DataList.ItemLabel>
-                                                                    <DataList.ItemValue>{item.descriptionRUS}</DataList.ItemValue>
+                                                                    <DataList.ItemValue>
+                                                                        <Text whiteSpace="pre-wrap">{item.descriptionRUS}</Text>
+                                                                    </DataList.ItemValue>
                                                                 </DataList.Item>
                                                             </SimpleGrid>
                                                             <SimpleGrid columns={{ base: 1, md: 2 }} gap={4}>
                                                                 <DataList.Item>
                                                                     <DataList.ItemLabel>Price</DataList.ItemLabel>
                                                                     <DataList.ItemValue>
-                                                                        <Badge size="md" p={2} borderRadius="md">Price: {item.price} $</Badge>
+                                                                        <Badge size="md" p={2} borderRadius="md">Price: {item.price} ₾</Badge>
                                                                     </DataList.ItemValue>
                                                                 </DataList.Item>
                                                                 <DataList.Item>
@@ -366,7 +387,15 @@ const ItemsAdminPage = () => {
                                                                 <Text fontWeight="semibold" mb={2}>Additional Images</Text>
                                                                 <SimpleGrid columns={{ base: 2, md: 3 }} gap={3}>
                                                                     {item.imageIds.map((src, idx) => (
-                                                                        <CachedImage key={idx} imageId={src} alt={`Image ${idx + 1}`} w="100%" aspectRatio="1" borderRadius="md" />
+                                                                        <CachedImage 
+                                                                            key={idx} 
+                                                                            imageId={src} 
+                                                                            alt={`Image ${idx + 1}`} 
+                                                                            w="100%" 
+                                                                            aspectRatio="1" 
+                                                                            borderRadius="md"
+                                                                            comingSoon={item.comingSoon}
+                                                                        />
                                                                     ))}
                                                                 </SimpleGrid>
                                                             </Box>
@@ -464,7 +493,6 @@ const ItemsAdminPage = () => {
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                 setCurrentPage(details.page - 1);
                             }}
-                            mt="6"
                             justifySelf="center"
                         >
                             <ButtonGroup variant="ghost" size="sm">

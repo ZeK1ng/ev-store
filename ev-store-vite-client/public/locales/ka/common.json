@@ -1,10 +1,11 @@
 {
     "404": {
         "title": "404 გვერდი ვერ მოიძებნა",
-        "description": "უკაცრავად! გვერდი, რომელსაც ეძებთ, არ არსებობს ან გადატანილია.",
+        "description": "გვერდი რომელსაც ეძებთ, არ არსებობს",
         "backToHome": "მთავარ გვერდზე დაბრუნება"
     },
     "header": {
+        "menu": "მენიუ",
         "home": "მთავარი",
         "catalog": "კატალოგი",
         "aboutUs": "ჩვენს შესახებ",
@@ -18,37 +19,41 @@
         "logoutErrorDescription": "თქვენი გამოსვლის მცდელობა ვერ მოხერხდა. გთხოვთ, სცადოთ მოგვიანებით."
     },
     "footer": {
-        "phoneNumber": "+995568698300",
-        "emailAddress":"yourstore@gmail.com",
-        "quickLinks": "სწრაფი ბმულები",
-        "category1url": "/category1",
-        "category1name": "კატეგორია 1",
-        "category2url": "/category2",
-        "category2name": "კატეგორია 2",
-        "category3url": "/category3",
-        "category3name": "კატეგორია 3",
-        "address": "123 თქვენი მაღაზიის ქუჩა, ქალაქი, ქვეყანა",
-        "phone": "(+995) 568-698-300",
-        "email": "yourstore@gmail.com",
+        "phoneNumber": "+995 568 57 44 55",
+        "emailAddress": "info@evstore.ge",
+        "quickLinks": "სწრაფი ნავიგაცია",
+        "category1url": "/catalog?categories=11",
+        "category1name": "დამტენები",
+        "category2url": "/catalog?categories=22",
+        "category2name": "ადაპტერები",
+        "category3url": "/catalog?categories=30",
+        "category3name": "სადენები",
+        "category4url": "/catalog?categories=35",
+        "category4name": "კონექტორები",
+        "address": "9ა, დავით გურამიშვილის გამზირი",
+        "phone": "(+995) 568 57 44 55",
+        "email": "info@evstore.ge",
         "aboutUs": "ჩვენს შესახებ",
         "catalog": "კატალოგი",
         "contactUs": "კონტაქტი"
     },
-    "addToCart": "დამატება",
-    "addToCartSuccess": "პროდუქტი წარმატებით დამატებულია კარტაში",
-    "addToCartError": "პროდუქტის დამატების შეცდომა",
     "breadcrumb": {
         "catalog": "კატალოგი"
     },
+    "addToCart": "დამატება",
+    "addToCartSuccess": "პროდუქტი დამატებულია კალათაში",
+    "addToCartError": "პროდუქტი ვერ დაემატა კალათაში",
     "slider": {
         "title": "პოპულარული პროდუქტები",
         "similarProducts": "მსგავსი პროდუქტები",
         "seeAllLabel": "ყველა პროდუქტი",
         "addToCart": "დამატება",
-        "addToCartSuccess": "პროდუქტი წარმატებით დამატებულია კარტაში",
-        "addToCartError": "პროდუქტის დამატების შეცდომა"
+        "addToCartSuccess": "პროდუქტი დამატებულია კალათაში",
+        "addToCartError": "პროდუქტი ვერ დაემატა კალათაში"
     },
     "popular": "პოპულარული",
     "copied": "დაკოპირდა",
-    "itemCodeCopied": "პროდუქტის კოდი დაკოპირდა"
+    "itemCodeCopied": "პროდუქტის კოდი დაკოპირდა",
+    "comingSoon": "მალე დაემატება",
+    "watchTutorial": "ვიდეო ინსტრუქცია"
 }

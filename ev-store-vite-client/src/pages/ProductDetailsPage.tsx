@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
     Box,
-    Flex,
     Heading,
     Text,
     Stack,
@@ -19,10 +18,15 @@ import {
     Dialog,
     Portal,
     CloseButton,
+    VStack,
+    Grid,
+    GridItem,
+    Separator,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { LuCopy, LuMinus, LuPlus, LuShoppingCart, LuStar } from 'react-icons/lu';
+import { LuCopy, LuMinus, LuPlus, LuShoppingCart, LuStar, LuPhone } from 'react-icons/lu';
 import { LuYoutube } from 'react-icons/lu';
+import { FaWhatsapp, FaViber } from 'react-icons/fa';
 import PopularProductsSlider from '@/components/homePage/PopularProductsSlider';
 import { useTranslation } from "react-i18next";
 import API from '@/utils/AxiosAPI';
@@ -61,6 +65,7 @@ interface Product {
     isPopular: boolean;
     tutorialLink: string;
     itemCode: string;
+    comingSoon: boolean;
 }
 
 const ProductDetailsPage = () => {
@@ -170,72 +175,83 @@ const ProductDetailsPage = () => {
                 </Breadcrumb.List>
             </Breadcrumb.Root>
 
-            <Flex direction={{ base: 'column', md: 'row' }} gap={8}>
-                <Box flex={1}>
-                    <CachedImage
-                        imageId={activeImage || product.mainImageId}
-                        alt={getLocalizedText(product, language, 'name')}
-                        objectFit="cover"
-                        height={{ base: '300px', md: '400px' }}
-                        width="full"
-                        borderRadius="md"
-                    />
-
-                    {product.imageIds.length > 0 && (
-                        <HStack
-                            mt={4}
-                            gap={2}
-                            overflowX="auto"
-                            flexWrap="nowrap"
-                            css={{
-                                msOverflowStyle: 'none',
-                                scrollbarWidth: 'none',
-                                '::-webkit-slider-value-text': {
-                                    display: 'none',
-                                }
-                            }}
-                        >
-                            {allImageIds.map((imageId, idx) => (
-                                <IconButton
-                                    key={idx}
-                                    onClick={() => setActiveImage(imageId)}
-                                    aria-label={`Thumbnail ${idx + 1}`}
-                                    border="xs"
-                                    borderColor={imageId === activeImage ? 'green.500' : 'blackAlpha.200'}
-                                    borderRadius="md"
-                                    _hover={{ borderColor: 'green.400' }}
-                                    cursor="pointer"
-                                    boxSize="50px"
-                                    overflow={'hidden'}
-                                >
-                                    <CachedImage
-                                        imageId={imageId}
-                                        alt={`${getLocalizedText(product, language, 'name')} thumbnail ${idx + 1}`}
-                                    />
-                                </IconButton>
-                            ))}
-                        </HStack>
-                    )}
-                </Box>
-
-                <Box flex={1}>
-                    <Stack gap={4}>
-                        <HStack justify="space-between" align="center">
-                            <Heading size="xl">{getLocalizedText(product, language, 'name')}</Heading>
-                            <HStack gap={2}>
-                                <Badge size="lg" p={2} borderRadius="md" colorPalette="yellow">
+            <Grid
+                templateColumns={{ base: '1fr', lg: '3fr 3fr 2fr' }}
+                gap={8}
+            >
+                <GridItem>
+                    <Box position="relative">
+                        <Box position="absolute" top={2} left={2} zIndex={1}>
+                            <VStack align="start" gap={2}>
+                                {product.comingSoon && (
+                                    <Badge size="sm" colorPalette="red" shadow="md">
+                                        {t('comingSoon')}
+                                    </Badge>
+                                )}
+                                <Badge size="lg" p={2} borderRadius="md" shadow="md" colorPalette="yellow">
                                     {product.categoryName}
                                 </Badge>
-                                {
-                                    product.isPopular && (
-                                        <Badge size="lg" p={2} borderRadius="md" colorPalette="green" w="max-content">
-                                            <LuStar /> {t('popular')}
-                                        </Badge>
-                                    )
-                                }
-                            </HStack>
+                                {product.isPopular && (
+                                    <Badge size="lg" p={2} borderRadius="md" bg="#C9ECAA" color="green.800" w="max-content" shadow="md">
+                                        <LuStar /> {t('popular')}
+                                    </Badge>
+                                )}
+                            </VStack>
+                        </Box>
+                        <Box border="2px" borderColor="gray.200" borderRadius="md" overflow="hidden">
+                            <CachedImage
+                                imageId={activeImage || product.mainImageId}
+                                alt={getLocalizedText(product, language, 'name')}
+                                height={{ base: '300px', md: '400px' }}
+                                width="full"
+                                bg="bg.emphasized"
+                                objectFit="contain"
+                                comingSoon={product.comingSoon}
+                            />
+                        </Box>
 
-                        </HStack>
+                        {product.imageIds.length > 0 && (
+                            <HStack
+                                mt={4}
+                                gap={2}
+                                overflowX="auto"
+                                flexWrap="nowrap"
+                                css={{
+                                    msOverflowStyle: 'none',
+                                    scrollbarWidth: 'none',
+                                    '::-webkit-scrollbar': { display: 'none' }
+                                }}
+                            >
+                                {allImageIds.map((imageId, idx) => (
+                                    <IconButton
+                                        key={idx}
+                                        onClick={() => setActiveImage(imageId)}
+                                        aria-label={`Thumbnail ${idx + 1}`}
+                                        border="xs"
+                                        borderColor={imageId === activeImage ? 'green.500' : 'blackAlpha.200'}
+                                        borderRadius="md"
+                                        _hover={{ borderColor: 'green.400' }}
+                                        cursor="pointer"
+                                        boxSize="50px"
+                                        overflow="hidden"
+                                    >
+                                        <CachedImage
+                                            imageId={imageId}
+                                            alt={`${getLocalizedText(product, language, 'name')} thumbnail ${idx + 1}`}
+                                        />
+                                    </IconButton>
+                                ))}
+                            </HStack>
+                        )}
+                    </Box>
+                </GridItem>
+
+                <GridItem>
+                    <Stack gap={6}>
+                        <Heading size="xl">
+                            {getLocalizedText(product, language, 'name')}
+                        </Heading>
+
                         <IconButton
                             aria-label="Copy item ID"
                             size="sm"
@@ -253,53 +269,58 @@ const ProductDetailsPage = () => {
                             <LuCopy /> code: {product.itemCode}
                         </IconButton>
 
-                        <Text fontSize="2xl" fontWeight="bold" color="green.500">
-                            ${product.price}
-                        </Text>
-                        <Text>{getLocalizedText(product, language, 'description')}</Text>
+                        <Text whiteSpace="pre-wrap">{getLocalizedText(product, language, 'description')}</Text>
 
                         {product.tutorialLink && (
-                            <Box mt={4}>
-                                <Dialog.Root>
-                                    <Dialog.Trigger asChild>
-                                        <Button
-                                            variant="surface"
-                                            size="sm"
-                                            width="max-content"
-                                            colorPalette="green"
-                                        >
-                                            <HStack gap={2}>
-                                                <LuYoutube />
-                                                <Text>{t('watchTutorial')}</Text>
-                                            </HStack>
-                                        </Button>
-                                    </Dialog.Trigger>
-                                    <Portal>
-                                        <Dialog.Backdrop />
-                                        <Dialog.Positioner>
-                                            <Dialog.Content maxW="800px" width="90vw">
-                                                <Dialog.Header>
-                                                    <Dialog.Title>{t('productTutorial')}</Dialog.Title>
-                                                </Dialog.Header>
-                                                <Dialog.Body>
-                                                    <AspectRatio ratio={16 / 9}>
-                                                        <iframe
-                                                            src={`https://www.youtube.com/embed/EzTxYQmU8OE?si=XEuXa4GrbOVNUfIB`}
-                                                            allowFullScreen
-                                                            style={{ borderRadius: '0.375rem' }}
-                                                            title="Product Tutorial"
-                                                        />
-                                                    </AspectRatio>
-                                                </Dialog.Body>
-                                                <Dialog.CloseTrigger asChild>
-                                                    <CloseButton size="sm" position="absolute" right={2} top={2} />
-                                                </Dialog.CloseTrigger>
-                                            </Dialog.Content>
-                                        </Dialog.Positioner>
-                                    </Portal>
-                                </Dialog.Root>
-                            </Box>
+                            <Dialog.Root>
+                                <Dialog.Trigger asChild>
+                                    <Button
+                                        variant="surface"
+                                        size="sm"
+                                        width="max-content"
+                                        colorPalette="red"
+                                    >
+                                        <HStack gap={2}>
+                                            <LuYoutube />
+                                            <Text>{t('watchTutorial')}</Text>
+                                        </HStack>
+                                    </Button>
+                                </Dialog.Trigger>
+                                <Portal>
+                                    <Dialog.Backdrop />
+                                    <Dialog.Positioner>
+                                        <Dialog.Content maxW="800px" width="90vw">
+                                            <Dialog.Header>
+                                                <Dialog.Title>{t('productTutorial')}</Dialog.Title>
+                                            </Dialog.Header>
+                                            <Dialog.Body>
+                                                <AspectRatio ratio={16 / 9}>
+                                                    <iframe
+                                                        src={`https://${product.tutorialLink}`}
+                                                        allowFullScreen
+                                                        style={{ borderRadius: '0.375rem' }}
+                                                        title="Product Tutorial"
+                                                    />
+                                                </AspectRatio>
+                                            </Dialog.Body>
+                                            <Dialog.CloseTrigger asChild>
+                                                <CloseButton size="sm" position="absolute" right={2} top={2} />
+                                            </Dialog.CloseTrigger>
+                                        </Dialog.Content>
+                                    </Dialog.Positioner>
+                                </Portal>
+                            </Dialog.Root>
                         )}
+                    </Stack>
+                </GridItem>
+
+                <GridItem>
+                    <Stack gap={5} bg="bg.subtle" border="1px" borderColor="gray.200" p={4} borderRadius="md" shadow="lg">
+                        <Text fontSize="2xl" fontWeight="bold">
+                            {product.price} ₾
+                        </Text>
+
+                        <Separator />
 
                         <Field.Root>
                             <NumberInput.Root
@@ -325,7 +346,7 @@ const ProductDetailsPage = () => {
                         </Field.Root>
 
                         <Button
-                            w="max-content"
+                            w="full"
                             bg="#9CE94F"
                             color="gray.950"
                             size="lg"
@@ -334,9 +355,42 @@ const ProductDetailsPage = () => {
                         >
                             <LuShoppingCart /> {t('addToCart')}
                         </Button>
+                        
+                        <Grid templateColumns="1fr 1fr 1fr" gap={4}>
+
+
+                            <Button
+                                w="full"
+                                variant="outline"
+                                colorPalette="teal"
+                                onClick={() => window.location.href = 'tel:+995568574455'}
+                            >
+                                <LuPhone />
+                            </Button>
+
+                            <Button
+                                w="full"
+                                bg="#25D366"
+                                color="white"
+                                variant="outline"
+                                onClick={() => window.open('https://wa.me/+995568574455', '_blank')}
+                            >
+                                <FaWhatsapp />
+                            </Button>
+
+                            <Button
+                                w="full"
+                                bg="#7360f2"
+                                color="white"
+                                variant="outline"
+                                onClick={() => window.open('viber://chat?number=+995568574455', '_blank')}
+                            >
+                                <FaViber />
+                            </Button>
+                        </Grid>
                     </Stack>
-                </Box>
-            </Flex>
+                </GridItem>
+            </Grid>
 
             <PopularProductsSlider categoryId={product.categoryId} currentProductId={product.productId} />
         </Box>

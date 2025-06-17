@@ -43,7 +43,7 @@ const Header = () => {
     }
 
     return (
-        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl">
+        <Box position="sticky" top={0} zIndex="2" bg="bg" shadow="xl" >
             <Flex
                 as="header"
                 boxSizing="border-box"
@@ -53,8 +53,8 @@ const Header = () => {
                 px={{ base: 4, md: 8 }}
                 py={4}
                 maxW="1296px"
-                w="100%"
-                borderBottomWidth="1px">
+                h={{ base: '80px', md: '75px' }}
+                w="100%">
                 <Flex align="center">
                     <Link href="/">
                         <Image src={
@@ -70,9 +70,6 @@ const Header = () => {
                     </RouterLink>
                     <RouterLink to="/catalog">
                         {t('header.catalog')}
-                    </RouterLink>
-                    <RouterLink to="/about-us">
-                        {t('header.aboutUs')}
                     </RouterLink>
                     <RouterLink to="/contact-us">
                         {t('header.contact')}
@@ -191,10 +188,6 @@ const Header = () => {
                                                         {t('header.catalog')}
                                                     </RouterLink>
                                                     <Separator />
-                                                    <RouterLink to="/about-us" onClick={() => store.setOpen(false)}>
-                                                        {t('header.aboutUs')}
-                                                    </RouterLink>
-                                                    <Separator />
                                                     <RouterLink to="/contact-us" onClick={() => store.setOpen(false)}>
                                                         {t('header.contact')}
                                                     </RouterLink>
@@ -247,7 +240,6 @@ const Header = () => {
                                                             </Button>
                                                         )
                                                     }
-
                                                     <LangSwitcher />
                                                 </VStack>
                                             </Drawer.Body>

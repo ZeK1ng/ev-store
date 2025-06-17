@@ -38,9 +38,9 @@ interface OrderItem {
     orderDate: string;
     totalPrice: number;
     items: Array<{
-        productNameGe: string;
-        productNameEng: string;
-        productNameRUS: string;
+        nameGE: string;
+        nameENG: string;
+        nameRUS: string;
         quantity: number;
         unitPrice: number;
         totalPrice: number;
@@ -272,7 +272,7 @@ const OrdersManagementAdminPage = () => {
                                             {statusLabel[order.orderStatus]}
                                         </Badge>
                                         <Text fontWeight="bold" fontSize="xl">
-                                            {order.totalPrice.toFixed(2)}
+                                            {order.totalPrice.toFixed(2)} ₾
                                         </Text>
                                     </VStack>
                                 </HStack>
@@ -285,9 +285,9 @@ const OrdersManagementAdminPage = () => {
                                         {order.items.map((item, idx) => (
                                             <HStack key={idx} justify="space-between" py={1}>
                                                 <Text>
-                                                    {item.productNameEng} × {item.quantity}
+                                                    {item.nameENG} × {item.quantity}
                                                 </Text>
-                                                <Text color="gray.600">{item.unitPrice.toFixed(2)}</Text>
+                                                <Text color="gray.600">{item.unitPrice.toFixed(2)} ₾</Text>
                                             </HStack>
                                         ))}
                                     </Box>

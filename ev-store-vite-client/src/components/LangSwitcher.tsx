@@ -1,24 +1,43 @@
-import { Select, Portal, createListCollection } from '@chakra-ui/react'
+import { Select, Portal, createListCollection, HStack, Button, useBreakpointValue } from '@chakra-ui/react'
 import { Language, useLanguage } from '@/contexts/LanguageContext'
 
 const LangSwitcher = () => {
   const { language, setLanguage } = useLanguage()
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   const langs = createListCollection({
     items: [
-      { label: "ქართული", value: "ka" },
-      { label: "English", value: "en" },
-      { label: "Русский", value: "ru" },
+      { label: "GEO", value: "ka" },
+      { label: "ENG", value: "en" },
+      { label: "RUS", value: "ru" },
     ],
   })
-  
+
+  if (isMobile) {
+    return (
+      <HStack gap={2}>
+        {langs.items.map((lang) => (
+          <Button
+            key={lang.value}
+            size="sm"
+            variant={language === lang.value ? "solid" : "outline"}
+            colorScheme="blue"
+            onClick={() => setLanguage(lang.value as Language)}
+            p={2}
+          >
+            {lang.label}
+          </Button>
+        ))}
+      </HStack>
+    )
+  }
 
   return (
     <Select.Root
       collection={langs}
-      size={{ base: "lg", md: "xs" }}
+      size="xs"
       value={[language]}
-      width={{ base: "100%", md: "120px" }}
+      width="70px"
       positioning={{ sameWidth: true }}
       onValueChange={(e) => {
         const newLang = e.value[0] as Language;
@@ -28,7 +47,7 @@ const LangSwitcher = () => {
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger>
-          <Select.ValueText placeholder="Select Lang" />
+          <Select.ValueText />
         </Select.Trigger>
         <Select.IndicatorGroup>
           <Select.Indicator />

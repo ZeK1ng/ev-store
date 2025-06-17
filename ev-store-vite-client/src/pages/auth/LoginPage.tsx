@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import API from '@/utils/AxiosAPI';
 import AuthController from '@/utils/AuthController';
 
@@ -30,6 +30,10 @@ interface LoginFormValues {
 const LoginPage = () => {
     const { t } = useTranslation('auth');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     if (AuthController.isLoggedIn()) {
         navigate('/');
@@ -86,17 +90,12 @@ const LoginPage = () => {
                             <Heading as="h1" size="xl" fontWeight="bold">
                                 {t('login.title')}
                             </Heading>
-                            <Text >
-                                {t('login.description')}
-                            </Text>
                         </Stack>
 
                         <Box as="form" onSubmit={onSubmit} width="full">
                             <Stack gap={5}>
                                 <Field.Root id="email" invalid={!!errors.email}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('login.email')}
-                                    </Field.Label>
+
                                     <InputGroup startElement={<LuMail />}>
                                         <Input
                                             size="lg"
@@ -109,9 +108,7 @@ const LoginPage = () => {
                                 </Field.Root>
 
                                 <Field.Root id="password" invalid={!!errors.password}>
-                                    <Field.Label fontWeight="medium" fontSize="sm">
-                                        {t('login.password')}
-                                    </Field.Label>
+
                                     <InputGroup startElement={<LuKeyRound />}>
                                         <PasswordInput
                                             placeholder={t('login.passwordPlaceholder')}

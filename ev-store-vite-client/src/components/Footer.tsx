@@ -1,7 +1,9 @@
 import { Flex, HStack, VStack, Image, Separator, Stack, IconButton, Heading, Text, Box } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
-import { FaFacebook, FaInstagram, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaTwitter } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { LuFacebook, LuInstagram } from "react-icons/lu";
+import { MdOutlineWhatsapp } from "react-icons/md";
 
 
 const Footer = () => {
@@ -23,36 +25,43 @@ const Footer = () => {
                         <HStack gap={4}>
                             <IconButton aria-label="Facebook" variant="surface" size="xs">
                                 <Link to="https://www.facebook.com/YourStoreGeo" target='_blank'>
-                                    <FaFacebook />
-                                </Link>
-                            </IconButton>
-
-                            <IconButton aria-label="Twitter" variant="surface" size="xs">
-                                <Link to="https://twitter.com/YourStoreGeo" target='_blank'>
-                                    <FaTwitter />
+                                    <LuFacebook />
                                 </Link>
                             </IconButton>
 
                             <IconButton aria-label="Instagram" variant="surface" size="xs">
                                 <Link to="https://www.instagram.com/YourStoreGeo" target='_blank'>
-                                    <FaInstagram />
+                                    <LuInstagram />
                                 </Link>
                             </IconButton>
+
+                            <IconButton aria-label="WhatsApp" variant="surface" size="xs">
+                                <Link to={`https://wa.me/995568574455`} target='_blank'>
+                                    <MdOutlineWhatsapp />
+                                </Link>
+                            </IconButton>
+
+
+
+
                         </HStack>
                     </VStack>
 
                     <VStack align="flex-start" gap={2} mb={{ base: 8, md: 0 }}>
-                        <Heading size="sm" fontWeight="bold">
+                        <Heading size="lg" fontWeight="bold" mb={2}>
                             {t('footer.quickLinks')}
                         </Heading>
-                        <Link color="white" to={t('footer.category1url')}>
+                        <Link color="white" to={t('footer.category1url')} target='_blank'>
                             {t('footer.category1name')}
                         </Link>
-                        <Link color="white" to={t('footer.category2url')}>
+                        <Link color="white" to={t('footer.category2url')} target='_blank'>
                             {t('footer.category2name')}
                         </Link>
-                        <Link color="white" to={t('footer.category3url')}>
+                        <Link color="white" to={t('footer.category3url')} target='_blank'>
                             {t('footer.category3name')}
+                        </Link>
+                        <Link color="white" to={t('footer.category4url')} target='_blank'>
+                            {t('footer.category4name')}
                         </Link>
                     </VStack>
 
