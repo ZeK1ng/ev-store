@@ -1,5 +1,5 @@
 export const getImageUrl = (imageId: number): string => {
-    return `https://winston-li-ricky-scheme.trycloudflare.com/api/v1/image?imageId=${imageId}`;
+    return `https://athletics-revealed-ancient-africa.trycloudflare.com/api/v1/image?imageId=${imageId}`;
 };
 
 export const addItemToCart = (productId: number, quantity: number) => {
