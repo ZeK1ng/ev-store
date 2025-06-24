@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AuthController from './AuthController';
 
-const API_BASE_URL = 'https://athletics-revealed-ancient-africa.trycloudflare.com/api/v1';
+const API_BASE_URL = 'https://brook-boulevard-reno-shake.trycloudflare.com/api/v1';
 
 const API = axios.create({
     baseURL: API_BASE_URL,
