@@ -1,5 +1,5 @@
 export const getImageUrl = (imageId: number): string => {
-    return `https://brook-boulevard-reno-shake.trycloudflare.com/api/v1/image?imageId=${imageId}`;
+    return `https://wings-limit-thumb-fri.trycloudflare.com/api/v1/image?imageId=${imageId}`;
 };
 
 export const addItemToCart = (productId: number, quantity: number) => {
