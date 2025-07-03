@@ -1,5 +1,5 @@
 export const getImageUrl = (imageId: number): string => {
-    return `https://ones-cs-ruled-biol.trycloudflare.com/api/v1/image?imageId=${imageId}`;
+    return `https://most-heat-clinic-belle.trycloudflare.com/api/v1/image?imageId=${imageId}`;
 };
 
 export const addItemToCart = (productId: number, quantity: number) => {
