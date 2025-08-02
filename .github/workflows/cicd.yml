@@ -5,6 +5,17 @@ on:
     branches: [ main ]
 
 jobs:
+  debug-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print secret (⚠️ dangerous)
+        run: |
+          echo "blu=$blu" && \ 
+          echo "bla=$bla"
+        
+        env:
+          blu: ${{ secrets.EV_STORE_DATASOURCE_PASSWORD }}
+          bla: ${{ secrets.EV_STORE_DATASOURCE_USERNAME }}
   changes:
     runs-on: ubuntu-latest
     outputs:
