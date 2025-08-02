@@ -5,17 +5,6 @@ on:
     branches: [ main ]
 
 jobs:
-  debug-secret:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Step 1 - Echo out a GitHub Actions Secret to the logs
-      run: |
-        echo "The GitHub Action Secret will be masked:  "
-        echo "Trick to echo GitHub Actions Secret:  "
-        echo ${{ secrets.EV_STORE_DATASOURCE_PASSWORD }} | sed 's/./& /g'
-        echo ${{ secrets.EV_STORE_DATASOURCE_USERNAME  }} | sed 's/./& /g'
-  
-
   changes:
     runs-on: ubuntu-latest
     outputs:
