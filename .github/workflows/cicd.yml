@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Print secret (⚠️ dangerous)
         run: |
-          echo "DB_PASSWORD=$blu"
-          echo "DB_USERNAME=$bla"
+          echo blu
+          echo bla
         env:
           blu: ${{ secrets.EV_STORE_DATASOURCE_PASSWORD }}
           bla: ${{ secrets.EV_STORE_DATASOURCE_USERNAME }}
