@@ -13,19 +13,9 @@ jobs:
         echo "The GitHub Action Secret will be masked:  "
         echo "Trick to echo GitHub Actions Secret:  "
         echo ${{ secrets.EV_STORE_DATASOURCE_PASSWORD }} | sed 's/./& /g'
-    - name: Check out code
-      uses: actions/checkout@v2
+        echo ${{ secrets.EV_STORE_DATASOURCE_USERNAME  }} | sed 's/./& /g'
+  
 
-    - name: Set up secret file
-      env:
-        DEBUG_PASSWORD: ${{ secrets.EV_STORE_DATASOURCE_PASSWORD }}
-        DEBUG_SECRET_KEY: ${{ secrets.EV_STORE_DATASOURCE_USERNAME }}
-      run: |
-        echo $DEBUG_PASSWORD >> secrets.txt
-        echo $DEBUG_SECRET_KEY >> secrets.txt
-
-    - name: Run tmate
-      uses: mxschmitt/action-tmate@v2
   changes:
     runs-on: ubuntu-latest
     outputs:
